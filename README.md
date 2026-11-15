@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 7 multi-reviewer and adjudication workflow published (local validation pending).** Experiment 010 found 15/20 agreement with one human reviewer for both raw and guarded Qwen, with five raw false replacement suggestions and zero gated suggestions against those labels, but one genuine replacement withheld. Phase 7 adds a genuinely separate second-reviewer file, four evidence questions per case, locked-review comparison and adjudication without changing original labels. **No second reviewer has participated yet, and no independent validation or improved model performance is claimed.**
+> **Current status: Phase 7 adjudication completed; Experiment 011 logged.** On 20 fictional cases, two label files agreed in 18 cases. Adjudication flagged and completed 8 cases, revised two original labels, and left 12 agreed cases unadjudicated. Re-scoring *unchanged Experiment 010 predictions* against the final labels gives raw Qwen **14/20** and evidence-gated Qwen **13/20** agreement. Raw/gated false replacement suggestions are **5/0**, while genuine replacements recognised are **7/6**. Reviewer identity/independence is not established and some final labels remain semantically disputable; no general safety or model-improvement claim is justified.
 
 ## Features
 
@@ -309,7 +309,7 @@ Adjudication can **defer** cases that lack evidence; it does not silently change
 
 ### Correction utility for unfinished adjudications
 
-An uploaded partial adjudication (4 of 8 flagged cases) exposed mismatched labels, evidence fields and storage actions. The review CLI now supports `python -m scripts.adjudicate_reviews --edit B04` to revisit any **already answered, unlocked** case. It preserves the previous decision in a local revision history. `--status` surfaces conflicting storage choices, and `--lock` prevents accidental finalisation when a duplicate is marked for supersession. **No uploaded JSON or saved memory is modified automatically.**
+An uploaded partial adjudication (4 of 8 flagged cases) exposed mismatched labels, evidence fields and storage actions. The review CLI supports `python -m scripts.adjudicate_reviews --edit B04` to revisit any **already answered, unlocked** case. It preserves the previous decision in a local revision history. `--status` surfaces conflicting storage choices, and `--lock` prevents accidental finalisation when a duplicate is marked for supersession. **No uploaded JSON or saved memory is modified automatically.**
 
 After pulling from GitHub Desktop, run the revised suite:
 
@@ -318,6 +318,20 @@ python -m unittest discover -s tests -v
 ~~~
 
 Expected **83 offline tests** (up from 81). Resume pending cases with `python -m scripts.adjudicate_reviews`, then inspect `--status`, fix flagged entries with `--edit BXX`, and only then use `--lock`.
+
+## Experiment 011 — Post-adjudication comparison
+
+The owner has now completed the 8 flagged adjudication cases, producing `review_v1_adjudicated_summary.json`. First and second review labels agreed **18/20**. The final labels changed **B04** from coexists to duplicate, and **B07** from uncertain to coexists. Reusing the original Qwen predictions gives **14/20 agreement raw** and **13/20 gated**; the guarded system still made **0 false replacement recommendations** against final labels, compared with **5** for raw Qwen, but withheld **1 of 7** labelled genuine updates.
+
+The summary contains unresolved conceptual tensions, especially B07, B10, B15 and B18. These warrant rubric review rather than silently relabelling the dataset. See the [full Experiment 011 analysis](docs/experiment_011_results.md).
+
+To reproduce the descriptive scoring locally **without Ollama**, retain the original two JSON exports in `results/raw/` and run:
+
+~~~bat
+python -m scripts.rescore_adjudicated
+~~~
+
+This writes `results/raw/review_v1_adjudicated_metrics.json`. The first label file, second label file and stored memories remain untouched. The latest offline suite now contains **89 tests**, including six new scorer tests (not yet verified on the user's Windows machine).
 
 ## Project files
 
@@ -340,6 +354,8 @@ Expected **83 offline tests** (up from 81). Resume pending cases with `python -m
 | `scripts/compare_human_reviews.py` | Post-lock label agreement, Cohen's kappa, and disagreement queue |
 | `scripts/adjudicate_reviews.py` | Independent-from-original-file adjudication records and optional deferred labels |
 | `docs/multirater_review.md` | Phase 7 workflow, interpretation, and known limitations |
+| `scripts/rescore_adjudicated.py` | Offline comparison of frozen Experiment 010 predictions with final labels |
+| `docs/experiment_011_results.md` | Phase 7 outcome, revised metrics and disputed evidence axes |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
@@ -369,7 +385,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
 - [ ] **V4:** Utility-based retention/suppression policy (**phases 1–4 investigated; phase 5 evidence-gated safety prototype published; no learned policy yet**)
-- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**multi-reviewer tools published; second labels, independent adjudication, and genuinely new held-out study pending**)
+- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**two-reviewer adjudication record completed; reviewer independence unverified, disputed labels and new held-out studies pending**)
 
 ## Budget and privacy
 

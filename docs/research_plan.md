@@ -60,7 +60,7 @@ To avoid treating a single person's disputed labels as unquestionable ground tru
 
 After **both reviews are locked**, a tool reports raw inter-rater agreement, Cohen's kappa, disagreements, and seven pre-registered semantically challenging cases. Another human-facing adjudication workflow records revised labels or deferrals **without overwriting either original vote or Experiment 010**. If the same person completes both reviews, the result is not independent inter-rater reliability. A shared error can also survive unanimous agreement. Even two reviewers on 20 authored cases are insufficient to prove a universally safe memory policy.
 
-Only after structured adjudication should the project design and freeze an entirely new, multi-identity, held-out test corpus and evaluate any new gate changes against it. See [Phase 7 guide](multirater_review.md).
+**Experiment 011:** the adjudication summary reports 18/20 first–second label agreement and changes two final labels (B04, B07). Against the frozen predictions, raw Qwen matches 14/20 and the gate matches 13/20, while false `replaces` suggestions remain 5 versus 0. Reviewer independence cannot be established from the files and several `same_entity`/`new_value_known` axes remain contestable. Keep the original first-review results and post-hoc scoring separate. Only after a sharper rubric should the project design and freeze a new multi-identity held-out corpus. See [Phase 7 guide](multirater_review.md) and [Experiment 011](experiment_011_results.md).
 
 ### Stage 5 — Rigorous evaluation
 

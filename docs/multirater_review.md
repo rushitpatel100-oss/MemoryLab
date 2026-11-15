@@ -107,3 +107,7 @@ The edit command displays the existing answer and asks all questions again for *
 This is still only 20 project-authored fictional examples. Reviewer disagreement may reveal vague rubrics; agreement may conceal systematic shared errors. Two reviewers and an adjudicator improve label quality but do not prove general-purpose reliability. Next, create new fictional profiles with case-level referent and temporal annotations, freeze a new dataset, use multiple raters, and evaluate downstream false forgetting or incorrect answers rather than classifier labels alone.
 
 All work is local, uses existing free tools, and never modifies `memorylab.db`.
+
+## Completed Phase 7 output — Experiment 011
+
+The owner supplied a locked adjudication summary of the 20 fictional cases. **Eight flagged cases were adjudicated; 12 agreeing cases were carried forward without case-by-case adjudication.** Two final labels changed: B04 and B07. First/second agreement was 18/20, but the source does not establish two independent people. Re-scoring the existing model predictions against final labels yielded **14/20 raw** and **13/20 gated**, with **5 versus 0 false supersession suggestions**. Some final evidence axes remain contested; see [Experiment 011](experiment_011_results.md). Use `python -m scripts.rescore_adjudicated` for offline reproduction of these numbers, without model calls.
