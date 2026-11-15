@@ -1,0 +1,39 @@
+# Local Python environment
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local memories and other SQLite databases
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.db-journal
+
+# Secrets and local configuration
+.env
+.env.*
+.streamlit/secrets.toml
+*.pem
+*.key
+
+# Editor and OS artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Model weights and large local caches
+*.gguf
+*.safetensors
+.cache/
+models/
+
+# Temporary research outputs (commit selected, sanitized summaries only)
+results/raw/
