@@ -4,6 +4,7 @@ import json
 import os
 import sqlite3
 import tempfile
+from contextlib import closing
 import unittest
 from unittest.mock import patch
 
@@ -38,7 +39,7 @@ class SafeStorageTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.db = os.path.join(self.tmp.name, "test.db")
-        with sqlite3.connect(self.db) as conn:
+        with closing(sqlite3.connect(self.db)) as conn, conn:
             conn.execute(
                 "CREATE TABLE memories ("
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -54,7 +55,7 @@ class SafeStorageTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def flags(self):
-        with sqlite3.connect(self.db) as conn:
+        with closing(sqlite3.connect(self.db)) as conn:
             return [r[0] for r in conn.execute(
                 "SELECT active FROM memories ORDER BY id"
             )]

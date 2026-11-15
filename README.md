@@ -110,6 +110,11 @@ This small, **manual** experiment is not yet a learned policy. The no-memory bas
 
 See [the guided pilot](docs/ablation_pilot.md), [Experiment 004 results](docs/experiment_004_results.md), and [Experiment 005 protocol](docs/experiment_005_protocol.md).
 
+
+### Windows SQLite file-lock fix (Python 3.14)
+
+If early V4 installations showed `PermissionError: [WinError 32]` during unit-test `tearDown`, the root cause was SQLite connections that were committed but not explicitly **closed**. The context manager `with sqlite3.connect(...) as conn` manages transactions, not connection closure. Version 4 now uses `contextlib.closing` alongside the transaction context manager in the app, test fixtures, and reviewed-memory store. Re-run `python -m unittest discover -s tests -v` after pulling this fix; the expected result is 20 passing tests. This fix has not yet been verified on the user's Windows machine.
+
 ## Try Smart Memory Review — V4 Phase 2
 
 No new models or packages are needed. In section **7. Smart Memory Review**, propose a new fact and click **Review possible conflicts**. Qwen provides a recommendation for each active memory in the exact same topic; **Keep both** is selected by default. Confirm each action before saving. Section 1 remains a deliberately simplistic overwrite baseline.

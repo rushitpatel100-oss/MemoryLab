@@ -1,5 +1,6 @@
 import json
 import sqlite3
+from contextlib import closing
 from datetime import datetime, timezone
 
 import streamlit as st
@@ -14,7 +15,7 @@ def connect():
 
 def setup_database():
     """Create the memory table when the app runs for the first time."""
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS memories (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +37,7 @@ def save_memory(topic, fact):
 
     timestamp = datetime.now(timezone.utc).isoformat()
 
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         conn.execute(
             "UPDATE memories SET active = 0 WHERE topic = ?",
             (topic,)
@@ -56,7 +57,7 @@ def search_memories(topic):
     """Find active memories by topic, or list all active memories."""
     topic = topic.strip().lower()
 
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         conn.row_factory = sqlite3.Row
 
         if topic:
@@ -82,7 +83,7 @@ def search_memories(topic):
 
 def get_history():
     """Show both active and superseded memories."""
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         conn.row_factory = sqlite3.Row
         results = conn.execute(
             "SELECT * FROM memories ORDER BY id DESC"
