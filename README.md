@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 4 evaluation complete on the 16-case synthetic comparison candidate.** In Experiment 009 the single-pass baseline matched 11/16 author labels while the experimental staged alternative matched 8/16, with more erroneous replacement suggestions (8 versus 5) and roughly double cumulative latency. Stage 1 labelled every nonlocal comparison `same_attribute`, so its intended early routing did not work. **The staged alternative is not recommended as an improvement.** This is an exploratory, non-adjudicated comparison, not a validated holdout or learned utility policy.
+> **Current status: V4 Phase 5 replacement-evidence safeguard published (local testing pending).** Experiments 007–009 found that Qwen sometimes proposes replacing compatible facts; the two-stage approach performed worse than baseline. A new optional one-call safeguard downgrades replacement suggestions without a clear text update signal to `uncertain` and requires three explicit manual confirmations before supersession. The original Qwen label is preserved. This rule is conservative, can miss genuine updates, and is not independently validated; no existing memories were changed.
 
 ## Features
 
@@ -18,6 +18,7 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 8. **Smart Memory Review (experimental):** classifies four relationships and blocks exact duplicate writes; compatible and conflicting facts still need user review.
 9. **Development benchmark:** 16 fictional examples (four per label), local inference, a confusion matrix, and optional JSON export.
 10. **Two-stage conflict experiment:** compare attributes first, evaluate updates only when appropriate, and compare against the unchanged single-pass baseline on a separate 16-case fictional dataset.
+11. **Replacement-evidence safeguard (experimental):** checks for explicit old-to-new value changes and requires three confirmations before any reviewed supersession.
 
 **Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**. Its deterministic duplicate rule handles formatting-only repeats, not all semantic paraphrases; Qwen's suggestions can still be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
@@ -191,6 +192,32 @@ The comparison code **never opens or edits your SQLite memory database**. It rep
 
 Read [the staged-classifier protocol](docs/staged_classifier.md), [the new 16 cases](benchmarks/conflict_eval_v1.json), and [Experiment 008](docs/experiment_008_results.md) for the first four-case comparative observations.
 
+## Replacement-evidence safeguard — V4 Phase 5
+
+The review interface now has three methods: **Single-pass baseline**, **Safety-gated experimental**, and **Two-stage experimental**. The safety-gated method uses the same single Qwen call as the baseline plus a local text check. It never makes another model call. When Qwen suggests `replaces` without a narrow `from old value to new value` transition anchored to text in the older fact, the suggestion becomes `uncertain` and the raw Qwen prediction remains visible.
+
+Even a detected transition is **only a text signal**. It does not establish the same subject, attribute, or factual truth. All supersession choices in section 7 now require fresh manual checks for **same subject**, **same specific attribute**, and **actual outdatedness**. The safe default remains **Keep both**. The existing section 1 overwrite baseline is deliberately unchanged.
+
+On Windows after **Fetch origin → Pull origin**, run:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+Expected: **54 tests** (42 previous, 12 added), using mocked calls only. Then test the safeguard on the first four previously seen synthetic examples:
+
+~~~bat
+python -m scripts.compare_replacement_gate --limit 4
+~~~
+
+Run all 16 and save a local report if useful:
+
+~~~bat
+python -m scripts.compare_replacement_gate --output results/raw/gate.json
+~~~
+
+The script never opens the SQLite database and calls Qwen **once per case**, not once for each variant. It reports both false replacement suggestions and **genuine replacements missed** by the narrow gate. The examples were already inspected when the rule was designed; this is not a held-out accuracy estimate. See the [replacement-gate protocol](docs/replacement_gate.md).
+
 ## Project files
 
 | Path | Purpose |
@@ -201,6 +228,8 @@ Read [the staged-classifier protocol](docs/staged_classifier.md), [the new 16 ca
 | `memory_ablation.py` | Runs two local Qwen calls with/without one selected memory |
 | `memory_conflicts.py` | Existing four-label single-pass baseline with local duplicate check |
 | `memory_staged.py` | Experimental attribute-scope check followed by conditional update assessment |
+| `replacement_gate.py` | Conservative text evidence gate for single-pass replacement suggestions |
+| `scripts/compare_replacement_gate.py` | Compare raw and gated decisions on the same Qwen output |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
@@ -229,7 +258,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
-- [ ] **V4:** Utility-based retention/suppression policy (**phases 1–3 evaluated; phase 4 two-stage classifier code and paired evaluation published, local testing pending**)
+- [ ] **V4:** Utility-based retention/suppression policy (**phases 1–4 investigated; phase 5 evidence-gated safety prototype published; no learned policy yet**)
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
 ## Budget and privacy

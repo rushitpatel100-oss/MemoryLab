@@ -42,6 +42,12 @@ The single-pass four-way Qwen classifier matched 10/16 author-assigned developme
 
 A separate 16-case synthetic comparison candidate is provided; it is newly authored after seeing prior failures, but not independently adjudicated. Score **both methods on identical cases**, including erroneous supersession suggestions, label agreement and inference time. Do not modify prompts to match the comparison cases before recording results. An independent held-out benchmark remains necessary.
 
+### Stage 4D — Conservative replacement-evidence gate (published, local tests pending)
+
+Experiment 009 found that a two-stage Qwen pipeline introduced more false replacement recommendations on the author-labelled examples. The new optional safety-gated single-pass method retains the existing model call and checks for a narrow old-value-to-new-value transition in the text. A model `replaces` prediction with no such transition is displayed as `uncertain`, with the raw prediction and gate reason recorded. The text check does not verify referent identity, attribute identity, or the truth of a claim. Human supersession now requires confirming those facts individually.
+
+A conservative rule can miss real updates that are not phrased as `from X to Y`. Evaluate its false replacement reduction **and** genuine replacement coverage. The current comparison set has already been used during feature design; genuine held-out validation will require new independent synthetic examples and agreed labels.
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
