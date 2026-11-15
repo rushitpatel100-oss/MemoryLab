@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 7 adjudication completed; Experiment 011 logged.** On 20 fictional cases, two label files agreed in 18 cases. Adjudication flagged and completed 8 cases, revised two original labels, and left 12 agreed cases unadjudicated. Re-scoring *unchanged Experiment 010 predictions* against the final labels gives raw Qwen **14/20** and evidence-gated Qwen **13/20** agreement. Raw/gated false replacement suggestions are **5/0**, while genuine replacements recognised are **7/6**. Reviewer identity/independence is not established and some final labels remain semantically disputable; no general safety or model-improvement claim is justified.
+> **Current status: Phase 8 rubric v2 and a new 24-case blind review candidate published; local testing and human reviews pending.** Experiments 010–011 showed that raw Qwen suggested more incorrect replacements against reviewer labels, while the evidence gate tended to abstain more and did not improve overall four-way agreement. We have **not changed either classifier**. A frozen rubric now separates referent, attribute, old-fact invalidation and new-value knowledge; two separate local human reviews must be locked before the next Qwen comparison. No fresh evaluation scores or independent ground-truth claims are available yet.
 
 ## Features
 
@@ -333,6 +333,51 @@ python -m scripts.rescore_adjudicated
 
 This writes `results/raw/review_v1_adjudicated_metrics.json`. The first label file, second label file and stored memories remain untouched. The latest offline suite now contains **89 tests**, including six new scorer tests (not yet verified on the user's Windows machine).
 
+## Phase 8 — Frozen rubric + fresh blind evaluations
+
+We have stopped tuning the classifier on the 20 previously examined cases. Instead, Phase 8 supplies **24 new fictional memory pairs with no answers** and a clearer human annotation rubric. The models and SQLite records are unchanged.
+
+Read the **[decision rubric v2](docs/label_rubric_v2.md)** before making any labels. It asks whether the facts concern the same entity, same specific attribute, whether the old fact is *known* outdated, and whether a specific new value is *known*. These axes are separate from the four-way relationship and storage recommendation.
+
+After **Fetch origin → Pull origin**, start by checking offline tests:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+Expected: **105 offline test methods** (previously 89 plus 16 new). The new tests have not yet been executed on your Windows machine.
+
+**Reviewer A starts with four new cases (no Qwen):**
+
+~~~bat
+python -m scripts.review_holdout_v2 --rater A --limit 4
+~~~
+
+To resume or check progress:
+
+~~~bat
+python -m scripts.review_holdout_v2 --rater A
+python -m scripts.review_holdout_v2 --rater A --status
+~~~
+
+Only after all **24/24** are labelled, freeze A's labels:
+
+~~~bat
+python -m scripts.review_holdout_v2 --rater A --lock
+~~~
+
+**A different human Reviewer B** should separately follow the same steps using `--rater B`, without reading A's labels or previous Qwen outputs. If one person fills both files, this is a repeat review, **not independent inter-rater validation**.
+
+**Only after both A and B are locked**, run:
+
+~~~bat
+python -m scripts.evaluate_holdout_v2
+~~~
+
+The evaluator **refuses to run with an unlocked review** and never reads the SQLite memory database. It runs the unchanged Qwen classifier once per pair, applies the unchanged gate to the same prediction, and measures performance only where reviewers' labels agree. Disagreements are reported separately, not treated as gold labels. It refuses to overwrite an earlier local result.
+
+Documentation: [Phase 8 review instructions](docs/phase8_protocol.md).
+
 ## Project files
 
 | Path | Purpose |
@@ -356,6 +401,11 @@ This writes `results/raw/review_v1_adjudicated_metrics.json`. The first label fi
 | `docs/multirater_review.md` | Phase 7 workflow, interpretation, and known limitations |
 | `scripts/rescore_adjudicated.py` | Offline comparison of frozen Experiment 010 predictions with final labels |
 | `docs/experiment_011_results.md` | Phase 7 outcome, revised metrics and disputed evidence axes |
+| `docs/label_rubric_v2.md` | Frozen entity/attribute/obsolete/new-value evidence rules |
+| `benchmarks/holdout_v2_cases.json` | 24 new fictional pairs with no labels or predictions |
+| `scripts/review_holdout_v2.py` | Independent A/B evidence-first labels, resumable and lockable |
+| `scripts/evaluate_holdout_v2.py` | After both reviews lock: one-call paired Qwen/gate scores on consensus subset |
+| `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
@@ -385,7 +435,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
 - [ ] **V4:** Utility-based retention/suppression policy (**phases 1–4 investigated; phase 5 evidence-gated safety prototype published; no learned policy yet**)
-- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**two-reviewer adjudication record completed; reviewer independence unverified, disputed labels and new held-out studies pending**)
+- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**Phase 8 rubric and fresh unlabeled cases frozen; A/B reviews, local validation, and independent adjudication pending**)
 
 ## Budget and privacy
 

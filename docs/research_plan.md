@@ -62,6 +62,14 @@ After **both reviews are locked**, a tool reports raw inter-rater agreement, Coh
 
 **Experiment 011:** the adjudication summary reports 18/20 first–second label agreement and changes two final labels (B04, B07). Against the frozen predictions, raw Qwen matches 14/20 and the gate matches 13/20, while false `replaces` suggestions remain 5 versus 0. Reviewer independence cannot be established from the files and several `same_entity`/`new_value_known` axes remain contestable. Keep the original first-review results and post-hoc scoring separate. Only after a sharper rubric should the project design and freeze a new multi-identity held-out corpus. See [Phase 7 guide](multirater_review.md) and [Experiment 011](experiment_011_results.md).
 
+### Stage 4G — Phase 8 evidence-first rubric + fresh blind review candidate (published, results pending)
+
+After Experiment 011 showed disputed label interpretations on the previous 20 examples, freeze [rubric v2](label_rubric_v2.md) and a **new set of 24 author-generated fictional cases without labels** (`benchmarks/holdout_v2_cases.json`). A and B must fill the specific entity/attribute/old-obsolete/new-value evidence fields **before** choosing a relationship label or storage action. Inconsistent recommendations are rejected by an offline consistency check. Cases are kept in distinct locally ignored files with independent locks; A/B reviewer identity cannot be authenticated by code.
+
+Only after both are locked, evaluate the existing Qwen and unchanged evidence gate on the same one-call outputs. Score **consensus cases only** and report the disagreement count, false replacement suggestions, missed genuine updates and rate of abstention. Do not tune the gate based on these cases and then describe the same results as held-out; the cases were constructed within the research project and require external revalidation.
+
+No existing data, prompts, model parameters or SQLite storage behaviour is modified in this phase. See [Phase 8 protocol](phase8_protocol.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
