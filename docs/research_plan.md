@@ -63,3 +63,15 @@ Split benchmark identities and scenarios into development and held-out evaluatio
 ## Limits on claims
 
 This project is a prototype, not a solved long-term memory architecture. Strong research claims require comparisons against published work and independent evaluation. Track failure cases, not just successful demonstrations.
+
+## Qualitative experiment log — V3 negative control
+
+**Source:** user-reported application response (not independently executed by the assistant).
+
+- **Question:** "What city do I live in?"
+- **Observed response:** "No memories met the similarity threshold. Try a clearer question, add a relevant memory, or lower the threshold."
+- **Interpretation:** The retrieval threshold rejected all candidate memories; the application did **not** call Qwen in this run. This is a successful retrieval-stage abstention, not evidence that Qwen itself avoids unsupported claims.
+- **Unknown/unrecorded:** exact database contents, selected similarity threshold, similarity values.
+- **Next test:** retry at a threshold of 0.00 with only unrelated fictional memory data and inspect whether a memory is selected. If Qwen is called, score whether it invents a city or clearly acknowledges missing evidence. Do not claim a language-model grounding result until Qwen actually produces a response.
+
+Keep this record separate from held-out benchmark results; it is a single manual smoke test, not a quantitative performance measurement.
