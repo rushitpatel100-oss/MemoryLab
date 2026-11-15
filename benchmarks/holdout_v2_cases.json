@@ -1,0 +1,151 @@
+{
+  "name": "MemoryLab Phase 8 blind evaluation candidate",
+  "version": 1,
+  "description": "Fresh fictional pairs without answer labels or model predictions. Human reviewers must label independently before any model execution.",
+  "cases": [
+    {
+      "id": "H01",
+      "topic": "transport",
+      "old_fact": "My bicycle has a bell on its handlebar.",
+      "new_fact": "I clean my bicycle chain every Saturday."
+    },
+    {
+      "id": "H02",
+      "topic": "pet",
+      "old_fact": "My dog Saffron enjoys swimming.",
+      "new_fact": "Saffron, my dog, likes to swim."
+    },
+    {
+      "id": "H03",
+      "topic": "venue",
+      "old_fact": "The theatre club rehearses in Oak Room.",
+      "new_fact": "The theatre club moved rehearsals from Oak Room to Cedar Room."
+    },
+    {
+      "id": "H04",
+      "topic": "family",
+      "old_fact": "My older sister Nisha lives in York.",
+      "new_fact": "My sister moved to Dundee."
+    },
+    {
+      "id": "H05",
+      "topic": "workspace",
+      "old_fact": "My desk has a white lamp.",
+      "new_fact": "There is a small cactus on my desk."
+    },
+    {
+      "id": "H06",
+      "topic": "equipment",
+      "old_fact": "The office printer uses blue toner.",
+      "new_fact": "The basement printer was changed from blue to green toner."
+    },
+    {
+      "id": "H07",
+      "topic": "hobby",
+      "old_fact": "My favourite weekend hobby is pottery.",
+      "new_fact": "Pottery is my favourite hobby on weekends."
+    },
+    {
+      "id": "H08",
+      "topic": "habit",
+      "old_fact": "I bake bread on Sunday mornings.",
+      "new_fact": "I stopped baking bread on Sunday mornings."
+    },
+    {
+      "id": "H09",
+      "topic": "club",
+      "old_fact": "The nature club meets every Thursday.",
+      "new_fact": "One of my clubs changed its meeting day."
+    },
+    {
+      "id": "H10",
+      "topic": "travel",
+      "old_fact": "My suitcase is purple.",
+      "new_fact": "I repainted my suitcase from purple to yellow."
+    },
+    {
+      "id": "H11",
+      "topic": "home",
+      "old_fact": "The conservatory has three windows.",
+      "new_fact": "The conservatory also has a wooden chair."
+    },
+    {
+      "id": "H12",
+      "topic": "commute",
+      "old_fact": "I go to the library by bus.",
+      "new_fact": "I take the bus to the library."
+    },
+    {
+      "id": "H13",
+      "topic": "climate",
+      "old_fact": "The greenhouse thermostat is set to 19 degrees.",
+      "new_fact": "Someone adjusted the greenhouse thermostat yesterday."
+    },
+    {
+      "id": "H14",
+      "topic": "teaching",
+      "old_fact": "Dara teaches coding on Tuesday afternoons.",
+      "new_fact": "On Tuesday afternoons, Dara gives coding lessons."
+    },
+    {
+      "id": "H15",
+      "topic": "schedule",
+      "old_fact": "My afternoon shift starts at 2 pm.",
+      "new_fact": "From next Monday my afternoon shift starts at 3 pm, not 2 pm."
+    },
+    {
+      "id": "H16",
+      "topic": "family",
+      "old_fact": "My uncle Karim owns two scooters.",
+      "new_fact": "My uncle sold his scooter last weekend."
+    },
+    {
+      "id": "H17",
+      "topic": "home",
+      "old_fact": "I rent flat number twelve.",
+      "new_fact": "I bought a new bookcase for flat number twelve."
+    },
+    {
+      "id": "H18",
+      "topic": "plants",
+      "old_fact": "My balcony planter contains rosemary.",
+      "new_fact": "I replaced the rosemary in my balcony planter with lavender."
+    },
+    {
+      "id": "H19",
+      "topic": "exercise",
+      "old_fact": "I enjoy walking by the canal.",
+      "new_fact": "Walking along the canal is something I enjoy."
+    },
+    {
+      "id": "H20",
+      "topic": "uniform",
+      "old_fact": "The cycling team's home jersey is navy.",
+      "new_fact": "The away jersey was changed from navy to grey."
+    },
+    {
+      "id": "H21",
+      "topic": "friends",
+      "old_fact": "My friend Leena studies at Redbridge College.",
+      "new_fact": "My friend left Redbridge College recently."
+    },
+    {
+      "id": "H22",
+      "topic": "beverages",
+      "old_fact": "I prefer jasmine tea.",
+      "new_fact": "I now prefer peppermint tea instead of jasmine tea."
+    },
+    {
+      "id": "H23",
+      "topic": "project",
+      "old_fact": "My project's code name is Aurora.",
+      "new_fact": "Aurora is the code name for my project."
+    },
+    {
+      "id": "H24",
+      "topic": "garden",
+      "old_fact": "The patio has a wooden bench.",
+      "new_fact": "There is also a blue parasol on the patio."
+    }
+  ]
+}
