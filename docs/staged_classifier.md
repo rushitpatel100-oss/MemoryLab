@@ -64,3 +64,7 @@ The command compares both methods on the **same examples** and prints:
 ## No new dependencies
 
 Uses only Python's standard library plus existing Streamlit and the local Ollama `qwen2.5:1.5b` model. No database migrations. No paid API or subscriptions.
+
+## First comparison — Experiment 008
+
+The owner ran four cases from the separate evaluation candidate. Baseline matched **3/4** author labels, staged matched **2/4**; baseline made one false replacement suggestion, staged made two. The experimental approach did not show an advantage in this run. See [Experiment 008](experiment_008_results.md) for exact predictions, elapsed timings, and the request to inspect stage traces in the full 16-case run.

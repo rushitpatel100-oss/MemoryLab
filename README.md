@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 4 staged-classifier implementation published (Windows testing pending).** The prior single-pass Qwen classifier matched 10/16 author labels in Experiment 007; its over-prediction of replacement motivated a two-stage alternative that first distinguishes independent attributes from potential updates. The original classifier remains selectable, and a separate 16-case synthetic comparison set is available. This has not yet been run locally or independently validated. It is not a learned utility policy or an established improvement.
+> **Current status: V4 Phase 4 paired comparison underway.** The previous single-pass classifier matched 10/16 author labels in Experiment 007. The initial four-case live comparison of the staged alternative matched 2/4 versus 3/4 for baseline, with an additional incorrect replacement suggestion. The staged method is **not yet shown to improve decisions**. Full 16-case comparison and stage-trace review are pending; this is not a validated holdout or learned utility policy.
 
 ## Features
 
@@ -189,7 +189,7 @@ python -m scripts.compare_classifiers --output results/raw/staged_comparison.jso
 
 The comparison code **never opens or edits your SQLite memory database**. It reports matches with author labels, how often non-replacement facts were wrongly marked `replaces`, and cumulative local inference time. It does **not** make an unqualified accuracy claim. The new cases were constructed after seeing development errors, so they are not independently labelled or a definitive blind test.
 
-Read [the staged-classifier protocol](docs/staged_classifier.md) and [the new 16 cases](benchmarks/conflict_eval_v1.json).
+Read [the staged-classifier protocol](docs/staged_classifier.md), [the new 16 cases](benchmarks/conflict_eval_v1.json), and [Experiment 008](docs/experiment_008_results.md) for the first four-case comparative observations.
 
 ## Project files
 
