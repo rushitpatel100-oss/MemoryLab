@@ -32,6 +32,10 @@ Version 4 phase 1 adds a **manual two-call comparison**: Qwen runs once with an 
 
 Next: create labelled synthetic scenarios, score both answers, repeat with shuffled conditions, and calculate per-memory utility with uncertainty. Only then develop a policy that learns from feedback and test interactions between memories.
 
+### Stage 4B — Human-reviewed conflict classification (prototype, local testing pending)
+
+A local Qwen model assesses **pairs** of facts in the *same exact topic* and suggests `replaces`, `coexists`, or `uncertain`. Suggestions do not write to the database. The user must select whether to supersede each prior fact (safe default: keep both). Updates are atomic and rejected if other same-topic memories changed since review. The earlier Section 1 save remains a topic-overwrite baseline. This is not automatic truth checking, cross-topic conflict detection, or an adaptive utility function. Log classification accuracy and human correction rates in later experiments.
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

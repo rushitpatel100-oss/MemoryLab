@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 1 pilot code published; local test pending.** Versions 1–3 ran on the project owner's Windows laptop. The owner reported that Qwen correctly acknowledged missing evidence in one negative test. A new two-call memory comparison feature is available, but neither a learned memory policy nor a research benchmark has been completed.
+> **Current status: V4 Phase 2 conflict-review code published; laptop testing pending.** Versions 1–3 and the V4 memory-impact experiment have been user-tested. Section 7 now proposes whether a new fact replaces or coexists with same-topic memories and requires explicit review before saving. This is not yet a learned policy or validated research benchmark.
 
 ## Features
 
@@ -15,8 +15,9 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 5. **Ask MemoryLab** a natural-language question; retrieve candidate memories and pass them to `qwen2.5:1.5b` running on Ollama.
 6. **Inspect retrieved evidence**, including memory IDs and similarity scores.
 7. **Memory Impact Lab (pilot):** run two Qwen calls, with and without one selected memory, and inspect both answers.
+8. **Smart Memory Review (experimental):** suggest relationship between facts and let you choose exactly which older records stay active.
 
-**Important limits:** The app currently treats all facts under one exact topic as replacements. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
+**Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**, and Qwen's suggestions can be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
 ## Setup on Windows (Python 3.14 / 16 GB RAM)
 
@@ -109,6 +110,12 @@ This small, **manual** experiment is not yet a learned policy. The no-memory bas
 
 See [the guided pilot](docs/ablation_pilot.md), [Experiment 004 results](docs/experiment_004_results.md), and [Experiment 005 protocol](docs/experiment_005_protocol.md).
 
+## Try Smart Memory Review — V4 Phase 2
+
+No new models or packages are needed. In section **7. Smart Memory Review**, propose a new fact and click **Review possible conflicts**. Qwen provides a recommendation for each active memory in the exact same topic; **Keep both** is selected by default. Confirm each action before saving. Section 1 remains a deliberately simplistic overwrite baseline.
+
+Follow the [conflict-review experiment guide](docs/conflict_review.md) to test Bristol → York updates and simultaneous work/home locations. The first prototype limits same-topic reviews to at most 10 active memories.
+
 ## Project files
 
 | Path | Purpose |
@@ -117,6 +124,9 @@ See [the guided pilot](docs/ablation_pilot.md), [Experiment 004 results](docs/ex
 | `semantic_search.py` | Calls Ollama for embeddings; ranks memories |
 | `answer_generator.py` | Calls Ollama's local chat endpoint with retrieved evidence; supports empty-context experiments |
 | `memory_ablation.py` | Runs two local Qwen calls with/without one selected memory |
+| `memory_conflicts.py` | Gets pairwise Qwen suggestions (replaces / coexists / uncertain) |
+| `memory_store.py` | Atomically applies only human-approved supersession choices |
+| `docs/conflict_review.md` | Guided experiment for changing locations and coexisting facts |
 | `docs/ablation_pilot.md` | Guided first experiment and how to interpret results |
 | `tests/` | Offline unit tests; does not require Ollama |
 | `docs/research_plan.md` | Hypothesis, baselines, metrics, experimental stages |
@@ -138,7 +148,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
-- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 two-call ablation pilot user-tested; next: benchmark and scoring**)
+- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 tested; phase 2 human-reviewed conflict prototype published, local validation pending**)
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
 ## Budget and privacy

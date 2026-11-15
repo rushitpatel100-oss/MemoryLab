@@ -102,7 +102,11 @@ setup_database()
 st.title("🧠 MemoryLab")
 st.write("An experimental adaptive AI memory system")
 
-st.subheader("1. Add a memory")
+st.subheader("1. Add a memory (baseline)")
+st.caption(
+    "This baseline automatically supersedes ALL older facts under the "
+    "same topic. For conflict-aware saving use section 7 below."
+)
 
 topic = st.text_input(
     "Memory topic",
@@ -377,3 +381,111 @@ else:
             "and answers. Do not publish results with personal data."
         )
 
+# V4 Phase 2: human-reviewed memory conflict handling
+from memory_conflicts import classify_pair
+from memory_store import save_reviewed_memory
+
+st.divider()
+st.subheader("7. Smart Memory Review")
+st.caption(
+    "Qwen suggests replaces / coexists / uncertain. "
+    "You decide before anything is changed. This pilot checks "
+    "only memories with the same exact topic."
+)
+
+smart_topic = st.text_input(
+    "New memory topic", placeholder="location", key="smart_topic"
+)
+smart_fact = st.text_area(
+    "New memory fact",
+    placeholder="I have moved from Bristol to York.",
+    key="smart_fact",
+)
+
+if st.button("Review possible conflicts"):
+    st.session_state["smart_review"] = None
+    nt, nf = smart_topic.strip().lower(), smart_fact.strip()
+    if not nt or not nf:
+        st.warning("Enter both a topic and a fact.")
+    else:
+        matches = [
+            m for m in search_memories("") if m["topic"] == nt
+        ]
+        if len(matches) > 10:
+            st.warning(
+                "More than 10 active memories have this topic. "
+                "This early pilot will not silently skip them. "
+                "No memory was modified."
+            )
+        else:
+            try:
+                with st.spinner("Comparing local memories using Qwen..."):
+                    items = [
+                        {"memory": m, "proposal": classify_pair(m, nt, nf)}
+                        for m in matches
+                    ]
+                st.session_state["smart_review"] = {
+                    "topic": nt, "fact": nf, "items": items,
+                    "expected_ids": [m["id"] for m in matches],
+                }
+            except Exception as exc:
+                st.error(f"Could not classify memories: {exc}")
+                st.info(
+                    "Confirm that Ollama and qwen2.5:1.5b are running. "
+                    "Nothing was changed."
+                )
+
+review = st.session_state.get("smart_review")
+if review is not None:
+    if (
+        smart_topic.strip().lower() != review["topic"]
+        or smart_fact.strip() != review["fact"]
+    ):
+        st.warning(
+            "You changed the proposed fact. Review conflicts again "
+            "before saving."
+        )
+    else:
+        st.write("**New fact:**", review["fact"])
+        if not review["items"]:
+            st.info("No active memories have this topic. Save as a new fact.")
+        else:
+            st.caption(
+                "The safe default is Keep both. Choose Supersede "
+                "only when the old fact truly needs updating."
+            )
+        actions = {}
+        for entry in review["items"]:
+            old = entry["memory"]
+            assessment = entry["proposal"]
+            st.write(f"**M{old['id']} — {old['fact']}**")
+            st.caption(
+                "Qwen suggestion: "
+                f"{assessment['relation']} — {assessment['reason']}"
+            )
+            choice = st.radio(
+                f"What should happen to M{old['id']}?",
+                ("Keep both", "Supersede old memory"),
+                key=f"smart_action_{old['id']}_{review['fact']}",
+            )
+            actions[old["id"]] = (
+                "keep" if choice == "Keep both" else "supersede"
+            )
+
+        if st.button("Save reviewed memory"):
+            try:
+                new_id = save_reviewed_memory(
+                    review["topic"], review["fact"], actions,
+                    review["expected_ids"],
+                )
+                st.session_state["smart_review"] = None
+                st.success(
+                    f"Memory M{new_id} saved. Only the older "
+                    "memories you explicitly selected were superseded."
+                )
+            except (ValueError, sqlite3.Error) as exc:
+                st.error(f"Could not save: {exc}")
+                st.info(
+                    "No partial changes were saved. "
+                    "If other memories changed, start a new review."
+                )
