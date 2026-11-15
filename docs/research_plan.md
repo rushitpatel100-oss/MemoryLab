@@ -34,7 +34,7 @@ Next: create labelled synthetic scenarios, score both answers, repeat with shuff
 
 ### Stage 4B — Human-reviewed conflict classification (prototype, local testing pending)
 
-A local Qwen model assesses **pairs** of facts in the *same exact topic* and suggests `replaces`, `coexists`, or `uncertain`. Suggestions do not write to the database. The user must select whether to supersede each prior fact (safe default: keep both). Updates are atomic and rejected if other same-topic memories changed since review. The earlier Section 1 save remains a topic-overwrite baseline. This is not automatic truth checking, cross-topic conflict detection, or an adaptive utility function. Log classification accuracy and human correction rates in later experiments.
+A local Qwen model assesses **pairs** of facts in the *same exact topic* and suggests `duplicate`, `replaces`, `coexists`, or `uncertain`. A conservative deterministic normalisation check first catches identical same-topic facts without a model call, and SQLite rejects a duplicate write inside the transaction. Suggestions do not write to the database. The user must select whether to supersede each prior fact (safe default: keep both). Updates are atomic and rejected if other same-topic memories changed since review. The earlier Section 1 save remains a topic-overwrite baseline. This is not automatic truth checking, cross-topic conflict detection, or an adaptive utility function. A 16-case author-labelled synthetic development set is provided for initial failure analysis, but it is too small, non-held-out, and potentially ambiguous for general performance claims. Log classification errors and human corrections, then create independent held-out scenarios.
 
 ### Stage 5 — Rigorous evaluation
 

@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 2 conflict-review code published; laptop testing pending.** Versions 1–3 and the V4 memory-impact experiment have been user-tested. Section 7 now proposes whether a new fact replaces or coexists with same-topic memories and requires explicit review before saving. One user-reported coexistence example was labelled `uncertain` despite a correct explanation, so the prompt now includes explicit coexistence examples; the improvement is not yet user-validated. This is not yet a learned policy or validated research benchmark.
+> **Current status: V4 Phase 3 code published (local validation pending).** Smart Memory Review now distinguishes `duplicate`, `replaces`, `coexists`, and `uncertain`. Normalised exact repeats are identified without a model call and blocked atomically on save. A 16-case fictional development benchmark is available. Earlier coexistence and supersession behaviours were user-tested; the new duplicate code and benchmark have not yet been tested on the owner's Windows laptop. This is not a learned utility policy or a held-out research result.
 
 ## Features
 
@@ -15,9 +15,10 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 5. **Ask MemoryLab** a natural-language question; retrieve candidate memories and pass them to `qwen2.5:1.5b` running on Ollama.
 6. **Inspect retrieved evidence**, including memory IDs and similarity scores.
 7. **Memory Impact Lab (pilot):** run two Qwen calls, with and without one selected memory, and inspect both answers.
-8. **Smart Memory Review (experimental):** suggest relationship between facts and let you choose exactly which older records stay active.
+8. **Smart Memory Review (experimental):** classifies four relationships and blocks exact duplicate writes; compatible and conflicting facts still need user review.
+9. **Development benchmark:** 16 fictional examples (four per label), local inference, a confusion matrix, and optional JSON export.
 
-**Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**, and Qwen's suggestions can be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
+**Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**. Its deterministic duplicate rule handles formatting-only repeats, not all semantic paraphrases; Qwen's suggestions can still be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
 ## Setup on Windows (Python 3.14 / 16 GB RAM)
 
@@ -121,6 +122,38 @@ No new models or packages are needed. In section **7. Smart Memory Review**, pro
 
 Follow the [conflict-review experiment guide](docs/conflict_review.md) to test Bristol → York updates and simultaneous work/home locations. The second test revealed an `uncertain` label for compatible facts; this is documented as a classification error and motivated a prompt revision. The first prototype limits same-topic reviews to at most 10 active memories.
 
+## Test four-way classification — V4 Phase 3
+
+The new relationships are **Duplicate**, **Replaces**, **Coexists**, and **Uncertain**. A normalised identical active fact with the same topic is detected locally, without asking Qwen, and the SQLite write is rejected even if the UI is bypassed. Matching ignores letter case, repeated spaces, Unicode compatibility, and simple trailing punctuation. The existing records are **not migrated or deleted**.
+
+In **section 7**, enter topic `test_location` and fact `I work in London.` if this fact is already active. The display should show **duplicate (local_rule)** and **Save reviewed memory** should be disabled. If Qwen calls a *paraphrase* a duplicate, the UI instead asks for explicit confirmation before allowing a save. The local normalisation cannot prove that two differently worded facts mean the same thing.
+
+Run offline tests:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+Try a small balanced benchmark (one example from each class):
+
+~~~bat
+python -m scripts.run_conflict_benchmark --limit 4
+~~~
+
+Run all 16 fictional development cases:
+
+~~~bat
+python -m scripts.run_conflict_benchmark
+~~~
+
+Optional result export (the folder is gitignored):
+
+~~~bat
+python -m scripts.run_conflict_benchmark --output results/raw/conflicts.json
+~~~
+
+The benchmark only calls the local classifier, **never your SQLite database**, and does not upload anything. It is an **author-labelled development smoke test**, not a held-out accuracy result. See the [benchmark guide](docs/conflict_benchmark.md) and [case definitions](benchmarks/conflict_cases.json).
+
 ## Project files
 
 | Path | Purpose |
@@ -129,7 +162,10 @@ Follow the [conflict-review experiment guide](docs/conflict_review.md) to test B
 | `semantic_search.py` | Calls Ollama for embeddings; ranks memories |
 | `answer_generator.py` | Calls Ollama's local chat endpoint with retrieved evidence; supports empty-context experiments |
 | `memory_ablation.py` | Runs two local Qwen calls with/without one selected memory |
-| `memory_conflicts.py` | Gets pairwise Qwen suggestions (replaces / coexists / uncertain) |
+| `memory_conflicts.py` | Four-label memory classification, with a local duplicate short-circuit |
+| `memory_text.py` | Shared conservative text normalisation for duplicate checking |
+| `benchmarks/conflict_cases.json` | 16 author-labelled fictional development cases |
+| `scripts/run_conflict_benchmark.py` | Local benchmark, per-label confusion counts and optional export |
 | `memory_store.py` | Atomically applies only human-approved supersession choices |
 | `docs/conflict_review.md` | Guided experiment for changing locations and coexisting facts |
 | `docs/ablation_pilot.md` | Guided first experiment and how to interpret results |
@@ -153,7 +189,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
-- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 tested; phase 2 human-reviewed conflict prototype published, local validation pending**)
+- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 and 2 user-tested; phase 3 duplicate guard and synthetic benchmark published, local testing pending**)
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
 ## Budget and privacy

@@ -88,3 +88,9 @@ After updating the local classifier prompt, the project owner re-entered the **s
 **Status:** Owner-reported live test; raw request/response traces not separately captured. One successful retest does not establish a general improvement rate. No new memory was requested to be saved during the retest.
 
 **Next research improvement:** Add `duplicate` handling (preferably deterministic normalised exact-text detection before calling Qwen) and protect against duplicate writes. Maintain the default human review for ambiguous relationships and evaluate on a fixed set of labelled synthetic cases.
+
+## Four-label duplicate guard — Version 4 Phase 3
+
+The same London test fact was previously labelled `coexists` against its identical stored copy. We have added the `duplicate` label, plus a deterministic same-topic text comparison before Qwen is called. This catches formatting-only repeats (different case, repeated spaces and simple trailing punctuation) and disables Save in the UI. The reviewed-memory SQLite transaction additionally rejects duplicate inserts without superseding any records. Qwen may label a paraphrase as a possible duplicate; it is not automatically blocked without a review.
+
+**Implementation published, local testing pending.** No existing records are deleted or changed during installation. See [the 16-case synthetic development benchmark](conflict_benchmark.md) and its limitations.
