@@ -68,3 +68,7 @@ Uses only Python's standard library plus existing Streamlit and the local Ollama
 ## First comparison — Experiment 008
 
 The owner ran four cases from the separate evaluation candidate. Baseline matched **3/4** author labels, staged matched **2/4**; baseline made one false replacement suggestion, staged made two. The experimental approach did not show an advantage in this run. See [Experiment 008](experiment_008_results.md) for exact predictions, elapsed timings, and the request to inspect stage traces in the full 16-case run.
+
+## Full comparison and trace diagnosis — Experiment 009
+
+The owner ran all 16 fictional comparison cases and shared the detailed JSON trace. The **single-pass baseline matched 11/16** initial labels, while **staged matched 8/16**. False replacement suggestions were **5 vs 8**; cumulative runtimes were **34.006s vs 68.888s**. In the staged implementation, **all 14 Qwen-evaluated cases were classified as `same_attribute` in Stage 1**, including independent facts and ambiguous referents. Stage 2 then labelled 12 of those 14 as `replaces`, wrongly treating two paraphrased duplicates and two compatible-fact pairs as replacement candidates. The staged branch remains experimental and is not recommended for normal memory retention decisions. Detailed per-case findings and limitations: [Experiment 009](experiment_009_results.md). No model or storage change was made as part of the documentation update.

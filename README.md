@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 4 paired comparison underway.** The previous single-pass classifier matched 10/16 author labels in Experiment 007. The initial four-case live comparison of the staged alternative matched 2/4 versus 3/4 for baseline, with an additional incorrect replacement suggestion. The staged method is **not yet shown to improve decisions**. Full 16-case comparison and stage-trace review are pending; this is not a validated holdout or learned utility policy.
+> **Current status: V4 Phase 4 evaluation complete on the 16-case synthetic comparison candidate.** In Experiment 009 the single-pass baseline matched 11/16 author labels while the experimental staged alternative matched 8/16, with more erroneous replacement suggestions (8 versus 5) and roughly double cumulative latency. Stage 1 labelled every nonlocal comparison `same_attribute`, so its intended early routing did not work. **The staged alternative is not recommended as an improvement.** This is an exploratory, non-adjudicated comparison, not a validated holdout or learned utility policy.
 
 ## Features
 
