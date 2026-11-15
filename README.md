@@ -11,8 +11,8 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 1. **Store a memory** under a topic in a local SQLite database.
 2. **Update a topic** by marking older facts superseded (history remains visible).
 3. **Search active memories** using exact/partial topic matching.
-4. **Semantic search** with Ollama's local \`all-minilm\` embeddings and cosine similarity.
-5. **Ask MemoryLab** a natural-language question; retrieve candidate memories and pass them to \`qwen2.5:1.5b\` running on Ollama.
+4. **Semantic search** with Ollama's local `all-minilm` embeddings and cosine similarity.
+5. **Ask MemoryLab** a natural-language question; retrieve candidate memories and pass them to `qwen2.5:1.5b` running on Ollama.
 6. **Inspect retrieved evidence**, including memory IDs and similarity scores.
 
 **Important limits:** The app currently treats all facts under one exact topic as replacements. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
@@ -31,7 +31,7 @@ py -3.14 -m venv .venv
 python -m pip install -r requirements.txt
 ~~~
 
-If you already created \`.venv\`, simply activate it. For other Python versions, replace \`-3.14\` with your installed version.
+If you already created `.venv`, simply activate it. For other Python versions, replace `-3.14` with your installed version.
 
 ### 1. Install or confirm Ollama
 
@@ -45,7 +45,7 @@ ollama pull qwen2.5:1.5b
 ollama list
 ~~~
 
-\`all-minilm\` creates embeddings; \`qwen2.5:1.5b\` generates the answer. They serve different purposes. The 1.5B chat model is intended for modest hardware and can run on CPU if GPU acceleration isn't available. The first inference may be slower.
+`all-minilm` creates embeddings; `qwen2.5:1.5b` generates the answer. They serve different purposes. The 1.5B chat model is intended for modest hardware and can run on CPU if GPU acceleration isn't available. The first inference may be slower.
 
 ### 2. Run offline tests
 
@@ -67,31 +67,31 @@ Visit http://localhost:8501 if the browser doesn't open by itself.
 
 Start with a new, **fictional** test fact:
 
-- **Topic:** \`job\`
-- **Information:** \`I work as a GenAI engineer.\`
+- **Topic:** `job`
+- **Information:** `I work as a GenAI engineer.`
 - Click **Save memory**.
 
-Go to **5. Ask MemoryLab**, enter \`What is my profession?\`, and click **Generate answer from memory**.
+Go to **5. Ask MemoryLab**, enter `What is my profession?`, and click **Generate answer from memory**.
 
 An expected answer is something like *"You work as a GenAI engineer."* Open **See retrieved memory evidence** to inspect the memory used. Exact wording is model-dependent; test whether the answer is supported, not whether it matches the example verbatim.
 
-Next test an unrelated question such as \`What is my favourite colour?\`. A grounded response should admit that the saved memories do not establish the answer. This negative test is crucial.
+Next test an unrelated question such as `What is my favourite colour?`. A grounded response should admit that the saved memories do not establish the answer. This negative test is crucial.
 
-If the app says no relevant memories met the threshold, decrease the experimental similarity slider or add a more relevant memory. The default threshold of \`0.25\` is a starting heuristic, **not a calibrated confidence cutoff**.
+If the app says no relevant memories met the threshold, decrease the experimental similarity slider or add a more relevant memory. The default threshold of `0.25` is a starting heuristic, **not a calibrated confidence cutoff**.
 
-If the app reports that Ollama is unavailable, confirm it is running and that both models appear in \`ollama list\`.
+If the app reports that Ollama is unavailable, confirm it is running and that both models appear in `ollama list`.
 
 ## Project files
 
 | Path | Purpose |
 |---|---|
-| \`app.py\` | Streamlit app, memory storage, search, and QA interface |
-| \`semantic_search.py\` | Calls Ollama for embeddings; ranks memories |
-| \`answer_generator.py\` | Calls Ollama's local chat endpoint with retrieved evidence |
-| \`tests/\` | Offline unit tests; does not require Ollama |
-| \`docs/research_plan.md\` | Hypothesis, baselines, metrics, experimental stages |
-| \`requirements.txt\` | Python dependencies (Streamlit only at present) |
-| \`.gitignore\` | Excludes local data, environments, secrets, model weights |
+| `app.py` | Streamlit app, memory storage, search, and QA interface |
+| `semantic_search.py` | Calls Ollama for embeddings; ranks memories |
+| `answer_generator.py` | Calls Ollama's local chat endpoint with retrieved evidence |
+| `tests/` | Offline unit tests; does not require Ollama |
+| `docs/research_plan.md` | Hypothesis, baselines, metrics, experimental stages |
+| `requirements.txt` | Python dependencies (Streamlit only at present) |
+| `.gitignore` | Excludes local data, environments, secrets, model weights |
 
 ## Research question and planned evaluation
 
@@ -115,6 +115,6 @@ Read the full [research plan](docs/research_plan.md).
 
 Required software and models are free. Target total development spend: **£0**, with an absolute **£20 cap** for the entire MemoryLab project (excluding existing hardware, electricity, and connectivity).
 
-\`memorylab.db\`, virtual environments, model weights, and local secrets are excluded from GitHub. Memory files stay on your laptop. This repository is intended to be safe to publish after reviewing documentation, issues, screenshots, and test examples for personal data.
+`memorylab.db`, virtual environments, model weights, and local secrets are excluded from GitHub. Memory files stay on your laptop. This repository is intended to be safe to publish after reviewing documentation, issues, screenshots, and test examples for personal data.
 
 **No performance or novelty claim should be made without controlled experiments and comparison to relevant prior work.**
