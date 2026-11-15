@@ -231,7 +231,7 @@ After pulling from GitHub Desktop, run the offline tests first:
 python -m unittest discover -s tests -v
 ~~~
 
-Expected suite size: **62 tests**. These use mocked responses; the new workflow hasn't yet been run on your Windows laptop.
+Expected suite size: **63 tests**. These use mocked responses; the new workflow hasn't yet been run on your Windows laptop.
 
 **Start with only four review cases:**
 

@@ -9,7 +9,7 @@ Experiments 007–009 revealed model classification errors. Phase 5 added a cons
 - `benchmarks/review_v1_cases.json` contains **20 fictional memory pairs with no expected labels**, case IDs B01–B20.
 - `scripts/review_eval_cases.py` is a simple terminal review questionnaire. It does **not** run Qwen, access SQLite, or access the internet.
 - Labels and short reasons are saved after every answer in `results/raw/review_v1_labels.json`, which Git ignores.
-- Once all cases are labelled, `--lock` freezes the label file to the exact case-file SHA-256 fingerprint. A changed case file cannot silently reuse prior labels.
+- Once all cases are labelled, `--lock` records both the case-file SHA-256 and a digest of the completed labels. The review script detects changed cases and accidental post-lock edits; this is an integrity check, **not tamper-proof storage**.
 - `scripts/evaluate_review_v1.py` refuses to run before lock and compares **one Qwen result per pair** against its evidence-gated counterpart. Both conditions share exactly the same model prediction.
 
 ## Human reviewer rubric
@@ -32,7 +32,7 @@ Choose the best relationship from the old fact to the proposed new fact:
 
    `python -m unittest discover -s tests -v`
 
-   Expected: **62 tests** (prior 54 plus eight new mocked tests). These have not been locally verified yet.
+   Expected: **63 tests** (prior 54 plus nine new mocked tests). These have not been locally verified yet.
 
 3. Start with four fictional examples:
 
@@ -52,7 +52,7 @@ Choose the best relationship from the old fact to the proposed new fact:
 
    `python -m scripts.review_eval_cases --lock`
 
-   The evaluator will not start without this step.
+   The evaluator will not start without this step. Locked labels cannot be edited through the review tool; accidental edits to their JSON contents are detected.
 
 7. Now run the local comparison:
 
