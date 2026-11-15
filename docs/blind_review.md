@@ -73,3 +73,7 @@ No paid API, cloud AI inference or new packages are required. These scripts neve
 ## First completed local study — Experiment 010
 
 The owner completed and locked the human review for 20 fictional cases and ran the paired evaluator. Both original Qwen and the evidence-gated version matched **15/20** reviewer labels. False replacement suggestions against those labels fell **5 → 0**; the number of labelled genuine replacements recognised fell **7 → 6**; uncertain suggestions rose **0 → 6**. The model ran once per case and total Qwen inference time was reported as **51.835 seconds**. The original labels are preserved, but some (particularly B04 and B15) deserve independent review. See [Experiment 010 results](experiment_010_results.md) for the unchanged comparison, case-specific explanations, and proposed next study.
+
+## Phase 7 — Independent second review and adjudication
+
+The first study had only one reviewer, and some labels appear contestable. The new Phase 7 tools support a **different second human reviewer** using the same fictional cases while blinded to prior labels and model outputs. The second review saves independently; locked files can then be compared and disagreements explicitly adjudicated. Original Experiment 010 data are not replaced. See [Phase 7 multi-reviewer guide](multirater_review.md).

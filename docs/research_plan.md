@@ -54,6 +54,14 @@ Twenty new fictional fact pairs are provided **without expected relation labels*
 
 This workflow reduces answer-contamination from seeing model predictions first, but the cases were still authored within the project; one reviewer does **not** constitute expert-adjudicated ground truth. **Experiment 010** matched 15/20 reviewer labels for both raw and guarded classifiers; false replacement suggestions fell from 5 to 0, but genuine replacements recognised fell from 7 to 6. Some labels are contestable (especially B04 and B15), so neither overall agreement nor gate safety is fully validated. Preserve the original labels, independently adjudicate disputed cases, then evaluate on new held-out subjects with multiple raters. See [Experiment 010](experiment_010_results.md).
 
+### Stage 4F — Multi-reviewer agreement and label adjudication (published, second reviewer pending)
+
+To avoid treating a single person's disputed labels as unquestionable ground truth, Phase 7 offers a separate **second human review** of the 20 fictional pairs. The new reviewer must not inspect the first person's locked labels or previous Qwen outputs before completing their own decisions. Alongside the original four relationship labels they separately record same-entity, same-attribute, old-obsolete, and new-value-known judgments, plus a recommended storage action.
+
+After **both reviews are locked**, a tool reports raw inter-rater agreement, Cohen's kappa, disagreements, and seven pre-registered semantically challenging cases. Another human-facing adjudication workflow records revised labels or deferrals **without overwriting either original vote or Experiment 010**. If the same person completes both reviews, the result is not independent inter-rater reliability. A shared error can also survive unanimous agreement. Even two reviewers on 20 authored cases are insufficient to prove a universally safe memory policy.
+
+Only after structured adjudication should the project design and freeze an entirely new, multi-identity, held-out test corpus and evaluate any new gate changes against it. See [Phase 7 guide](multirater_review.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

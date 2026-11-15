@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 6 label-first experiment completed locally (Experiment 010).** On 20 fictional memory pairs, original Qwen and the guarded variant each matched 15/20 reviewer labels. The evidence gate reduced false replacement suggestions against these labels from 5 to 0, but missed one human-labelled genuine replacement (0 to 1) and generated six `uncertain` suggestions. Some reviewer labels are disputed; this is a single-reviewer diagnostic, **not independently adjudicated accuracy, proven memory safety or a learned utility policy**. The underlying model and safeguard remain experimental.
+> **Current status: Phase 7 multi-reviewer and adjudication workflow published (local validation pending).** Experiment 010 found 15/20 agreement with one human reviewer for both raw and guarded Qwen, with five raw false replacement suggestions and zero gated suggestions against those labels, but one genuine replacement withheld. Phase 7 adds a genuinely separate second-reviewer file, four evidence questions per case, locked-review comparison and adjudication without changing original labels. **No second reviewer has participated yet, and no independent validation or improved model performance is claimed.**
 
 ## Features
 
@@ -20,6 +20,7 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 10. **Two-stage conflict experiment:** compare attributes first, evaluate updates only when appropriate, and compare against the unchanged single-pass baseline on a separate 16-case fictional dataset.
 11. **Replacement-evidence safeguard (experimental):** checks for explicit old-to-new value changes and requires three confirmations before any reviewed supersession.
 12. **Blind evaluation workflow:** manually label 20 new fictional cases before seeing model predictions, lock the labels, then score raw versus guarded recommendations.
+13. **Multi-reviewer adjudication (Phase 7):** a second reviewer independently labels 20 cases and four evidence dimensions, followed by a disagreement queue and separately saved adjudication decisions.
 
 **Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**. Its deterministic duplicate rule handles formatting-only repeats, not all semantic paraphrases; Qwen's suggestions can still be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
@@ -259,6 +260,53 @@ The evaluator calls local Qwen once per pair and applies the gate to that **same
 
 The labels and results stay under `results/raw/`, excluded from GitHub, and neither script reads or writes your SQLite memories. Details are in [the blinded-review protocol](docs/blind_review.md) and the [Experiment 010 results](docs/experiment_010_results.md).
 
+## Phase 7 — Second reviewer and adjudication
+
+**This is the next research milestone, not another model update.** Experiment 010 identified some disputed original labels, so we are collecting a **second person's independent judgements** before changing either classifier. The local Python tools never call Qwen or change saved memories.
+
+**A separate person** should use this review workflow on the same 20 fictional examples **without seeing** the first reviewer's labels or Experiment 010 predictions. The program keeps the second review in a different local file and records: relation label, short reason, same entity, same attribute, whether the old fact is known outdated, whether a new value is known, and a proposed storage action. A second pass by the same person is useful for testing but **does not count as independent agreement**.
+
+First pull in GitHub Desktop and run the offline tests:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+**Expected test count: 80**, including 17 newly added tests. They mock model access. This release has not yet been run on your Windows laptop.
+
+Let the **second reviewer** enter the first four cases:
+
+~~~bat
+python -m scripts.review_second --limit 4
+~~~
+
+Then they can resume at any point and freeze their completed review:
+
+~~~bat
+python -m scripts.review_second
+python -m scripts.review_second --status
+python -m scripts.review_second --lock
+~~~
+
+**Only after the second review is locked**, compare reviewers (no model is called):
+
+~~~bat
+python -m scripts.compare_human_reviews
+~~~
+
+This reports exact agreement, a descriptive Cohen's kappa, and a local list of disagreements **plus seven pre-registered review cases** (B02, B04, B07, B10, B12, B15, B18). Even a shared mistaken label is worth checking on these cases.
+
+Finally, a human can adjudicate the flagged cases separately:
+
+~~~bat
+python -m scripts.adjudicate_reviews --limit 4
+python -m scripts.adjudicate_reviews
+python -m scripts.adjudicate_reviews --status
+python -m scripts.adjudicate_reviews --lock
+~~~
+
+Adjudication can **defer** cases that lack evidence; it does not silently change the original scores or labels. Outputs remain local under `results/raw/`, excluded from GitHub, and contain only fictional cases if you use the supplied dataset. See [Phase 7 methodology and instructions](docs/multirater_review.md).
+
 ## Project files
 
 | Path | Purpose |
@@ -276,6 +324,10 @@ The labels and results stay under `results/raw/`, excluded from GitHub, and neit
 | `scripts/evaluate_review_v1.py` | Refuses unlocked labels and scores the paired Qwen/gate run |
 | `docs/blind_review.md` | Evaluation rubric, step-by-step use and study limitations |
 | `docs/experiment_010_results.md` | First 20-case paired model-versus-gate findings and label issues |
+| `scripts/review_second.py` | Separate blind second-reviewer labels plus four evidence dimensions |
+| `scripts/compare_human_reviews.py` | Post-lock label agreement, Cohen's kappa, and disagreement queue |
+| `scripts/adjudicate_reviews.py` | Independent-from-original-file adjudication records and optional deferred labels |
+| `docs/multirater_review.md` | Phase 7 workflow, interpretation, and known limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
@@ -305,7 +357,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
 - [ ] **V4:** Utility-based retention/suppression policy (**phases 1–4 investigated; phase 5 evidence-gated safety prototype published; no learned policy yet**)
-- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**single-reviewer 20-case result logged; independent adjudication and genuinely new held-out study pending**)
+- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**multi-reviewer tools published; second labels, independent adjudication, and genuinely new held-out study pending**)
 
 ## Budget and privacy
 
