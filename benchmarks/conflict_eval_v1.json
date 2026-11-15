@@ -1,0 +1,135 @@
+{
+  "name": "Separate fictional evaluation candidate v1",
+  "version": "1.0",
+  "note": "Authored after development failure analysis, not independently adjudicated. Freeze before local scoring; avoid using it to tune prompts.",
+  "cases": [
+    {
+      "id": "E01",
+      "expected": "duplicate",
+      "topic": "hobby",
+      "old_fact": "I collect postcards.",
+      "new_fact": "  i COLLECT  postcards! ",
+      "why": "Formatting-only repeat"
+    },
+    {
+      "id": "E02",
+      "expected": "coexists",
+      "topic": "profile",
+      "old_fact": "I study marine biology.",
+      "new_fact": "I practise the cello after school.",
+      "why": "Study subject and musical hobby are independent"
+    },
+    {
+      "id": "E03",
+      "expected": "replaces",
+      "topic": "bicycle",
+      "old_fact": "My bicycle is red.",
+      "new_fact": "I repainted my bicycle from red to blue.",
+      "why": "Explicit new colour for same bicycle"
+    },
+    {
+      "id": "E04",
+      "expected": "uncertain",
+      "topic": "family",
+      "old_fact": "My aunt Farah works at a hospital.",
+      "new_fact": "My aunt changed jobs last week.",
+      "why": "Unclear whether the aunt is Farah"
+    },
+    {
+      "id": "E05",
+      "expected": "duplicate",
+      "topic": "pets",
+      "old_fact": "My dog's name is Pixel.",
+      "new_fact": "Pixel is the name of my dog.",
+      "why": "Different words expressing same pet name"
+    },
+    {
+      "id": "E06",
+      "expected": "coexists",
+      "topic": "lifestyle",
+      "old_fact": "I rent a flat in Newcastle.",
+      "new_fact": "I tutor maths online.",
+      "why": "Residence and tutoring activity are independent"
+    },
+    {
+      "id": "E07",
+      "expected": "replaces",
+      "topic": "language",
+      "old_fact": "I currently study Italian.",
+      "new_fact": "I stopped studying Italian and now study Japanese instead.",
+      "why": "Explicit study change"
+    },
+    {
+      "id": "E08",
+      "expected": "uncertain",
+      "topic": "clubs",
+      "old_fact": "The science club meets on Wednesdays.",
+      "new_fact": "One of my clubs has changed its meeting day.",
+      "why": "Club identity is unknown"
+    },
+    {
+      "id": "E09",
+      "expected": "duplicate",
+      "topic": "transport",
+      "old_fact": "I own a folding bike.",
+      "new_fact": "I own a folding bike.",
+      "why": "Exact same claim"
+    },
+    {
+      "id": "E10",
+      "expected": "coexists",
+      "topic": "workspace",
+      "old_fact": "My desk has a green lamp.",
+      "new_fact": "My desk also has a small plant.",
+      "why": "Different items can share the same desk"
+    },
+    {
+      "id": "E11",
+      "expected": "replaces",
+      "topic": "pet_name",
+      "old_fact": "My dog's name is Miso.",
+      "new_fact": "I renamed my dog from Miso to Pebble.",
+      "why": "Explicit renaming"
+    },
+    {
+      "id": "E12",
+      "expected": "uncertain",
+      "topic": "cycling",
+      "old_fact": "My bike is stored in the garage.",
+      "new_fact": "One of our bikes was moved outside.",
+      "why": "Which bike moved is unspecified"
+    },
+    {
+      "id": "E13",
+      "expected": "duplicate",
+      "topic": "food",
+      "old_fact": "My favourite fruit is mango.",
+      "new_fact": "Mango is my favourite fruit.",
+      "why": "Paraphrase of the same preference"
+    },
+    {
+      "id": "E14",
+      "expected": "coexists",
+      "topic": "roles",
+      "old_fact": "I work weekdays as a nurse.",
+      "new_fact": "I teach pottery on Saturdays.",
+      "why": "Distinct compatible occupations/activities"
+    },
+    {
+      "id": "E15",
+      "expected": "replaces",
+      "topic": "locker",
+      "old_fact": "My locker number is 45.",
+      "new_fact": "My locker number changed from 45 to 62.",
+      "why": "Explicit new value for same locker"
+    },
+    {
+      "id": "E16",
+      "expected": "uncertain",
+      "topic": "family",
+      "old_fact": "My brother Daniel lives in Leeds.",
+      "new_fact": "My brother moved to Cardiff.",
+      "why": "Unclear whether brother is Daniel"
+    }
+  ]
+}
