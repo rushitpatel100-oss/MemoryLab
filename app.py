@@ -387,6 +387,7 @@ from memory_conflicts import classify_pair
 from memory_store import save_reviewed_memory
 from memory_text import is_same_stored_fact
 from memory_staged import classify_pair_staged
+from replacement_gate import classify_pair_guarded
 
 st.divider()
 st.subheader("7. Smart Memory Review")
@@ -399,11 +400,16 @@ st.caption(
 
 smart_classifier = st.radio(
     "Classification method",
-    ("Single-pass baseline", "Two-stage experimental"),
+    ("Single-pass baseline", "Safety-gated experimental",
+     "Two-stage experimental"),
     horizontal=True,
     key="smart_classifier",
 )
-st.caption("Two-stage uses an attribute-scope check before assessing updates. It may be slower; both methods require your approval.")
+st.caption(
+    "Safety-gated uses one Qwen call and a conservative text rule. "
+    "Two-stage may use two Qwen calls. Neither checks truth. "
+    "Every supersession requires your explicit review."
+)
 
 smart_topic = st.text_input(
     "New memory topic", placeholder="location", key="smart_topic"
@@ -415,6 +421,10 @@ smart_fact = st.text_area(
 )
 
 if st.button("Review possible conflicts"):
+    # New ID ensures prior review acknowledgements cannot carry forward.
+    st.session_state["smart_review_count"] = (
+        st.session_state.get("smart_review_count", 0) + 1
+    )
     st.session_state["smart_review"] = None
     nt, nf = smart_topic.strip().lower(), smart_fact.strip()
     if not nt or not nf:
@@ -432,11 +442,12 @@ if st.button("Review possible conflicts"):
         else:
             try:
                 with st.spinner("Comparing local memories using Qwen..."):
-                    compare = (
-                        classify_pair_staged
-                        if smart_classifier == "Two-stage experimental"
-                        else classify_pair
-                    )
+                    if smart_classifier == "Safety-gated experimental":
+                        compare = classify_pair_guarded
+                    elif smart_classifier == "Two-stage experimental":
+                        compare = classify_pair_staged
+                    else:
+                        compare = classify_pair
                     items = [
                         {"memory": m, "proposal": compare(m, nt, nf)}
                         for m in matches
@@ -444,6 +455,7 @@ if st.button("Review possible conflicts"):
                 st.session_state["smart_review"] = {
                     "topic": nt, "fact": nf, "items": items,
                     "classifier": smart_classifier,
+                    "review_count": st.session_state["smart_review_count"],
                     "expected_ids": [m["id"] for m in matches],
                 }
             except Exception as exc:
@@ -506,6 +518,7 @@ if review is not None:
             confirm_potential_duplicate = True
 
         actions = {}
+        confirmations = {}
         for entry in review["items"]:
             old = entry["memory"]
             assessment = entry["proposal"]
@@ -514,6 +527,13 @@ if review is not None:
                 f"Suggestion ({assessment.get('source', 'qwen')}): "
                 f"{assessment['relation']} — {assessment['reason']}"
             )
+            if assessment.get("raw_relation") == "replaces":
+                audit = assessment["gate"]
+                st.info(
+                    "Qwen originally suggested Replaces. "
+                    f"Evidence signal: {audit['status']}. "
+                    f"{audit['reason']}"
+                )
             if assessment.get("stages"):
                 with st.expander(f"See decision steps for M{old['id']}"):
                     for step in assessment["stages"]:
@@ -521,15 +541,42 @@ if review is not None:
             choice = st.radio(
                 f"What should happen to M{old['id']}?",
                 ("Keep both", "Supersede old memory"),
-                key=f"smart_action_{old['id']}_{review['fact']}",
+                key=f"smart_action_{old['id']}_{review.get('review_count', 0)}",
             )
             actions[old["id"]] = (
                 "keep" if choice == "Keep both" else "supersede"
             )
+            if choice == "Supersede old memory":
+                st.warning(
+                    "Superseding deactivates this old fact. Qwen and the "
+                    "text rule cannot verify that it is outdated. "
+                    "Confirm each condition from the actual facts."
+                )
+                checks = [
+                    st.checkbox(
+                        "Both statements refer to the same person or object.",
+                        key=f"verify_subject_{old['id']}_{review.get('review_count', 0)}",
+                    ),
+                    st.checkbox(
+                        "Both describe the same specific attribute.",
+                        key=f"verify_attribute_{old['id']}_{review.get('review_count', 0)}",
+                    ),
+                    st.checkbox(
+                        "The new fact makes this exact older fact outdated.",
+                        key=f"verify_outdated_{old['id']}_{review.get('review_count', 0)}",
+                    ),
+                ]
+                confirmations[old["id"]] = all(checks)
+            else:
+                confirmations[old["id"]] = True
 
         if st.button(
             "Save reviewed memory",
-            disabled=bool(duplicate_matches) or not confirm_potential_duplicate,
+            disabled=(
+                bool(duplicate_matches)
+                or not confirm_potential_duplicate
+                or not all(confirmations.values())
+            ),
         ):
             try:
                 new_id = save_reviewed_memory(
