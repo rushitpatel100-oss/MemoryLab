@@ -114,6 +114,38 @@ class AdjudicationTests(unittest.TestCase):
                     path, self.digest, self.first, self.second, self.queue
                 )
 
+    def test_edit_existing_case_preserves_original_as_revision(self):
+        review = self.create()
+        self.record_all(review)
+        old = copy.deepcopy(review["answers"]["B04"])
+        answers = iter(["D", "Paraphrase", "Y", "Y", "N", "Y", "D"])
+        changed = adjudicate_interactive(
+            self.rows, review, limit=1, edit_id="B04",
+            input_fn=lambda _: next(answers),
+            output_fn=lambda _: None, save_fn=lambda _: None,
+        )
+        self.assertEqual(changed, 1)
+        self.assertEqual(review["answers"]["B04"]["final_label"], "duplicate")
+        self.assertEqual(review["answers"]["B04"]["storage_action"], "skip_duplicate")
+        self.assertEqual(review["revision_history"][0]["previous"], old)
+        lock_adjudication(review)
+
+    def test_lock_rejects_duplicate_supersession_until_corrected(self):
+        review = self.create()
+        self.record_all(review)
+        record_final(
+            review, "B04", "D", "Same fact",
+            {field: "Y" for field, _ in FIELDS}, "S"
+        )
+        with self.assertRaisesRegex(ValueError, "--edit B04"):
+            lock_adjudication(review)
+        record_final(
+            review, "B04", "D", "Same fact",
+            {field: "Y" for field, _ in FIELDS}, "D"
+        )
+        lock_adjudication(review)
+        self.assertTrue(review["locked"])
+
     def test_interactive_records_one_and_resumes(self):
         review = self.create()
         saved = []
