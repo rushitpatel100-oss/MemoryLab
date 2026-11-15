@@ -72,8 +72,19 @@ The project owner tested section 7 with the active York residence memory:
 - **Interpretation:** The explanation recognises independent statements, but the relation label is overly cautious. This is one incorrect classification relative to the synthetic expected label. It is **not** a confirmed database-write failure; the default `Keep both` prevents unintended supersession.
 - **Database outcome (owner-reported):** The owner saved the proposed London fact using **Keep both** and confirmed that both the York residence and London work memories are **Active** in Memory History. This validates reviewed coexistence storage in this one manual test.
 
-**Prompt improvement:** The conflict classifier now explicitly distinguishes independent/coexisting facts from genuinely ambiguous statements, with an exact example of residence in York plus work in London. The original model output is preserved as an observation. The updated prompt and a mocked request regression test were published, but **no new Qwen run has yet established that the revised prompt fixes this real example**. Human review remains required.
+**Prompt improvement:** The conflict classifier now explicitly distinguishes independent/coexisting facts from genuinely ambiguous statements, with an exact example of residence in York plus work in London. The original model output is preserved as an observation. The updated prompt and a mocked request regression test were published; see the later live retest below. Human review remains required.
 
 ## Post-fix unit-test confirmation (owner-reported)
 
 After pulling the revised coexistence prompt and added mocked request test, the project owner reported that **all 21 offline unit tests passed** on Windows. These tests cover code paths and model-request formatting with mocks; they do **not** establish whether Qwen's revised live classification output is correct. That direct retest remains pending.
+
+## Third local Qwen classification observation — coexistence retest (owner-reported)
+
+After updating the local classifier prompt, the project owner re-entered the **same** new fact, "I work in London.", with topic `test_location`. There were two active facts to compare against. The owner reported Qwen suggested `coexists` **in both comparisons**:
+
+1. Existing "I have moved from Bristol to York." vs proposed "I work in London.": `coexists` is the expected label. **The earlier `uncertain` error did not recur in this run.**
+2. Existing "I work in London." vs proposed "I work in London.": `coexists` is a non-ideal label for a repeated, identical fact. The current classifier has no `duplicate` category, so it cannot explicitly identify exact repeats.
+
+**Status:** Owner-reported live test; raw request/response traces not separately captured. One successful retest does not establish a general improvement rate. No new memory was requested to be saved during the retest.
+
+**Next research improvement:** Add `duplicate` handling (preferably deterministic normalised exact-text detection before calling Qwen) and protect against duplicate writes. Maintain the default human review for ambiguous relationships and evaluate on a fixed set of labelled synthetic cases.
