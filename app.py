@@ -199,3 +199,87 @@ if st.button("Find related memories"):
                     "Check that Ollama is running "
                     "and all-minilm is installed."
                 )
+
+# Grounded answer generation (Version 3)
+from answer_generator import generate_answer
+
+st.divider()
+
+st.subheader("5. Ask MemoryLab")
+st.caption(
+    "Answers use active memories and a local Qwen model. "
+    "Similarity is a retrieval score, not a confidence percentage."
+)
+
+answer_question = st.text_input(
+    "Question for the AI",
+    placeholder="What is my profession?",
+    key="answer_question",
+)
+
+minimum_score = st.slider(
+    "Minimum memory similarity (experimental)",
+    min_value=0.0,
+    max_value=1.0,
+    value=0.25,
+    step=0.05,
+    help=(
+        "Higher values exclude more memories. This is a heuristic "
+        "threshold, not a calibrated probability."
+    ),
+)
+
+if st.button("Generate answer from memory"):
+    if not answer_question.strip():
+        st.warning("Please enter a question.")
+    else:
+        active_memories = search_memories("")
+
+        if not active_memories:
+            st.info(
+                "No active memories yet. Add a test memory in section 1."
+            )
+        else:
+            try:
+                with st.spinner("Finding relevant memories..."):
+                    ranked = find_similar(
+                        answer_question, active_memories
+                    )
+                    selected = [
+                        item for item in ranked
+                        if item["similarity"] >= minimum_score
+                    ][:3]
+
+                if not selected:
+                    st.info(
+                        "No memories met the similarity threshold. "
+                        "Try a clearer question, add a relevant memory, "
+                        "or lower the threshold."
+                    )
+                else:
+                    with st.spinner("Generating with local Qwen..."):
+                        answer = generate_answer(
+                            answer_question,
+                            [item["memory"] for item in selected],
+                        )
+
+                    st.write(answer)
+
+                    with st.expander("See retrieved memory evidence"):
+                        for item in selected:
+                            memory = item["memory"]
+                            st.write(
+                                f"[M{memory['id']}] "
+                                f"{memory['topic']}: {memory['fact']}"
+                            )
+                            st.caption(
+                                "Similarity score: "
+                                f"{item['similarity']:.3f}"
+                            )
+            except Exception as error:
+                st.error(f"Answer generation failed: {error}")
+                st.info(
+                    "Check that Ollama is running and that both "
+                    "'all-minilm' and 'qwen2.5:1.5b' are installed "
+                    "(run 'ollama list' in Command Prompt)."
+                )

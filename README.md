@@ -1,111 +1,120 @@
 # MemoryLab 🧠
 
-**An experimental memory system for long-running AI assistants.**
+**A local-first research project exploring adaptive memory for LLM assistants.**
 
-MemoryLab is a beginner-friendly, local-first GenAI engineering research project investigating when AI assistants should **retain, update, or suppress** stored information. The project will compare simple memory management against semantic retrieval and eventually utility-based memory policies.
+MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status:** Version 2 (tested locally by the project owner) adds semantic memory retrieval using Ollama's `all-minilm` embedding model. Version 1 topic-based storage, updates, and history remain available. This is **retrieval**, not yet generative question answering or an intelligent memory policy.
+> **Current status: Version 3 code published (local end-to-end test pending).** Version 1's memory store and Version 2's semantic retrieval were tested on Windows by the project owner. Version 3 adds local Qwen answer generation using retrieved memories. This is a baseline, not yet a validated research result.
 
-## What works today
+## Features
 
-- Semantic retrieval of active memories through a **local** Ollama embedding model.
-- Similarity-ranked results from questions whose wording differs from stored topics.
+1. **Store a memory** under a topic in a local SQLite database.
+2. **Update a topic** by marking older facts superseded (history remains visible).
+3. **Search active memories** using exact/partial topic matching.
+4. **Semantic search** with Ollama's local \`all-minilm\` embeddings and cosine similarity.
+5. **Ask MemoryLab** a natural-language question; retrieve candidate memories and pass them to \`qwen2.5:1.5b\` running on Ollama.
+6. **Inspect retrieved evidence**, including memory IDs and similarity scores.
 
-- Save a fact under a topic such as "job" or "hobby".
-- Update a topic: the previous entry becomes **superseded**, not deleted.
-- Search active memories by topic.
-- Inspect the full history in a Streamlit interface.
-- Keep data in a local SQLite file.
+**Important limits:** The app currently treats all facts under one exact topic as replacements. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
-### Example
+## Setup on Windows (Python 3.14 / 16 GB RAM)
 
-1. Save topic **job** with fact **I work as a mechanical engineer.**
-2. Save topic **job** with fact **I now work as a GenAI engineer.**
-3. Search for **job**: only the second fact is active.
-4. Open history: both facts are visible, with their respective statuses.
+All components run locally. The app uses no cloud AI API, credit card, or paid inference.
 
-**Limitation:** All facts sharing one exact topic are treated as replacements. That is an intentional baseline, not yet an intelligent memory engine.
+In GitHub Desktop, open the cloned **MemoryLab** repository in VS Code. Open a **Command Prompt (cmd)** terminal inside the folder.
 
-## Semantic search example
-
-After adding your memories, try:
-
-- "What is my profession?"
-- "What do I do for a living?"
-- "What career am I currently working in?"
-
-The project owner tested these three queries locally with Version 2. Exact similarity scores and rankings depend on the stored data and model. This is a **smoke test**, not a formal performance evaluation.
-
-## Quick start on Windows
-
-Requirements: Python 3.11+ (the project owner is using Python 3.14), an internet connection for installing Streamlit, and approximately 16 GB RAM recommended for future local models. **Ollama is required for Version 2 semantic search; Version 1 features still work without it.**
-
-In Command Prompt, run from the cloned MemoryLab directory:
+If the cloned folder doesn't have its own Python environment yet:
 
 ~~~bat
 py -3.14 -m venv .venv
 .venv\Scripts\activate.bat
 python -m pip install -r requirements.txt
-python -m streamlit run app.py
 ~~~
 
-If Python 3.14 isn't installed, replace 3.14 with your installed version. A browser should open at http://localhost:8501.
+If you already created \`.venv\`, simply activate it. For other Python versions, replace \`-3.14\` with your installed version.
 
-### Enable semantic retrieval (Version 2)
+### 1. Install or confirm Ollama
 
-1. Install Ollama for Windows from https://ollama.com/download.
-2. Open a new Command Prompt and run `ollama pull all-minilm`. The first pull downloads model weights.
-3. Make sure Ollama is running locally.
-4. In the Streamlit app, go to **4. Semantic Memory Search** and enter a question.
+Download Ollama for Windows from https://ollama.com/download.
 
-The Ollama API is accessed locally at `http://localhost:11434/api/embed`. No API key or paid service is required.
+In Command Prompt, pull the two free local models:
 
-### Run offline unit tests
+~~~bat
+ollama pull all-minilm
+ollama pull qwen2.5:1.5b
+ollama list
+~~~
+
+\`all-minilm\` creates embeddings; \`qwen2.5:1.5b\` generates the answer. They serve different purposes. The 1.5B chat model is intended for modest hardware and can run on CPU if GPU acceleration isn't available. The first inference may be slower.
+
+### 2. Run offline tests
 
 ~~~bat
 python -m unittest discover -s tests -v
 ~~~
 
-These tests check cosine similarity and retrieval ranking with mocked vectors; they do **not** require Ollama or replace end-to-end evaluation.
+These tests mock Ollama network calls. They validate request formatting, empty-input handling, vector ranking, and basic output parsing; they do **not** prove that Qwen generates correct answers.
 
-### Your existing local app and data
+### 3. Launch
 
-This GitHub repository does **not** automatically update the existing MemoryLab folder on your laptop. Clone it to a separate folder before switching. Your existing local file **memorylab.db** contains your test memories and is intentionally excluded from GitHub; keep a local backup if you want to preserve them.
+~~~bat
+python -m streamlit run app.py
+~~~
 
-## Research direction
+Visit http://localhost:8501 if the browser doesn't open by itself.
 
-**Question:** Can memory policies that account for outdated and harmful information improve downstream task accuracy over naive recency-based and semantic-search baselines?
+### 4. Try Version 3
 
-**Planned comparisons:**
-- Topic-based supersession (current baseline)
-- Recency-based retention
-- Semantic similarity retrieval
-- Utility-aware retention, suppression, and update
+Start with a new, **fictional** test fact:
 
-**Planned measures:** answer accuracy, contradiction rate, harmful-memory retrieval, false forgetting, token and storage cost, and evaluation latency.
+- **Topic:** \`job\`
+- **Information:** \`I work as a GenAI engineer.\`
+- Click **Save memory**.
 
-See [Research plan](docs/research_plan.md) for the hypotheses, dataset design, and experimental guardrails.
+Go to **5. Ask MemoryLab**, enter \`What is my profession?\`, and click **Generate answer from memory**.
+
+An expected answer is something like *"You work as a GenAI engineer."* Open **See retrieved memory evidence** to inspect the memory used. Exact wording is model-dependent; test whether the answer is supported, not whether it matches the example verbatim.
+
+Next test an unrelated question such as \`What is my favourite colour?\`. A grounded response should admit that the saved memories do not establish the answer. This negative test is crucial.
+
+If the app says no relevant memories met the threshold, decrease the experimental similarity slider or add a more relevant memory. The default threshold of \`0.25\` is a starting heuristic, **not a calibrated confidence cutoff**.
+
+If the app reports that Ollama is unavailable, confirm it is running and that both models appear in \`ollama list\`.
+
+## Project files
+
+| Path | Purpose |
+|---|---|
+| \`app.py\` | Streamlit app, memory storage, search, and QA interface |
+| \`semantic_search.py\` | Calls Ollama for embeddings; ranks memories |
+| \`answer_generator.py\` | Calls Ollama's local chat endpoint with retrieved evidence |
+| \`tests/\` | Offline unit tests; does not require Ollama |
+| \`docs/research_plan.md\` | Hypothesis, baselines, metrics, experimental stages |
+| \`requirements.txt\` | Python dependencies (Streamlit only at present) |
+| \`.gitignore\` | Excludes local data, environments, secrets, model weights |
+
+## Research question and planned evaluation
+
+**Hypothesis (unverified):** Downstream utility-aware memory policies may reduce contradictions and improve answer accuracy over recency-only and semantic similarity retrieval.
+
+**Baselines:** exact topic matching → recency → semantic retrieval → proposed utility policy.
+
+**Planned measures:** accuracy on held-out synthetic user histories, contradiction rate, false forgetting, retrieval relevance, inference latency, and computational cost.
+
+Read the full [research plan](docs/research_plan.md).
 
 ## Roadmap
 
-- [x] **V1 — Persistent memory:** Streamlit + SQLite, topic-based updates, history
-- [x] **V2 — Semantic retrieval:** local embedding model through Ollama; three natural-language questions tested locally
-- [ ] **V3 — Answer generation:** local LLM with retrieved evidence
-- [ ] **V4 — Memory utility policy:** compare retention decisions experimentally
-- [ ] **V5 — Research evaluation:** held-out benchmarks, ablations, error analysis, reproducibility
+- [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
+- [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
+- [ ] **V3:** Local Qwen answer generation with retrieved memory evidence (**code published; user test pending**)
+- [ ] **V4:** Utility-based retention/suppression policy and counterfactual tests
+- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
-## Tech stack and budget
+## Budget and privacy
 
-- Python, Streamlit, SQLite: free
-- Planned local embeddings/LLMs with Ollama: free
-- Optional paid evaluations: strictly capped at **£20 total per project**, with a £0 path for core experiments
+Required software and models are free. Target total development spend: **£0**, with an absolute **£20 cap** for the entire MemoryLab project (excluding existing hardware, electricity, and connectivity).
 
-No account credentials or paid inference are required for Versions 1–2. Running locally avoids uploading personal memories to a hosted database.
+\`memorylab.db\`, virtual environments, model weights, and local secrets are excluded from GitHub. Memory files stay on your laptop. This repository is intended to be safe to publish after reviewing documentation, issues, screenshots, and test examples for personal data.
 
-## Privacy and repository hygiene
-
-Local databases, virtual environments, API keys, model files, and temporary outputs are excluded by [.gitignore](.gitignore). Use **synthetic test facts**, not real private details, in screenshots, issues, and experiment datasets.
-
-## Reproducibility notes
-
-For future experiments, record model identifiers, quantization, dependencies, hardware, dataset seeds, inference settings, and evaluation scripts. Improvements must be validated on held-out cases; a successful demo is not itself evidence of research novelty or performance.
+**No performance or novelty claim should be made without controlled experiments and comparison to relevant prior work.**
