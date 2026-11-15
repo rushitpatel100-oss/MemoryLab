@@ -1,0 +1,127 @@
+{
+  "name": "MemoryLab blind human-review candidate",
+  "version": "1.0",
+  "description": "Fresh fictional example pairs. Expected relation labels intentionally omitted; label manually before running any model.",
+  "cases": [
+    {
+      "id": "B01",
+      "topic": "skills",
+      "old_fact": "I can speak Portuguese.",
+      "new_fact": "I can also speak Swedish."
+    },
+    {
+      "id": "B02",
+      "topic": "pet",
+      "old_fact": "My dog Peanut wears a red collar.",
+      "new_fact": "My dog's collar was replaced recently."
+    },
+    {
+      "id": "B03",
+      "topic": "colour",
+      "old_fact": "My phone is silver.",
+      "new_fact": "I changed my phone colour from silver to black."
+    },
+    {
+      "id": "B04",
+      "topic": "reading",
+      "old_fact": "I enjoy mystery novels.",
+      "new_fact": "Mystery novels are something I enjoy."
+    },
+    {
+      "id": "B05",
+      "topic": "work",
+      "old_fact": "I teach science at a college.",
+      "new_fact": "I perform in a local orchestra on weekends."
+    },
+    {
+      "id": "B06",
+      "topic": "travel",
+      "old_fact": "The festival takes place at North Hall.",
+      "new_fact": "The festival was moved from North Hall to East Pavilion."
+    },
+    {
+      "id": "B07",
+      "topic": "family",
+      "old_fact": "My cousin Iris lives in Brighton.",
+      "new_fact": "My cousin moved to Oxford."
+    },
+    {
+      "id": "B08",
+      "topic": "food",
+      "old_fact": "I prefer pears as a snack.",
+      "new_fact": "Pears are my preferred snack."
+    },
+    {
+      "id": "B09",
+      "topic": "room",
+      "old_fact": "The kitchen has a round table.",
+      "new_fact": "The kitchen also has three stools."
+    },
+    {
+      "id": "B10",
+      "topic": "equipment",
+      "old_fact": "The telescope is stored in cabinet three.",
+      "new_fact": "One of our devices was moved yesterday."
+    },
+    {
+      "id": "B11",
+      "topic": "sport",
+      "old_fact": "My tennis racket has a white grip.",
+      "new_fact": "I changed the grip from white to navy."
+    },
+    {
+      "id": "B12",
+      "topic": "music",
+      "old_fact": "I am learning to play the drums.",
+      "new_fact": "I am learning the drums."
+    },
+    {
+      "id": "B13",
+      "topic": "home",
+      "old_fact": "I currently live in Exeter.",
+      "new_fact": "I moved from Exeter to Bath."
+    },
+    {
+      "id": "B14",
+      "topic": "clubs",
+      "old_fact": "I play badminton on Saturdays.",
+      "new_fact": "I also paint on Sundays."
+    },
+    {
+      "id": "B15",
+      "topic": "club",
+      "old_fact": "Mina's chess club meets on Tuesday.",
+      "new_fact": "The chess club meeting details have changed."
+    },
+    {
+      "id": "B16",
+      "topic": "cycle",
+      "old_fact": "I ride a blue scooter.",
+      "new_fact": "I repainted my scooter from blue to yellow."
+    },
+    {
+      "id": "B17",
+      "topic": "lifestyle",
+      "old_fact": "I live with two cats.",
+      "new_fact": "I run a pottery club."
+    },
+    {
+      "id": "B18",
+      "topic": "volunteers",
+      "old_fact": "Nora volunteers at the library.",
+      "new_fact": "One of our volunteers took a new position."
+    },
+    {
+      "id": "B19",
+      "topic": "workshop",
+      "old_fact": "The workshop begins at 9 am.",
+      "new_fact": "The workshop was rescheduled from 9 am to 11 am."
+    },
+    {
+      "id": "B20",
+      "topic": "plants",
+      "old_fact": "I grow mint on my balcony.",
+      "new_fact": "I grow basil there too."
+    }
+  ]
+}
