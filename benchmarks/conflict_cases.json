@@ -1,0 +1,134 @@
+{
+  "description": "Fictional, author-labelled development examples; labels are hypotheses rather than held-out research ground truth.",
+  "version": "0.1",
+  "cases": [
+    {
+      "id": "D01",
+      "expected": "duplicate",
+      "topic": "test_location",
+      "old_fact": "I work in London.",
+      "new_fact": "  i WORK  in london! ",
+      "why": "Identical fact after case and whitespace cleanup"
+    },
+    {
+      "id": "C01",
+      "expected": "coexists",
+      "topic": "test_location",
+      "old_fact": "I have moved from Bristol to York.",
+      "new_fact": "I work in London.",
+      "why": "Home and work locations can be different"
+    },
+    {
+      "id": "R01",
+      "expected": "replaces",
+      "topic": "location",
+      "old_fact": "I currently live in Bristol.",
+      "new_fact": "I have moved from Bristol to York.",
+      "why": "New current residence explicitly replaces old one"
+    },
+    {
+      "id": "U01",
+      "expected": "uncertain",
+      "topic": "appointments",
+      "old_fact": "Alex's appointment is on Tuesday.",
+      "new_fact": "The appointment was moved.",
+      "why": "Which appointment and the new time are unspecified"
+    },
+    {
+      "id": "D02",
+      "expected": "duplicate",
+      "topic": "hobby",
+      "old_fact": "I enjoy painting.",
+      "new_fact": "I enjoy painting.",
+      "why": "Same assertion"
+    },
+    {
+      "id": "C02",
+      "expected": "coexists",
+      "topic": "hobby",
+      "old_fact": "I enjoy photography.",
+      "new_fact": "I enjoy painting.",
+      "why": "Different hobbies are compatible"
+    },
+    {
+      "id": "R02",
+      "expected": "replaces",
+      "topic": "preference",
+      "old_fact": "My preferred language is French.",
+      "new_fact": "I now prefer Spanish instead of French.",
+      "why": "Explicitly updates same preference"
+    },
+    {
+      "id": "U02",
+      "expected": "uncertain",
+      "topic": "project",
+      "old_fact": "Our project deadline is Friday.",
+      "new_fact": "The deadline has changed.",
+      "why": "New deadline and reference are unspecified"
+    },
+    {
+      "id": "D03",
+      "expected": "duplicate",
+      "topic": "pets",
+      "old_fact": "I own a cat.",
+      "new_fact": "I own a cat!",
+      "why": "Same words except punctuation"
+    },
+    {
+      "id": "C03",
+      "expected": "coexists",
+      "topic": "pets",
+      "old_fact": "I have a dog.",
+      "new_fact": "I also have a cat.",
+      "why": "Ownership of two pets is compatible"
+    },
+    {
+      "id": "R03",
+      "expected": "replaces",
+      "topic": "device",
+      "old_fact": "I currently use an Android phone.",
+      "new_fact": "I have switched from Android to an iPhone.",
+      "why": "Current phone explicitly switched"
+    },
+    {
+      "id": "U03",
+      "expected": "uncertain",
+      "topic": "booking",
+      "old_fact": "My hotel booking is for Monday.",
+      "new_fact": "My reservation details have changed.",
+      "why": "It is unclear whether date changed"
+    },
+    {
+      "id": "D04",
+      "expected": "duplicate",
+      "topic": "snack",
+      "old_fact": "My favourite snack is apple slices.",
+      "new_fact": "My favourite snack is apple slices.",
+      "why": "Exact same statement"
+    },
+    {
+      "id": "C04",
+      "expected": "coexists",
+      "topic": "work",
+      "old_fact": "I work as a designer.",
+      "new_fact": "I volunteer as a football coach.",
+      "why": "Different compatible roles"
+    },
+    {
+      "id": "R04",
+      "expected": "replaces",
+      "topic": "event",
+      "old_fact": "The event is scheduled for Tuesday.",
+      "new_fact": "The event was rescheduled from Tuesday to Friday.",
+      "why": "Explicitly rescheduled event"
+    },
+    {
+      "id": "U04",
+      "expected": "uncertain",
+      "topic": "location",
+      "old_fact": "I currently live in York.",
+      "new_fact": "My address has changed recently.",
+      "why": "Current residence after generic update is unclear"
+    }
+  ]
+}
