@@ -27,6 +27,29 @@ class ConflictProposalTests(unittest.TestCase):
         mocked.assert_called_once()
 
     @patch("memory_conflicts.urllib.request.urlopen")
+    def test_coexistence_example_in_prompt_and_request(self, mocked):
+        # Mocked model output: verifies prompt/examples, not Qwen accuracy.
+        mocked.return_value = io.BytesIO(json.dumps({
+            "message": {"content": json.dumps({
+                "relation": "coexists",
+                "reason": "Home and work locations can be different."
+            })}
+        }).encode())
+        result = classify_pair(
+            {"topic": "test_location",
+             "fact": "I have moved from Bristol to York."},
+            "test_location", "I work in London."
+        )
+        self.assertEqual(result["relation"], "coexists")
+        request = mocked.call_args.args[0]
+        payload = json.loads(request.data.decode("utf-8"))
+        instructions = payload["messages"][0]["content"]
+        self.assertIn("Do NOT choose uncertain", instructions)
+        self.assertIn("I work in London.", instructions)
+        self.assertIn("I have moved from Bristol to York.", instructions)
+        self.assertEqual(payload["options"]["temperature"], 0)
+
+    @patch("memory_conflicts.urllib.request.urlopen")
     def test_invalid_reply_is_uncertain(self, mocked):
         mocked.return_value = io.BytesIO(
             b'{"message":{"content":"not-json"}}'

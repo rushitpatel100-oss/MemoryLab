@@ -59,3 +59,17 @@ The project owner tested section 7 with topic `test_location`:
 - **Storage validation (owner-reported):** After approving the change, the project owner confirmed that Bristol appears **Superseded** and York appears **Active** in Memory History. This verifies the intended status transition in one local manual test.
 
 This is one qualitative classification and storage observation, **not** a measured classification accuracy rate or broad proof of database reliability. Next, test the contrasting coexistence case (living in York while working in London).
+
+## Second local Qwen classification observation (owner-reported)
+
+The project owner tested section 7 with the active York residence memory:
+
+- **Old active fact (M7):** "I have moved from Bristol to York."
+- **Proposed new fact:** "I work in London."
+- **Qwen label:** `uncertain`.
+- **Qwen reason:** "The old statement indicates a change in location, while the new statement indicates a change in occupation. These are unrelated facts."
+- **Expected label:** `coexists`, since residing in York and working in London can both be true.
+- **Interpretation:** The explanation recognises independent statements, but the relation label is overly cautious. This is one incorrect classification relative to the synthetic expected label. It is **not** a confirmed database-write failure; the default `Keep both` prevents unintended supersession.
+- **Database outcome:** Not yet independently confirmed for this new fact.
+
+**Prompt improvement:** The conflict classifier now explicitly distinguishes independent/coexisting facts from genuinely ambiguous statements, with an exact example of residence in York plus work in London. The original model output is preserved as an observation. The updated prompt and a mocked request regression test were published, but **no new Qwen run has yet established that the revised prompt fixes this real example**. Human review remains required.

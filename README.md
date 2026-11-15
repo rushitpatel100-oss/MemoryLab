@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 2 conflict-review code published; laptop testing pending.** Versions 1–3 and the V4 memory-impact experiment have been user-tested. Section 7 now proposes whether a new fact replaces or coexists with same-topic memories and requires explicit review before saving. This is not yet a learned policy or validated research benchmark.
+> **Current status: V4 Phase 2 conflict-review code published; laptop testing pending.** Versions 1–3 and the V4 memory-impact experiment have been user-tested. Section 7 now proposes whether a new fact replaces or coexists with same-topic memories and requires explicit review before saving. One user-reported coexistence example was labelled `uncertain` despite a correct explanation, so the prompt now includes explicit coexistence examples; the improvement is not yet user-validated. This is not yet a learned policy or validated research benchmark.
 
 ## Features
 
@@ -119,7 +119,7 @@ If early V4 installations showed `PermissionError: [WinError 32]` during unit-te
 
 No new models or packages are needed. In section **7. Smart Memory Review**, propose a new fact and click **Review possible conflicts**. Qwen provides a recommendation for each active memory in the exact same topic; **Keep both** is selected by default. Confirm each action before saving. Section 1 remains a deliberately simplistic overwrite baseline.
 
-Follow the [conflict-review experiment guide](docs/conflict_review.md) to test Bristol → York updates and simultaneous work/home locations. The first prototype limits same-topic reviews to at most 10 active memories.
+Follow the [conflict-review experiment guide](docs/conflict_review.md) to test Bristol → York updates and simultaneous work/home locations. The second test revealed an `uncertain` label for compatible facts; this is documented as a classification error and motivated a prompt revision. The first prototype limits same-topic reviews to at most 10 active memories.
 
 ## Project files
 
