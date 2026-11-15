@@ -385,11 +385,13 @@ else:
 # V4 Phase 2: human-reviewed memory conflict handling
 from memory_conflicts import classify_pair
 from memory_store import save_reviewed_memory
+from memory_text import is_same_stored_fact
 
 st.divider()
 st.subheader("7. Smart Memory Review")
 st.caption(
-    "Qwen suggests replaces / coexists / uncertain. "
+    "MemoryLab detects repeat facts and Qwen suggests duplicate / "
+    "replaces / coexists / uncertain. "
     "You decide before anything is changed. This pilot checks "
     "only memories with the same exact topic."
 )
@@ -455,13 +457,45 @@ if review is not None:
                 "The safe default is Keep both. Choose Supersede "
                 "only when the old fact truly needs updating."
             )
+        duplicate_matches = [
+            entry for entry in review["items"]
+            if is_same_stored_fact(
+                entry["memory"]["topic"], entry["memory"]["fact"],
+                review["topic"], review["fact"]
+            )
+        ]
+        possible_duplicates = [
+            entry for entry in review["items"]
+            if entry["proposal"]["relation"] == "duplicate"
+            and entry not in duplicate_matches
+        ]
+        if duplicate_matches:
+            ids = ", ".join(
+                f"M{entry['memory']['id']}" for entry in duplicate_matches
+            )
+            st.warning(
+                f"This exact fact is already active as {ids}. "
+                "Duplicate saving is disabled; no data will be changed."
+            )
+        elif possible_duplicates:
+            st.warning(
+                "Qwen thinks this may repeat an existing fact. "
+                "Please review before choosing to save."
+            )
+            confirm_potential_duplicate = st.checkbox(
+                "I reviewed the possible duplicate and still want to save it.",
+                key=f"confirm_duplicate_{review['topic']}_{review['fact']}",
+            )
+        else:
+            confirm_potential_duplicate = True
+
         actions = {}
         for entry in review["items"]:
             old = entry["memory"]
             assessment = entry["proposal"]
             st.write(f"**M{old['id']} — {old['fact']}**")
             st.caption(
-                "Qwen suggestion: "
+                f"Suggestion ({assessment.get('source', 'qwen')}): "
                 f"{assessment['relation']} — {assessment['reason']}"
             )
             choice = st.radio(
@@ -473,7 +507,10 @@ if review is not None:
                 "keep" if choice == "Keep both" else "supersede"
             )
 
-        if st.button("Save reviewed memory"):
+        if st.button(
+            "Save reviewed memory",
+            disabled=bool(duplicate_matches) or not confirm_potential_duplicate,
+        ):
             try:
                 new_id = save_reviewed_memory(
                     review["topic"], review["fact"], actions,

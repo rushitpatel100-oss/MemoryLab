@@ -50,6 +50,32 @@ class ConflictProposalTests(unittest.TestCase):
         self.assertEqual(payload["options"]["temperature"], 0)
 
     @patch("memory_conflicts.urllib.request.urlopen")
+    def test_exact_duplicate_skips_qwen(self, mocked):
+        result = classify_pair(
+            {"topic": "test_location", "fact": "I work in London."},
+            " TEST_LOCATION ", "  i WORK in   london!  "
+        )
+        self.assertEqual(result["relation"], "duplicate")
+        self.assertEqual(result["source"], "local_rule")
+        mocked.assert_not_called()
+
+    @patch("memory_conflicts.urllib.request.urlopen")
+    def test_paraphrase_duplicate_label_is_accepted(self, mocked):
+        mocked.return_value = io.BytesIO(json.dumps({
+            "message": {"content": json.dumps({
+                "relation": "duplicate",
+                "reason": "They express the same job location."
+            })}
+        }).encode())
+        result = classify_pair(
+            {"topic": "job", "fact": "I work in London."},
+            "job", "My job is in London."
+        )
+        self.assertEqual(result["relation"], "duplicate")
+        self.assertEqual(result["source"], "qwen")
+        mocked.assert_called_once()
+
+    @patch("memory_conflicts.urllib.request.urlopen")
     def test_invalid_reply_is_uncertain(self, mocked):
         mocked.return_value = io.BytesIO(
             b'{"message":{"content":"not-json"}}'
@@ -109,6 +135,25 @@ class SafeStorageTests(unittest.TestCase):
                 "location", "I moved to York.", {}, [1], self.db
             )
         self.assertEqual(self.flags(), [1])
+
+    def test_duplicate_is_blocked_and_keeps_original_active(self):
+        with self.assertRaisesRegex(ValueError, "Duplicate"):
+            save_reviewed_memory(
+                "location", "  I  LIVE in bristol! ",
+                {1: "supersede"}, [1], self.db
+            )
+        self.assertEqual(self.flags(), [1])
+
+    def test_duplicate_check_runs_before_other_approved_updates(self):
+        save_reviewed_memory(
+            "location", "I work in London.", {1: "keep"}, [1], self.db
+        )
+        with self.assertRaisesRegex(ValueError, "Duplicate"):
+            save_reviewed_memory(
+                "location", " i WORK in london! ",
+                {1: "supersede", 2: "keep"}, [1, 2], self.db
+            )
+        self.assertEqual(self.flags(), [1, 1])
 
     def test_unseen_topic_can_be_added(self):
         mid = save_reviewed_memory(
