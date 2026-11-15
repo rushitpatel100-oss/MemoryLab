@@ -47,3 +47,7 @@ Track per-class errors, repeated trials, model/configuration, ambiguous cases, a
 ## First live development-run observation
 
 The project owner ran the first four synthetic cases: **2/4 agreed with the original expected labels**. D01 and R01 passed; C01 failed because Qwen suggested `replaces` for compatible residence and work facts; U01 was marked a miss against the supplied `uncertain` label, but that label is itself contestable. Qwen predicted `replaces` for every one of its three calls. The duplicate pass came from the deterministic rule, not from Qwen. See [Experiment 006](experiment_006_results.md) for exact case outcomes, confusion counts and annotation concerns. This is one owner-reported development run, not a reliable accuracy estimate.
+
+## Full 16-case local run (Experiment 007)
+
+Owner-reported development-label agreement was **10/16**. The four normalised duplicates were local-rule successes; Qwen matched **6/12** other author labels. Both independent-role cases **C01 and C04** were mislabeled `replaces`. All four `uncertain` cases were also marked `replaces`, but their expected relation requires adjudication: a changed appointment or deadline might make an old value obsolete even without a new value. The complete original outputs, confusion counts, and proposed next research steps are in [Experiment 007](experiment_007_results.md). No prompt change was made on the basis of these observations.
