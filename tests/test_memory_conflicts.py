@@ -45,8 +45,13 @@ class ConflictProposalTests(unittest.TestCase):
         payload = json.loads(request.data.decode("utf-8"))
         instructions = payload["messages"][0]["content"]
         self.assertIn("Do NOT choose uncertain", instructions)
-        self.assertIn("I work in London.", instructions)
-        self.assertIn("I have moved from Bristol to York.", instructions)
+        # Assert the rule, not exact punctuation in a prompt example.
+        self.assertIn("=> coexists", instructions)
+        self.assertIn("I work in London", instructions)
+        # The actual old and new facts must be passed in the user payload.
+        supplied_facts = payload["messages"][1]["content"]
+        self.assertIn("I work in London.", supplied_facts)
+        self.assertIn("I have moved from Bristol to York.", supplied_facts)
         self.assertEqual(payload["options"]["temperature"], 0)
 
     @patch("memory_conflicts.urllib.request.urlopen")
