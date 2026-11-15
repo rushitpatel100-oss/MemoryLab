@@ -70,6 +70,10 @@ The project owner tested section 7 with the active York residence memory:
 - **Qwen reason:** "The old statement indicates a change in location, while the new statement indicates a change in occupation. These are unrelated facts."
 - **Expected label:** `coexists`, since residing in York and working in London can both be true.
 - **Interpretation:** The explanation recognises independent statements, but the relation label is overly cautious. This is one incorrect classification relative to the synthetic expected label. It is **not** a confirmed database-write failure; the default `Keep both` prevents unintended supersession.
-- **Database outcome:** Not yet independently confirmed for this new fact.
+- **Database outcome (owner-reported):** The owner saved the proposed London fact using **Keep both** and confirmed that both the York residence and London work memories are **Active** in Memory History. This validates reviewed coexistence storage in this one manual test.
 
 **Prompt improvement:** The conflict classifier now explicitly distinguishes independent/coexisting facts from genuinely ambiguous statements, with an exact example of residence in York plus work in London. The original model output is preserved as an observation. The updated prompt and a mocked request regression test were published, but **no new Qwen run has yet established that the revised prompt fixes this real example**. Human review remains required.
+
+## Post-fix unit-test confirmation (owner-reported)
+
+After pulling the revised coexistence prompt and added mocked request test, the project owner reported that **all 21 offline unit tests passed** on Windows. These tests cover code paths and model-request formatting with mocks; they do **not** establish whether Qwen's revised live classification output is correct. That direct retest remains pending.
