@@ -54,6 +54,21 @@ class BlindReviewTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "locked"):
             record_label(review, cases[0]["id"], "R", "Revised")
 
+    def test_locked_review_detects_accidental_changes(self):
+        cases, digest = load_cases()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "votes.json"
+            review = empty_review(digest)
+            for case in cases:
+                record_label(review, case["id"], "U", "Need context")
+            lock_review(review, cases)
+            save_review(review, path)
+            tampered = json.loads(path.read_text(encoding="utf-8"))
+            tampered["answers"][cases[0]["id"]]["label"] = "coexists"
+            path.write_text(json.dumps(tampered), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Locked label content changed"):
+                load_review(path, digest, {c["id"] for c in cases})
+
     def test_refuse_unlocked_labels_before_model_call(self):
         cases, digest = load_cases()
         with tempfile.TemporaryDirectory() as directory:

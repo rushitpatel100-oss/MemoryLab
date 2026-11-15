@@ -54,7 +54,16 @@ def load_cases(path=CASES_FILE):
 
 def empty_review(digest):
     return {"format_version": 1, "dataset_sha256": digest,
-            "locked": False, "locked_at": None, "answers": {}}
+            "locked": False, "locked_at": None,
+            "answers_sha256": None, "answers": {}}
+
+
+def answers_sha256(answers):
+    """Detect accidental edits to an already-locked review."""
+    data = json.dumps(
+        answers, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return hashlib.sha256(data).hexdigest()
 
 
 def load_review(path, digest, case_ids):
@@ -76,6 +85,8 @@ def load_review(path, digest, case_ids):
                 or not isinstance(value.get("reason"), str)
                 or not value["reason"].strip()):
             raise ValueError("Each saved label needs a permitted label and a reason.")
+    if saved.get("locked") is True and saved.get("answers_sha256") != answers_sha256(answers):
+        raise ValueError("Locked label content changed; evaluation stopped.")
     return saved
 
 
@@ -109,6 +120,7 @@ def lock_review(review, cases):
         )
     review["locked"] = True
     review["locked_at"] = datetime.now(timezone.utc).isoformat()
+    review["answers_sha256"] = answers_sha256(review["answers"])
 
 
 def run_interactive(cases, review, limit=None, input_fn=input, output_fn=print):
