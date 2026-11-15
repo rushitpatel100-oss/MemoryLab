@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Version 3 code published (local end-to-end test pending).** Version 1's memory store and Version 2's semantic retrieval were tested on Windows by the project owner. Version 3 adds local Qwen answer generation using retrieved memories. This is a baseline, not yet a validated research result.
+> **Current status: Version 3 local Qwen inference confirmed by the project owner.** Versions 1 and 2 were also tested on Windows. We still need to evaluate whether Qwen's answers remain grounded in retrieved memories and whether it appropriately refuses unsupported questions. This is a baseline, not a validated research result.
 
 ## Features
 
@@ -75,11 +75,25 @@ Go to **5. Ask MemoryLab**, enter `What is my profession?`, and click **Generate
 
 An expected answer is something like *"You work as a GenAI engineer."* Open **See retrieved memory evidence** to inspect the memory used. Exact wording is model-dependent; test whether the answer is supported, not whether it matches the example verbatim.
 
-Next test an unrelated question such as `What is my favourite colour?`. A grounded response should admit that the saved memories do not establish the answer. This negative test is crucial.
+**Next validation: negative control.** With only a `job` or `hobby` memory saved, ask `What is my favourite colour?` (or another fact you did not store). A grounded response should admit that the saved memories do not establish the answer. Check *See retrieved memory evidence* to see whether an unrelated memory was selected. If Qwen guesses a colour or invents supporting evidence, record this as a **grounding failure**. If no memory meets the similarity threshold and the application declines to call Qwen, record this as a **retrieval-stage abstention**, not proof that Qwen itself refused to hallucinate.
 
 If the app says no relevant memories met the threshold, decrease the experimental similarity slider or add a more relevant memory. The default threshold of `0.25` is a starting heuristic, **not a calibrated confidence cutoff**.
 
 If the app reports that Ollama is unavailable, confirm it is running and that both models appear in `ollama list`.
+
+
+## First research experiment: positive vs negative control
+
+Run two manual scenarios on a **synthetic** profile and record what happens.
+
+| Test | Saved memory | Question | Expected behaviour |
+|---|---|---|---|
+| Positive control | topic: hobby; fact: "My favourite hobby is photography." | What hobby do I enjoy? | Answer "photography" based on memory evidence |
+| Negative control | Same hobby memory only (no location saved) | What city do I live in? | Report missing evidence, or have retrieval abstain |
+
+Track: retrieved memories, similarity scores, whether Qwen was called, answer, whether the answer is supported, and the type of failure. This qualitative check is a **pilot**, not a research benchmark. Do not claim an accuracy percentage from two examples.
+
+The next phase will automate controlled "with vs. without memory" experiments over synthetic scenarios, with explicit scoring criteria and repeatable results.
 
 ## Project files
 
@@ -107,7 +121,7 @@ Read the full [research plan](docs/research_plan.md).
 
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
-- [ ] **V3:** Local Qwen answer generation with retrieved memory evidence (**code published; user test pending**)
+- [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
 - [ ] **V4:** Utility-based retention/suppression policy and counterfactual tests
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 

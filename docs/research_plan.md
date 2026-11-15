@@ -20,7 +20,7 @@ SQLite stores each memory's topic, text, timestamp, and active/superseded status
 
 Active memories and queries are encoded with Ollama's local `all-minilm` model and ranked using cosine similarity. The project owner successfully tested three paraphrased questions locally. Formal comparison to literal topic search and a labelled benchmark are **still pending**.
 
-### Stage 3 — Local grounded answer generation (code implemented; local validation pending)
+### Stage 3 — Local grounded answer generation (local inference confirmed; grounding evaluation pending)
 
 Version 3 retrieves up to three active memories using `all-minilm` cosine similarity and passes these as evidence to `qwen2.5:1.5b` through Ollama's `/api/chat` endpoint. The model is told to use only supplied facts and acknowledge missing evidence. This instruction alone does **not** guarantee grounding: test unsupported questions and manually compare answers to sources. Similarity filtering uses a user-adjustable heuristic, currently 0.25 by default, which is not statistically calibrated.
 
