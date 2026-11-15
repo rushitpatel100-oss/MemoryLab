@@ -46,3 +46,16 @@ python -m streamlit run app.py
 ~~~
 
 Use only fictional or consented data in demonstrations. Local database files remain excluded from GitHub.
+
+## First local Qwen classification observation (owner-reported)
+
+The project owner tested section 7 with topic `test_location`:
+
+- **Old active fact (M6):** "I currently live in Bristol."
+- **Proposed new fact:** "I have moved from Bristol to York."
+- **Qwen returned:** `replaces`
+- **Qwen's explanation:** "The new statement updates the location from Bristol to York."
+- **Manual assessment:** The relationship label and explanation are appropriate for a stated change of residence.
+- **Still unverified:** The owner has not yet confirmed pressing **Supersede old memory** and **Save reviewed memory**, or inspecting the resulting active/superseded database statuses.
+
+This is one qualitative classification observation, **not** a measured classification accuracy rate or proof that the database update is correct. Next, validate supersession and the contrasting coexistence case (living in York while working in London).
