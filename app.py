@@ -386,6 +386,7 @@ else:
 from memory_conflicts import classify_pair
 from memory_store import save_reviewed_memory
 from memory_text import is_same_stored_fact
+from memory_staged import classify_pair_staged
 
 st.divider()
 st.subheader("7. Smart Memory Review")
@@ -395,6 +396,14 @@ st.caption(
     "You decide before anything is changed. This pilot checks "
     "only memories with the same exact topic."
 )
+
+smart_classifier = st.radio(
+    "Classification method",
+    ("Single-pass baseline", "Two-stage experimental"),
+    horizontal=True,
+    key="smart_classifier",
+)
+st.caption("Two-stage uses an attribute-scope check before assessing updates. It may be slower; both methods require your approval.")
 
 smart_topic = st.text_input(
     "New memory topic", placeholder="location", key="smart_topic"
@@ -423,12 +432,18 @@ if st.button("Review possible conflicts"):
         else:
             try:
                 with st.spinner("Comparing local memories using Qwen..."):
+                    compare = (
+                        classify_pair_staged
+                        if smart_classifier == "Two-stage experimental"
+                        else classify_pair
+                    )
                     items = [
-                        {"memory": m, "proposal": classify_pair(m, nt, nf)}
+                        {"memory": m, "proposal": compare(m, nt, nf)}
                         for m in matches
                     ]
                 st.session_state["smart_review"] = {
                     "topic": nt, "fact": nf, "items": items,
+                    "classifier": smart_classifier,
                     "expected_ids": [m["id"] for m in matches],
                 }
             except Exception as exc:
@@ -443,6 +458,7 @@ if review is not None:
     if (
         smart_topic.strip().lower() != review["topic"]
         or smart_fact.strip() != review["fact"]
+        or smart_classifier != review["classifier"]
     ):
         st.warning(
             "You changed the proposed fact. Review conflicts again "
@@ -498,6 +514,10 @@ if review is not None:
                 f"Suggestion ({assessment.get('source', 'qwen')}): "
                 f"{assessment['relation']} — {assessment['reason']}"
             )
+            if assessment.get("stages"):
+                with st.expander(f"See decision steps for M{old['id']}"):
+                    for step in assessment["stages"]:
+                        st.write(step)
             choice = st.radio(
                 f"What should happen to M{old['id']}?",
                 ("Keep both", "Supersede old memory"),
