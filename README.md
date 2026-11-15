@@ -107,7 +107,7 @@ This small, **manual** experiment is not yet a learned policy. The no-memory bas
 5. Read the two results side by side and manually decide which answer is supported by the fictional fact.
 6. Optionally download the JSON result. It includes the memory and answer texts, so **don't commit it or publish it with personal data**.
 
-See [the guided pilot](docs/ablation_pilot.md) for experimental cautions and expected behaviours.
+See [the guided pilot](docs/ablation_pilot.md), [Experiment 004 results](docs/experiment_004_results.md), and [Experiment 005 protocol](docs/experiment_005_protocol.md).
 
 ## Project files
 
@@ -138,7 +138,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
-- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 two-call ablation explorer published; laptop testing pending**)
+- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 two-call ablation pilot user-tested; next: benchmark and scoring**)
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
 ## Budget and privacy

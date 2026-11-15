@@ -26,9 +26,9 @@ Version 3 retrieves up to three active memories using `all-minilm` cosine simila
 
 Keep retrieval errors separate from answer-generation errors; avoid claiming model output is correct because it sounds plausible.
 
-### Stage 4 — Counterfactual utility measurement (phase 1 pilot implemented; local test pending)
+### Stage 4 — Counterfactual utility measurement (phase 1 pilot tested manually; benchmark pending)
 
-Version 4 phase 1 adds a **manual two-call comparison**: Qwen runs once with an empty memory list and once with one selected test memory. Both calls actually reach the model, rather than using the application's fixed no-memory fallback. Users assess the difference in answer support and can export a local JSON record. This is a pilot, not an adaptive policy or an unbiased estimate of causal effects.
+Version 4 phase 1 adds a **manual two-call comparison**: Qwen runs once with an empty memory list and once with one selected test memory. Both calls reach the model. The owner reported an appropriate abstention without a hobby memory (5.66s) and a correct photography response with the hobby memory (2.14s). See the Experiment 004 log. This is one positive control, not a learned policy, general accuracy estimate, or latency finding.
 
 Next: create labelled synthetic scenarios, score both answers, repeat with shuffled conditions, and calculate per-memory utility with uncertainty. Only then develop a policy that learns from feedback and test interactions between memories.
 
