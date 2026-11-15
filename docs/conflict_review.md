@@ -56,6 +56,6 @@ The project owner tested section 7 with topic `test_location`:
 - **Qwen returned:** `replaces`
 - **Qwen's explanation:** "The new statement updates the location from Bristol to York."
 - **Manual assessment:** The relationship label and explanation are appropriate for a stated change of residence.
-- **Still unverified:** The owner has not yet confirmed pressing **Supersede old memory** and **Save reviewed memory**, or inspecting the resulting active/superseded database statuses.
+- **Storage validation (owner-reported):** After approving the change, the project owner confirmed that Bristol appears **Superseded** and York appears **Active** in Memory History. This verifies the intended status transition in one local manual test.
 
-This is one qualitative classification observation, **not** a measured classification accuracy rate or proof that the database update is correct. Next, validate supersession and the contrasting coexistence case (living in York while working in London).
+This is one qualitative classification and storage observation, **not** a measured classification accuracy rate or broad proof of database reliability. Next, test the contrasting coexistence case (living in York while working in London).
