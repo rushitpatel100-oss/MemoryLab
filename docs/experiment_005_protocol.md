@@ -11,6 +11,8 @@ Use only fictional test facts. Section 6 (**Memory Impact Lab**) asks the same q
 
 This probes whether irrelevant evidence causes Qwen to invent a fact.
 
+**Observed outcome (owner-reported):** Both conditions returned the same appropriate uncertainty statement. See [Experiment 005A results](experiment_005_results.md) for the exact outputs, 5.60s/2.15s timings, and limitations.
+
 ## Part B — Stale memory
 
 Assume a fictional person's **actual current city is York**. This ground truth is defined outside MemoryLab.
