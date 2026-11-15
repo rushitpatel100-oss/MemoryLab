@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 5 replacement-evidence safeguard published (local testing pending).** Experiments 007–009 found that Qwen sometimes proposes replacing compatible facts; the two-stage approach performed worse than baseline. A new optional one-call safeguard downgrades replacement suggestions without a clear text update signal to `uncertain` and requires three explicit manual confirmations before supersession. The original Qwen label is preserved. This rule is conservative, can miss genuine updates, and is not independently validated; no existing memories were changed.
+> **Current status: Phase 5 replacement-evidence safeguard + Phase 6 blind-evaluation workflow published (local testing pending).** The original and guarded classifiers remain unchanged. A fresh set of 20 fictional pairs has no answer labels in GitHub; a reviewer labels them before any new model run, then locks the local labels and evaluates Qwen versus the safeguard. Earlier evaluations revealed false supersession and the two-stage model's poor results. These new tools still require local testing and are not yet independently adjudicated or proof of model improvement.
 
 ## Features
 
@@ -19,6 +19,7 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 9. **Development benchmark:** 16 fictional examples (four per label), local inference, a confusion matrix, and optional JSON export.
 10. **Two-stage conflict experiment:** compare attributes first, evaluate updates only when appropriate, and compare against the unchanged single-pass baseline on a separate 16-case fictional dataset.
 11. **Replacement-evidence safeguard (experimental):** checks for explicit old-to-new value changes and requires three confirmations before any reviewed supersession.
+12. **Blind evaluation workflow:** manually label 20 new fictional cases before seeing model predictions, lock the labels, then score raw versus guarded recommendations.
 
 **Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**. Its deterministic duplicate rule handles formatting-only repeats, not all semantic paraphrases; Qwen's suggestions can still be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
@@ -218,6 +219,46 @@ python -m scripts.compare_replacement_gate --output results/raw/gate.json
 
 The script never opens the SQLite database and calls Qwen **once per case**, not once for each variant. It reports both false replacement suggestions and **genuine replacements missed** by the narrow gate. The examples were already inspected when the rule was designed; this is not a held-out accuracy estimate. See the [replacement-gate protocol](docs/replacement_gate.md).
 
+## Phase 6 — Blind review before model evaluation
+
+The earlier experimental scores were measured on examples we had already discussed. To reduce that bias, this phase provides **20 new fictional fact pairs without expected labels** in `benchmarks/review_v1_cases.json`.
+
+**Important:** You are the first human reviewer; do not run the evaluation or request Qwen predictions until you have finished and locked your labels. Your judgements will be separate from the code author's but **not independently adjudicated by multiple experts**. The system is still a research prototype.
+
+After pulling from GitHub Desktop, run the offline tests first:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+Expected suite size: **62 tests**. These use mocked responses; the new workflow hasn't yet been run on your Windows laptop.
+
+**Start with only four review cases:**
+
+~~~bat
+python -m scripts.review_eval_cases --limit 4
+~~~
+
+You will see each old and new fictional fact. Choose a relationship using **D** (duplicate), **R** (replaces), **C** (coexists), or **U** (uncertain), and enter a short reason. You can skip or quit; your completed labels are saved automatically. No Qwen call occurs during review.
+
+**Resume later, review status and lock when finished:**
+
+~~~bat
+python -m scripts.review_eval_cases
+python -m scripts.review_eval_cases --status
+python -m scripts.review_eval_cases --lock
+~~~
+
+Locking is refused if any case is unlabelled or the dataset has changed. Only **after locking**, run:
+
+~~~bat
+python -m scripts.evaluate_review_v1
+~~~
+
+The evaluator calls local Qwen once per pair and applies the gate to that **same** response. It reports agreement with your labels, incorrect replacement suggestions, missed genuine updates, and a confusion matrix in the saved JSON.
+
+The labels and results stay under `results/raw/`, excluded from GitHub, and neither script reads or writes your SQLite memories. Details are in [the blinded-review protocol](docs/blind_review.md).
+
 ## Project files
 
 | Path | Purpose |
@@ -230,6 +271,10 @@ The script never opens the SQLite database and calls Qwen **once per case**, not
 | `memory_staged.py` | Experimental attribute-scope check followed by conditional update assessment |
 | `replacement_gate.py` | Conservative text evidence gate for single-pass replacement suggestions |
 | `scripts/compare_replacement_gate.py` | Compare raw and gated decisions on the same Qwen output |
+| `benchmarks/review_v1_cases.json` | 20 fictional examples deliberately lacking answer labels |
+| `scripts/review_eval_cases.py` | Resumable terminal reviewer and label-lock workflow |
+| `scripts/evaluate_review_v1.py` | Refuses unlocked labels and scores the paired Qwen/gate run |
+| `docs/blind_review.md` | Evaluation rubric, step-by-step use and study limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
@@ -259,7 +304,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
 - [ ] **V4:** Utility-based retention/suppression policy (**phases 1–4 investigated; phase 5 evidence-gated safety prototype published; no learned policy yet**)
-- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
+- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**blind-review infrastructure published; independent labels and local results pending**)
 
 ## Budget and privacy
 

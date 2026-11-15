@@ -42,3 +42,7 @@ The comparison script uses one Qwen call per pair; the raw and guarded labels sh
 ## Research limitations
 
 The narrow gate may simply trade false supersession for missed true updates, which matters for memory usefulness. The 16-case evaluation candidate was already inspected in Experiment 009 and **influenced this safeguard design**; outcomes are development diagnostics, not held-out evidence. Further independent label adjudication, unseen synthetic profiles, repeated/randomised runs and human-error measurement are required. No paid API or new dependencies.
+
+## Next: Prospective label-first review
+
+A new 20-case fictional blind-review candidate is now published. Do not run classifier predictions before labelling and locking all cases. See [the step-by-step blind review protocol](blind_review.md). The newly supplied evaluation candidate has **no published expected labels**, and its results should not be confused with the reused 16-case development diagnostic above.

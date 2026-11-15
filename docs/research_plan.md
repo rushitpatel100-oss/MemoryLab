@@ -48,6 +48,12 @@ Experiment 009 found that a two-stage Qwen pipeline introduced more false replac
 
 A conservative rule can miss real updates that are not phrased as `from X to Y`. Evaluate its false replacement reduction **and** genuine replacement coverage. The current comparison set has already been used during feature design; genuine held-out validation will require new independent synthetic examples and agreed labels.
 
+### Stage 4E — Blind, label-first evaluation candidate (published; results pending)
+
+Twenty new fictional fact pairs are provided **without expected relation labels**. Before any new model evaluation, an independent human reader of the examples can assign a four-way label and explanation through a resumable local CLI. The program locks complete labels to the case-file SHA-256 fingerprint, and the evaluation runner refuses to run until all labels are locked. It compares one baseline Qwen prediction and the gate's post-processing of that same output, recording false replacements and missed real updates separately.
+
+This workflow reduces answer-contamination from seeing model predictions first, but the cases were still authored within the project; one untrained reviewer does **not** constitute expert-adjudicated ground truth. Do not tune the gate against this set before recording results. Freeze the dataset and labels, then independently review disagreements and plan additional held-out subjects with multiple raters.
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
