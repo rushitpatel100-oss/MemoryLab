@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 3 code published (local validation pending).** Smart Memory Review now distinguishes `duplicate`, `replaces`, `coexists`, and `uncertain`. Normalised exact repeats are identified without a model call and blocked atomically on save. A 16-case fictional development benchmark is available. Earlier coexistence and supersession behaviours were user-tested; the full 16-case Phase 3 benchmark has now been run locally and matched 10/16 original development labels (4/4 local-rule duplicates, 6/12 Qwen), with several uncertain labels requiring adjudication. Duplicate blocking in the Streamlit UI has not yet been confirmed live. This is not a learned utility policy or a held-out research result.
+> **Current status: V4 Phase 4 staged-classifier implementation published (Windows testing pending).** The prior single-pass Qwen classifier matched 10/16 author labels in Experiment 007; its over-prediction of replacement motivated a two-stage alternative that first distinguishes independent attributes from potential updates. The original classifier remains selectable, and a separate 16-case synthetic comparison set is available. This has not yet been run locally or independently validated. It is not a learned utility policy or an established improvement.
 
 ## Features
 
@@ -17,6 +17,7 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 7. **Memory Impact Lab (pilot):** run two Qwen calls, with and without one selected memory, and inspect both answers.
 8. **Smart Memory Review (experimental):** classifies four relationships and blocks exact duplicate writes; compatible and conflicting facts still need user review.
 9. **Development benchmark:** 16 fictional examples (four per label), local inference, a confusion matrix, and optional JSON export.
+10. **Two-stage conflict experiment:** compare attributes first, evaluate updates only when appropriate, and compare against the unchanged single-pass baseline on a separate 16-case fictional dataset.
 
 **Important limits:** Section 1 still treats all facts under one exact topic as replacements. Section 7 can save multiple facts under one topic, but only compares **exactly matching topics**. Its deterministic duplicate rule handles formatting-only repeats, not all semantic paraphrases; Qwen's suggestions can still be wrong. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
@@ -154,6 +155,42 @@ python -m scripts.run_conflict_benchmark --output results/raw/conflicts.json
 
 The benchmark only calls the local classifier, **never your SQLite database**, and does not upload anything. It is an **author-labelled development smoke test**, not a held-out accuracy result. See the [benchmark guide](docs/conflict_benchmark.md), [case definitions](benchmarks/conflict_cases.json), and [Experiments 006](docs/experiment_006_results.md) and [007](docs/experiment_007_results.md) for live results and disputed labels.
 
+## Compare classifiers — V4 Phase 4
+
+**The original classifier remains the baseline.** In section **7. Smart Memory Review**, select **Two-stage experimental** under **Classification method** before proposing a memory. It asks local Qwen to identify whether claims address **independent attributes**, the **same attribute**, or an **unclear relationship**. If independent, it proposes **Coexists**. If unclear, it proposes **Uncertain**. Only same-attribute comparisons move to a second Qwen call about whether the new fact duplicates, replaces, coexists with, or leaves the old one uncertain.
+
+This is a decision-support experiment, **not automated truth verification or memory deletion**. Every supersession still requires your explicit selection. The model's intermediate judgments can be wrong, and the staged method may be slower because it sometimes calls Qwen twice.
+
+Pull the latest commit in GitHub Desktop, then run the offline unit tests:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+The new suite is expected to have **42 tests**. They mock Ollama and **do not prove** the new classifier performs better in reality.
+
+Compare **both** classifiers on the first four cases of a **separate synthetic evaluation candidate**:
+
+~~~bat
+python -m scripts.compare_classifiers --limit 4
+~~~
+
+Then evaluate all 16, without changing the prompts between runs:
+
+~~~bat
+python -m scripts.compare_classifiers
+~~~
+
+Optional JSON export, ignored by Git:
+
+~~~bat
+python -m scripts.compare_classifiers --output results/raw/staged_comparison.json
+~~~
+
+The comparison code **never opens or edits your SQLite memory database**. It reports matches with author labels, how often non-replacement facts were wrongly marked `replaces`, and cumulative local inference time. It does **not** make an unqualified accuracy claim. The new cases were constructed after seeing development errors, so they are not independently labelled or a definitive blind test.
+
+Read [the staged-classifier protocol](docs/staged_classifier.md) and [the new 16 cases](benchmarks/conflict_eval_v1.json).
+
 ## Project files
 
 | Path | Purpose |
@@ -162,7 +199,10 @@ The benchmark only calls the local classifier, **never your SQLite database**, a
 | `semantic_search.py` | Calls Ollama for embeddings; ranks memories |
 | `answer_generator.py` | Calls Ollama's local chat endpoint with retrieved evidence; supports empty-context experiments |
 | `memory_ablation.py` | Runs two local Qwen calls with/without one selected memory |
-| `memory_conflicts.py` | Four-label memory classification, with a local duplicate short-circuit |
+| `memory_conflicts.py` | Existing four-label single-pass baseline with local duplicate check |
+| `memory_staged.py` | Experimental attribute-scope check followed by conditional update assessment |
+| `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
+| `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
 | `benchmarks/conflict_cases.json` | 16 author-labelled fictional development cases |
 | `scripts/run_conflict_benchmark.py` | Local benchmark, per-label confusion counts and optional export |
@@ -189,7 +229,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
-- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 and 2 user-tested; phase 3 duplicate guard and synthetic benchmark published, local testing pending**)
+- [ ] **V4:** Utility-based retention/suppression policy (**phases 1–3 evaluated; phase 4 two-stage classifier code and paired evaluation published, local testing pending**)
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
 ## Budget and privacy

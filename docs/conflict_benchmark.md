@@ -51,3 +51,7 @@ The project owner ran the first four synthetic cases: **2/4 agreed with the orig
 ## Full 16-case local run (Experiment 007)
 
 Owner-reported development-label agreement was **10/16**. The four normalised duplicates were local-rule successes; Qwen matched **6/12** other author labels. Both independent-role cases **C01 and C04** were mislabeled `replaces`. All four `uncertain` cases were also marked `replaces`, but their expected relation requires adjudication: a changed appointment or deadline might make an old value obsolete even without a new value. The complete original outputs, confusion counts, and proposed next research steps are in [Experiment 007](experiment_007_results.md). No prompt change was made on the basis of these observations.
+
+## Two-stage alternative (Phase 4)
+
+An experimental classifier in `memory_staged.py` is now available through the Streamlit method selector. The original `memory_conflicts.py` remains unchanged for baseline comparison. See [the two-stage protocol](staged_classifier.md) for a separate 16-case comparison set and false-replacement metric. It has not yet been tested with live local Qwen; do not assume that it corrects the two coexistence failures.
