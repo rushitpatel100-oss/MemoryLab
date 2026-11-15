@@ -272,7 +272,7 @@ First pull in GitHub Desktop and run the offline tests:
 python -m unittest discover -s tests -v
 ~~~
 
-**Expected test count: 81**, including 18 newly added tests. They mock model access. This release has not yet been run on your Windows laptop.
+**Expected test count: 83**, including 20 Phase 7 review tests. They mock model access. This release has not yet been run on your Windows laptop.
 
 Let the **second reviewer** enter the first four cases:
 
@@ -306,6 +306,18 @@ python -m scripts.adjudicate_reviews --lock
 ~~~
 
 Adjudication can **defer** cases that lack evidence; it does not silently change the original scores or labels. Outputs remain local under `results/raw/`, excluded from GitHub, and contain only fictional cases if you use the supplied dataset. See [Phase 7 methodology and instructions](docs/multirater_review.md).
+
+### Correction utility for unfinished adjudications
+
+An uploaded partial adjudication (4 of 8 flagged cases) exposed mismatched labels, evidence fields and storage actions. The review CLI now supports `python -m scripts.adjudicate_reviews --edit B04` to revisit any **already answered, unlocked** case. It preserves the previous decision in a local revision history. `--status` surfaces conflicting storage choices, and `--lock` prevents accidental finalisation when a duplicate is marked for supersession. **No uploaded JSON or saved memory is modified automatically.**
+
+After pulling from GitHub Desktop, run the revised suite:
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+Expected **83 offline tests** (up from 81). Resume pending cases with `python -m scripts.adjudicate_reviews`, then inspect `--status`, fix flagged entries with `--edit BXX`, and only then use `--lock`.
 
 ## Project files
 

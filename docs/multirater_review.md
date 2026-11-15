@@ -16,7 +16,7 @@ Start from the up-to-date MemoryLab repo in an activated Windows Python terminal
 python -m unittest discover -s tests -v
 ~~~
 
-Expected after Phase 7: **81 offline unit tests** (63 prior + 18 newly added). These simulate reviewer inputs; they do not confirm a real person has reviewed anything.
+Expected after Phase 7 plus the correction utility: **83 offline unit tests** (63 prior + 20 new or updated review tests). These simulate reviewer inputs; they do not confirm a real person has reviewed anything.
 
 To start with just four cases:
 
@@ -88,6 +88,17 @@ python -m scripts.adjudicate_reviews --lock
 ~~~
 
 Outputs: `results/raw/review_v1_adjudication.json` (the individual decisions) and `results/raw/review_v1_adjudicated_summary.json` (all 20 case IDs, final labelled or deferred status, alongside both original labels). The original review files are never overwritten. Unflagged agreeing cases are marked **agreed_not_adjudicated**, not declared expert-verified truth.
+
+### Correcting an unlocked adjudication
+
+If you realise a saved answer conflicts with its justification or storage action, you can correct it **before locking**:
+
+~~~bat
+python -m scripts.adjudicate_reviews --status
+python -m scripts.adjudicate_reviews --edit B04
+~~~
+
+The edit command displays the existing answer and asks all questions again for **that case only**. Earlier answers are retained in `revision_history` within the local adjudication JSON. Nothing is altered without your input. Once locked, the tool refuses revisions. The status command warns about contradictory storage recommendations, and `--lock` refuses to finalize cases such as a fact labelled **Duplicate** with an action of **Supersede old memory**. An automated check cannot catch all reasoning contradictions; review the written explanations too.
 
 **Important:** The adjudicator sees both human labels and so this stage is **not blind**. A separate adjudicator is preferable, but these tools do not enforce independent identities. Adjudicated outcomes should be reported as post-hoc corrections, never substituted silently into Experiment 010's original 15/20 baseline.
 

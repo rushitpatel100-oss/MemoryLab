@@ -285,8 +285,11 @@ def main():
         if review["locked"] or case_id not in review["answers"]:
             print("Cannot edit: case missing or adjudication already locked.")
             return 1
-        adjudicate_interactive(rows, review, limit=1, edit_id=case_id)
-        print("Revised case", case_id)
+        edited = adjudicate_interactive(rows, review, limit=1, edit_id=case_id)
+        if edited:
+            print("Saved revised case", case_id)
+        else:
+            print("No revision saved for", case_id)
         return 0
     if args.lock:
         try:
