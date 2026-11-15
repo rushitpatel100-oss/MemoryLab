@@ -458,7 +458,7 @@ if review is not None:
     if (
         smart_topic.strip().lower() != review["topic"]
         or smart_fact.strip() != review["fact"]
-        or smart_classifier != review["classifier"]
+        or smart_classifier != review.get("classifier")
     ):
         st.warning(
             "You changed the proposed fact. Review conflicts again "
