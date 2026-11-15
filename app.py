@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from datetime import datetime, timezone
 
@@ -283,3 +284,96 @@ if st.button("Generate answer from memory"):
                     "'all-minilm' and 'qwen2.5:1.5b' are installed "
                     "(run 'ollama list' in Command Prompt)."
                 )
+
+# Controlled memory-impact pilot (Version 4, phase 1)
+from memory_ablation import run_memory_comparison
+
+st.divider()
+
+st.subheader("6. Memory Impact Lab")
+st.caption(
+    "Experimental: ask local Qwen the same question with and without "
+    "one selected memory. Both conditions call Qwen. This is not "
+    "yet a learned retention policy or a formal research benchmark."
+)
+
+pilot_memories = search_memories("")
+
+if not pilot_memories:
+    st.info("Add a fictional test memory in section 1 to run this pilot.")
+else:
+    pilot_memory = st.selectbox(
+        "Select one active test memory",
+        pilot_memories,
+        format_func=lambda m: f"[M{m['id']}] {m['topic']}: {m['fact'][:90]}",
+        key="pilot_memory",
+    )
+
+    pilot_question = st.text_input(
+        "Question to compare",
+        placeholder="What hobby do I enjoy?",
+        key="pilot_question",
+    )
+
+    if st.button("Run with/without-memory experiment"):
+        if not pilot_question.strip():
+            st.warning("Enter a question to compare.")
+        else:
+            try:
+                with st.spinner("Running two local Qwen calls..."):
+                    st.session_state["memory_pilot_result"] = (
+                        run_memory_comparison(
+                            pilot_question, pilot_memory
+                        )
+                    )
+            except Exception as error:
+                st.error(f"Experiment failed: {error}")
+                st.info(
+                    "Confirm that Ollama is running and "
+                    "'qwen2.5:1.5b' is installed."
+                )
+
+    pilot_result = st.session_state.get("memory_pilot_result")
+
+    if pilot_result:
+        st.write(f"**Question:** {pilot_result['question']}")
+        st.caption(
+            f"Selected memory [M{pilot_result['memory']['id']}]: "
+            f"{pilot_result['memory']['fact']}"
+        )
+
+        left, right = st.columns(2)
+        with left:
+            st.markdown("**Without memory**")
+            st.write(pilot_result["without_memory"]["answer"])
+            st.caption(
+                "Elapsed: "
+                f"{pilot_result['without_memory']['elapsed_seconds']:.2f}s"
+            )
+        with right:
+            st.markdown("**With memory**")
+            st.write(pilot_result["with_memory"]["answer"])
+            st.caption(
+                "Elapsed: "
+                f"{pilot_result['with_memory']['elapsed_seconds']:.2f}s"
+            )
+
+        st.info(
+            "Compare both answers with the known fictional fact. "
+            "An answer difference is not proof of improved accuracy; "
+            "manually check whether each answer is supported."
+        )
+
+        st.download_button(
+            "Download pilot result (JSON)",
+            data=json.dumps(
+                pilot_result, indent=2, ensure_ascii=False
+            ),
+            file_name="memorylab_pilot_result.json",
+            mime="application/json",
+        )
+        st.caption(
+            "The downloaded JSON contains the question, selected memory, "
+            "and answers. Do not publish results with personal data."
+        )
+

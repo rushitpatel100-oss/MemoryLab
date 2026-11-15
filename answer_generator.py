@@ -22,13 +22,16 @@ SYSTEM_INSTRUCTIONS = (
 )
 
 
-def generate_answer(question, memories, model=DEFAULT_CHAT_MODEL):
+def generate_answer(question, memories, model=DEFAULT_CHAT_MODEL, *, allow_empty_context=False):
     """Return a response based only on selected active memory records.
 
     The retrieval stage chooses which memories to pass in; this function
     does not fetch private history, call an online provider, or store data.
+
+    allow_empty_context=True is only for experiments: call the model
+    with an empty memory list instead of returning a fixed fallback.
     """
-    if not question.strip() or not memories:
+    if not question.strip() or (not memories and not allow_empty_context):
         return NO_MEMORY_ANSWER
 
     records = [

@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Version 3 local Qwen inference confirmed by the project owner.** Versions 1 and 2 were also tested on Windows. We still need to evaluate whether Qwen's answers remain grounded in retrieved memories and whether it appropriately refuses unsupported questions. This is a baseline, not a validated research result.
+> **Current status: V4 Phase 1 pilot code published; local test pending.** Versions 1–3 ran on the project owner's Windows laptop. The owner reported that Qwen correctly acknowledged missing evidence in one negative test. A new two-call memory comparison feature is available, but neither a learned memory policy nor a research benchmark has been completed.
 
 ## Features
 
@@ -14,6 +14,7 @@ MemoryLab investigates an important GenAI engineering question: **when should an
 4. **Semantic search** with Ollama's local `all-minilm` embeddings and cosine similarity.
 5. **Ask MemoryLab** a natural-language question; retrieve candidate memories and pass them to `qwen2.5:1.5b` running on Ollama.
 6. **Inspect retrieved evidence**, including memory IDs and similarity scores.
+7. **Memory Impact Lab (pilot):** run two Qwen calls, with and without one selected memory, and inspect both answers.
 
 **Important limits:** The app currently treats all facts under one exact topic as replacements. Similarity is *not* a probability that a memory is true. A small LLM can still make mistakes or ignore grounding instructions. Don't use real private information while developing or documenting experiments.
 
@@ -95,13 +96,28 @@ Track: retrieved memories, similarity scores, whether Qwen was called, answer, w
 
 The next phase will automate controlled "with vs. without memory" experiments over synthetic scenarios, with explicit scoring criteria and repeatable results.
 
+## Try the memory-impact pilot (V4 Phase 1)
+
+This small, **manual** experiment is not yet a learned policy. The no-memory baseline genuinely calls Qwen with an empty evidence list rather than returning a fixed fallback.
+
+1. In **1. Add a memory**, save fictional topic `hobby`: `My favourite hobby is photography.`
+2. Scroll to **6. Memory Impact Lab**.
+3. Select that memory and ask `What hobby do I enjoy?`.
+4. Click **Run with/without-memory experiment**. Both conditions use the same Qwen model and settings.
+5. Read the two results side by side and manually decide which answer is supported by the fictional fact.
+6. Optionally download the JSON result. It includes the memory and answer texts, so **don't commit it or publish it with personal data**.
+
+See [the guided pilot](docs/ablation_pilot.md) for experimental cautions and expected behaviours.
+
 ## Project files
 
 | Path | Purpose |
 |---|---|
 | `app.py` | Streamlit app, memory storage, search, and QA interface |
 | `semantic_search.py` | Calls Ollama for embeddings; ranks memories |
-| `answer_generator.py` | Calls Ollama's local chat endpoint with retrieved evidence |
+| `answer_generator.py` | Calls Ollama's local chat endpoint with retrieved evidence; supports empty-context experiments |
+| `memory_ablation.py` | Runs two local Qwen calls with/without one selected memory |
+| `docs/ablation_pilot.md` | Guided first experiment and how to interpret results |
 | `tests/` | Offline unit tests; does not require Ollama |
 | `docs/research_plan.md` | Hypothesis, baselines, metrics, experimental stages |
 | `requirements.txt` | Python dependencies (Streamlit only at present) |
@@ -122,7 +138,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V1:** SQLite memory history, topic replacement, Streamlit interface (user-tested)
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
-- [ ] **V4:** Utility-based retention/suppression policy and counterfactual tests
+- [ ] **V4:** Utility-based retention/suppression policy (**phase 1 two-call ablation explorer published; laptop testing pending**)
 - [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis
 
 ## Budget and privacy

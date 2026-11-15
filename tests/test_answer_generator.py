@@ -62,5 +62,20 @@ class AnswerGeneratorTests(unittest.TestCase):
             generate_answer("What is my profession?", self.memories)
 
 
+    @patch("answer_generator.urllib.request.urlopen")
+    def test_empty_context_can_still_call_model_for_experiment(self, urlopen):
+        urlopen.return_value = io.BytesIO(
+            b'{"message": {"content": "Not established by memories."}}'
+        )
+        answer = generate_answer(
+            "What city do I live in?",
+            [],
+            allow_empty_context=True,
+        )
+        self.assertEqual(answer, "Not established by memories.")
+        urlopen.assert_called_once()
+        payload = json.loads(urlopen.call_args.args[0].data.decode("utf-8"))
+        self.assertIn("[]", payload["messages"][1]["content"])
+
 if __name__ == "__main__":
     unittest.main()
