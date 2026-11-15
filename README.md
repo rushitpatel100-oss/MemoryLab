@@ -272,7 +272,7 @@ First pull in GitHub Desktop and run the offline tests:
 python -m unittest discover -s tests -v
 ~~~
 
-**Expected test count: 80**, including 17 newly added tests. They mock model access. This release has not yet been run on your Windows laptop.
+**Expected test count: 81**, including 18 newly added tests. They mock model access. This release has not yet been run on your Windows laptop.
 
 Let the **second reviewer** enter the first four cases:
 

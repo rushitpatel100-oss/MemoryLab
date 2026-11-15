@@ -16,7 +16,7 @@ Start from the up-to-date MemoryLab repo in an activated Windows Python terminal
 python -m unittest discover -s tests -v
 ~~~
 
-Expected after Phase 7: **80 offline unit tests** (63 prior + 17 newly added). These simulate reviewer inputs; they do not confirm a real person has reviewed anything.
+Expected after Phase 7: **81 offline unit tests** (63 prior + 18 newly added). These simulate reviewer inputs; they do not confirm a real person has reviewed anything.
 
 To start with just four cases:
 
@@ -65,7 +65,7 @@ The program refuses unlocked or incomplete reviews and writes `results/raw/revie
 
 - **Exact label agreement:** number of cases where both humans selected the same relationship.
 - **Cohen's kappa:** marginal-adjusted descriptive agreement (can be undefined with constant labels; small, imbalanced samples have unstable estimates).
-- **Disagreement queue:** every pair with a conflicting label, plus a pre-registered set of potentially ambiguous cases B02, B04, B07, B10, B12, B15, B18, even if the raters agree.
+- **Disagreement queue:** every pair with a conflicting label, plus a pre-registered set of potentially ambiguous cases B02, B04, B07, B10, B12, B15, B18, even if the raters agree. The tool also flags **internal conflicts** between the second reviewer's recorded evidence, relationship label, and suggested storage action; this is a prompt for human review, not a truth judgement.
 
 This tool never calls Qwen, edits memories or overwrites either review. It shows both original rationales and the second reviewer's four evidence judgements **only after locking**.
 

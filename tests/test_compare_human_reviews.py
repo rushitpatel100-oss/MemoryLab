@@ -46,6 +46,19 @@ class HumanAgreementTests(unittest.TestCase):
         self.assertEqual(summary["same_label"], 19)
         self.assertTrue(isinstance(summary["cohens_kappa"], float))
 
+    def test_conflicting_review_evidence_is_flagged(self):
+        # Same label from both humans is not enough when the second
+        # reviewer also says the subject identity is unproven.
+        self.first["answers"]["B01"]["label"] = "replaces"
+        self.second["answers"]["B01"]["label"] = "replaces"
+        self.second["answers"]["B01"]["storage_action"] = "supersede_old"
+        rows, result = build_comparison(self.cases, self.first, self.second)
+        first = next(row for row in rows if row["id"] == "B01")
+        self.assertFalse(first["disagreement"])
+        self.assertTrue(first["second_evidence_conflict"])
+        self.assertTrue(first["adjudicate"])
+        self.assertGreaterEqual(result["second_evidence_conflicts"], 1)
+
     def test_both_label_files_must_be_complete_and_locked(self):
         with tempfile.TemporaryDirectory() as dirname:
             p1 = Path(dirname) / "first.json"

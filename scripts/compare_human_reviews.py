@@ -41,6 +41,32 @@ def locked_reviews(cases, digest, first_path=LABELS_FILE,
     return first, second
 
 
+def evidence_needs_review(assessment):
+    """Flag label/action choices that conflict with recorded evidence.
+
+    This is a consistency check, NOT a claim about real-world truth.
+    """
+    label = assessment["label"]
+    axes = assessment["axes"]
+    action = assessment["storage_action"]
+    aligned = (
+        axes["same_entity"] == "yes"
+        and axes["same_attribute"] == "yes"
+    )
+    obsolete = axes["old_fact_known_obsolete"] == "yes"
+    if label in {"duplicate", "replaces"} and not aligned:
+        return True
+    if label == "replaces" and not obsolete:
+        return True
+    if action == "supersede_old" and not (aligned and obsolete):
+        return True
+    if action == "skip_duplicate" and label != "duplicate":
+        return True
+    if label in {"coexists", "uncertain"} and action == "supersede_old":
+        return True
+    return False
+
+
 def build_comparison(cases, first, second):
     """Keep each rater's original answers, reasons and structured axes."""
     rows = []
@@ -50,6 +76,7 @@ def build_comparison(cases, first, second):
         second_answer = second["answers"][cid]
         differs = first_answer["label"] != second_answer["label"]
         priority = cid in PRIORITY_IDS
+        evidence_flag = evidence_needs_review(second_answer)
         rows.append({
             "id": cid,
             "topic": case["topic"],
@@ -62,7 +89,8 @@ def build_comparison(cases, first, second):
             "second": second_answer,
             "disagreement": differs,
             "pre_registered_priority": priority,
-            "adjudicate": differs or priority,
+            "second_evidence_conflict": evidence_flag,
+            "adjudicate": differs or priority or evidence_flag,
         })
     agreements = sum(not row["disagreement"] for row in rows)
     n = len(rows)
@@ -75,6 +103,9 @@ def build_comparison(cases, first, second):
         "total": n,
         "same_label": agreements,
         "disagreements": n - agreements,
+        "second_evidence_conflicts": sum(
+            row["second_evidence_conflict"] for row in rows
+        ),
         "agreement_fraction": round(p_o, 4),
         "cohens_kappa": round(kappa, 4) if kappa is not None else None,
         "rater1_counts": dict(p1),
@@ -112,7 +143,8 @@ def main():
     print(
         f"Human agreement: {metrics['same_label']}/{metrics['total']}; "
         f"disagreements: {metrics['disagreements']}; "
-        f"cases for adjudication: {metrics['needs_adjudication']}."
+        f"cases for adjudication: {metrics['needs_adjudication']}; "
+        f"second-review evidence conflicts: {metrics['second_evidence_conflicts']}."
     )
     print(
         "Cohen's kappa (descriptive, only 20 authored cases):",
