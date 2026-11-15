@@ -4,9 +4,12 @@
 
 MemoryLab is a beginner-friendly, local-first GenAI engineering research project investigating when AI assistants should **retain, update, or suppress** stored information. The project will compare simple memory management against semantic retrieval and eventually utility-based memory policies.
 
-> **Current status:** Version 1 (tested locally by the project owner) stores and searches memories, keeps version history, and marks earlier entries in the same topic as superseded. It does **not** yet use an LLM or detect contradictions intelligently.
+> **Current status:** Version 2 (tested locally by the project owner) adds semantic memory retrieval using Ollama's `all-minilm` embedding model. Version 1 topic-based storage, updates, and history remain available. This is **retrieval**, not yet generative question answering or an intelligent memory policy.
 
 ## What works today
+
+- Semantic retrieval of active memories through a **local** Ollama embedding model.
+- Similarity-ranked results from questions whose wording differs from stored topics.
 
 - Save a fact under a topic such as "job" or "hobby".
 - Update a topic: the previous entry becomes **superseded**, not deleted.
@@ -23,9 +26,19 @@ MemoryLab is a beginner-friendly, local-first GenAI engineering research project
 
 **Limitation:** All facts sharing one exact topic are treated as replacements. That is an intentional baseline, not yet an intelligent memory engine.
 
+## Semantic search example
+
+After adding your memories, try:
+
+- "What is my profession?"
+- "What do I do for a living?"
+- "What career am I currently working in?"
+
+The project owner tested these three queries locally with Version 2. Exact similarity scores and rankings depend on the stored data and model. This is a **smoke test**, not a formal performance evaluation.
+
 ## Quick start on Windows
 
-Requirements: Python 3.11+ (the project owner is using Python 3.14), an internet connection for installing Streamlit, and approximately 16 GB RAM recommended for future local models. **Ollama is not required for Version 1.**
+Requirements: Python 3.11+ (the project owner is using Python 3.14), an internet connection for installing Streamlit, and approximately 16 GB RAM recommended for future local models. **Ollama is required for Version 2 semantic search; Version 1 features still work without it.**
 
 In Command Prompt, run from the cloned MemoryLab directory:
 
@@ -37,6 +50,23 @@ python -m streamlit run app.py
 ~~~
 
 If Python 3.14 isn't installed, replace 3.14 with your installed version. A browser should open at http://localhost:8501.
+
+### Enable semantic retrieval (Version 2)
+
+1. Install Ollama for Windows from https://ollama.com/download.
+2. Open a new Command Prompt and run `ollama pull all-minilm`. The first pull downloads model weights.
+3. Make sure Ollama is running locally.
+4. In the Streamlit app, go to **4. Semantic Memory Search** and enter a question.
+
+The Ollama API is accessed locally at `http://localhost:11434/api/embed`. No API key or paid service is required.
+
+### Run offline unit tests
+
+~~~bat
+python -m unittest discover -s tests -v
+~~~
+
+These tests check cosine similarity and retrieval ranking with mocked vectors; they do **not** require Ollama or replace end-to-end evaluation.
 
 ### Your existing local app and data
 
@@ -59,7 +89,7 @@ See [Research plan](docs/research_plan.md) for the hypotheses, dataset design, a
 ## Roadmap
 
 - [x] **V1 — Persistent memory:** Streamlit + SQLite, topic-based updates, history
-- [ ] **V2 — Semantic retrieval:** local embedding model through Ollama; requires local testing
+- [x] **V2 — Semantic retrieval:** local embedding model through Ollama; three natural-language questions tested locally
 - [ ] **V3 — Answer generation:** local LLM with retrieved evidence
 - [ ] **V4 — Memory utility policy:** compare retention decisions experimentally
 - [ ] **V5 — Research evaluation:** held-out benchmarks, ablations, error analysis, reproducibility
@@ -70,7 +100,7 @@ See [Research plan](docs/research_plan.md) for the hypotheses, dataset design, a
 - Planned local embeddings/LLMs with Ollama: free
 - Optional paid evaluations: strictly capped at **£20 total per project**, with a £0 path for core experiments
 
-No account credentials or paid inference are required for Version 1. Running locally avoids uploading personal memories to a hosted database.
+No account credentials or paid inference are required for Versions 1–2. Running locally avoids uploading personal memories to a hosted database.
 
 ## Privacy and repository hygiene
 

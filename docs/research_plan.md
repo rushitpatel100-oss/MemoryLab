@@ -16,9 +16,9 @@ The hypothesis is **unverified**. Results may show no improvement; that would st
 
 SQLite stores each memory's topic, text, timestamp, and active/superseded status. A new item in the same topic supersedes the earlier item. No generative AI or learned policy is involved.
 
-### Stage 2 — Semantic retrieval
+### Stage 2 — Semantic retrieval (implemented; local smoke test passed)
 
-Encode active memories and queries with a small local embedding model. Rank by cosine similarity. Compare to literal topic search using synonyms and paraphrases. Record retrieval failures.
+Active memories and queries are encoded with Ollama's local `all-minilm` model and ranked using cosine similarity. The project owner successfully tested three paraphrased questions locally. Formal comparison to literal topic search and a labelled benchmark are **still pending**.
 
 ### Stage 3 — Local grounded answer generation
 

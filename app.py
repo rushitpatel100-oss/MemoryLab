@@ -153,3 +153,49 @@ if st.button("Show all memories"):
         st.caption(
             f"Status: {status} | Saved: {memory['created_at']}"
         )
+
+# Semantic search feature
+from semantic_search import find_similar
+
+st.divider()
+
+st.subheader("4. Semantic Memory Search")
+
+question = st.text_input(
+    "Ask a question",
+    placeholder="What is my profession?"
+)
+
+if st.button("Find related memories"):
+    if not question.strip():
+        st.warning("Please enter a question.")
+    else:
+        active_memories = search_memories("")
+
+        if not active_memories:
+            st.warning("No active memories found.")
+        else:
+            try:
+                results = find_similar(
+                    question,
+                    active_memories
+                )
+
+                for result in results[:3]:
+                    memory = result["memory"]
+                    score = result["similarity"]
+
+                    st.write(
+                        f"**{memory['fact']}**"
+                    )
+                    st.caption(
+                        f"Similarity score: {score:.3f}"
+                    )
+            except Exception as error:
+                st.error(
+                    f"Semantic search failed: {error}"
+                )
+                st.info(
+                    "Check that Ollama is running "
+                    "and all-minilm is installed."
+                )
