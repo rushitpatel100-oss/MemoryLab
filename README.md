@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: V4 Phase 3 code published (local validation pending).** Smart Memory Review now distinguishes `duplicate`, `replaces`, `coexists`, and `uncertain`. Normalised exact repeats are identified without a model call and blocked atomically on save. A 16-case fictional development benchmark is available. Earlier coexistence and supersession behaviours were user-tested; the new duplicate code and benchmark have not yet been tested on the owner's Windows laptop. This is not a learned utility policy or a held-out research result.
+> **Current status: V4 Phase 3 code published (local validation pending).** Smart Memory Review now distinguishes `duplicate`, `replaces`, `coexists`, and `uncertain`. Normalised exact repeats are identified without a model call and blocked atomically on save. A 16-case fictional development benchmark is available. Earlier coexistence and supersession behaviours were user-tested; the first four-case Phase 3 benchmark has now been run locally and matched 2/4 original development labels, with one expected label requiring adjudication. Duplicate blocking in the Streamlit UI has not yet been confirmed live. This is not a learned utility policy or a held-out research result.
 
 ## Features
 
@@ -152,7 +152,7 @@ Optional result export (the folder is gitignored):
 python -m scripts.run_conflict_benchmark --output results/raw/conflicts.json
 ~~~
 
-The benchmark only calls the local classifier, **never your SQLite database**, and does not upload anything. It is an **author-labelled development smoke test**, not a held-out accuracy result. See the [benchmark guide](docs/conflict_benchmark.md) and [case definitions](benchmarks/conflict_cases.json).
+The benchmark only calls the local classifier, **never your SQLite database**, and does not upload anything. It is an **author-labelled development smoke test**, not a held-out accuracy result. See the [benchmark guide](docs/conflict_benchmark.md), [case definitions](benchmarks/conflict_cases.json), and [Experiment 006](docs/experiment_006_results.md) for the first live outcomes and label ambiguity.
 
 ## Project files
 

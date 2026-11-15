@@ -43,3 +43,7 @@ The benchmark doesn't read or edit `memorylab.db`. Its counts and confusion matr
 ## Evaluation notes
 
 Track per-class errors, repeated trials, model/configuration, ambiguous cases, and the local deterministic-rule versus Qwen proportions. Before any research claims, create labelled examples from entirely new synthetic user profiles, get independent label reviews, freeze evaluation criteria, and evaluate on an unseen test set. A successful manual demonstration or four-case smoke test is not sufficient to claim a novel memory policy.
+
+## First live development-run observation
+
+The project owner ran the first four synthetic cases: **2/4 agreed with the original expected labels**. D01 and R01 passed; C01 failed because Qwen suggested `replaces` for compatible residence and work facts; U01 was marked a miss against the supplied `uncertain` label, but that label is itself contestable. Qwen predicted `replaces` for every one of its three calls. The duplicate pass came from the deterministic rule, not from Qwen. See [Experiment 006](experiment_006_results.md) for exact case outcomes, confusion counts and annotation concerns. This is one owner-reported development run, not a reliable accuracy estimate.
