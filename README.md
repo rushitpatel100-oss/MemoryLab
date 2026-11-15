@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 5 replacement-evidence safeguard + Phase 6 blind-evaluation workflow published (local testing pending).** The original and guarded classifiers remain unchanged. A fresh set of 20 fictional pairs has no answer labels in GitHub; a reviewer labels them before any new model run, then locks the local labels and evaluates Qwen versus the safeguard. Earlier evaluations revealed false supersession and the two-stage model's poor results. These new tools still require local testing and are not yet independently adjudicated or proof of model improvement.
+> **Current status: Phase 6 label-first experiment completed locally (Experiment 010).** On 20 fictional memory pairs, original Qwen and the guarded variant each matched 15/20 reviewer labels. The evidence gate reduced false replacement suggestions against these labels from 5 to 0, but missed one human-labelled genuine replacement (0 to 1) and generated six `uncertain` suggestions. Some reviewer labels are disputed; this is a single-reviewer diagnostic, **not independently adjudicated accuracy, proven memory safety or a learned utility policy**. The underlying model and safeguard remain experimental.
 
 ## Features
 
@@ -223,7 +223,7 @@ The script never opens the SQLite database and calls Qwen **once per case**, not
 
 The earlier experimental scores were measured on examples we had already discussed. To reduce that bias, this phase provides **20 new fictional fact pairs without expected labels** in `benchmarks/review_v1_cases.json`.
 
-**Important:** You are the first human reviewer; do not run the evaluation or request Qwen predictions until you have finished and locked your labels. Your judgements will be separate from the code author's but **not independently adjudicated by multiple experts**. The system is still a research prototype.
+**Important:** The owner has now completed a first label-locked evaluation on all 20 cases. Those labels are separate from the code author's but **not independently adjudicated by multiple experts**. Keep them unchanged for reproducibility; use the steps below only for a fresh local workflow.
 
 After pulling from GitHub Desktop, run the offline tests first:
 
@@ -257,7 +257,7 @@ python -m scripts.evaluate_review_v1
 
 The evaluator calls local Qwen once per pair and applies the gate to that **same** response. It reports agreement with your labels, incorrect replacement suggestions, missed genuine updates, and a confusion matrix in the saved JSON.
 
-The labels and results stay under `results/raw/`, excluded from GitHub, and neither script reads or writes your SQLite memories. Details are in [the blinded-review protocol](docs/blind_review.md).
+The labels and results stay under `results/raw/`, excluded from GitHub, and neither script reads or writes your SQLite memories. Details are in [the blinded-review protocol](docs/blind_review.md) and the [Experiment 010 results](docs/experiment_010_results.md).
 
 ## Project files
 
@@ -275,6 +275,7 @@ The labels and results stay under `results/raw/`, excluded from GitHub, and neit
 | `scripts/review_eval_cases.py` | Resumable terminal reviewer and label-lock workflow |
 | `scripts/evaluate_review_v1.py` | Refuses unlocked labels and scores the paired Qwen/gate run |
 | `docs/blind_review.md` | Evaluation rubric, step-by-step use and study limitations |
+| `docs/experiment_010_results.md` | First 20-case paired model-versus-gate findings and label issues |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
 | `memory_text.py` | Shared conservative text normalisation for duplicate checking |
@@ -304,7 +305,7 @@ Read the full [research plan](docs/research_plan.md).
 - [x] **V2:** Ollama embedding-based semantic search (user-tested on three example questions)
 - [x] **V3:** Local Qwen answer generation with retrieved memory evidence (**model runs locally; factual grounding still being evaluated**)
 - [ ] **V4:** Utility-based retention/suppression policy (**phases 1–4 investigated; phase 5 evidence-gated safety prototype published; no learned policy yet**)
-- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**blind-review infrastructure published; independent labels and local results pending**)
+- [ ] **V5:** Reproducible held-out evaluation, ablations, and error analysis (**single-reviewer 20-case result logged; independent adjudication and genuinely new held-out study pending**)
 
 ## Budget and privacy
 

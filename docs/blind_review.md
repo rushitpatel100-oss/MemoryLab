@@ -69,3 +69,7 @@ Fewer false replacement suggestions are desirable, but turning every decision in
 **Limitations:** The cases were authored within MemoryLab, the reviewer is not necessarily a trained annotator, and a single label is not verified ground truth. There are only 20 cases, no multiple raters, no randomised repeated run, and no externally sourced evaluation. It is a prospective blinded reviewer exercise, **not a rigorous independent held-out benchmark**. No model claims should be made before disagreements are adjudicated and new held-out studies are run.
 
 No paid API, cloud AI inference or new packages are required. These scripts never modify the memory database.
+
+## First completed local study — Experiment 010
+
+The owner completed and locked the human review for 20 fictional cases and ran the paired evaluator. Both original Qwen and the evidence-gated version matched **15/20** reviewer labels. False replacement suggestions against those labels fell **5 → 0**; the number of labelled genuine replacements recognised fell **7 → 6**; uncertain suggestions rose **0 → 6**. The model ran once per case and total Qwen inference time was reported as **51.835 seconds**. The original labels are preserved, but some (particularly B04 and B15) deserve independent review. See [Experiment 010 results](experiment_010_results.md) for the unchanged comparison, case-specific explanations, and proposed next study.

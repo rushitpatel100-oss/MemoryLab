@@ -48,11 +48,11 @@ Experiment 009 found that a two-stage Qwen pipeline introduced more false replac
 
 A conservative rule can miss real updates that are not phrased as `from X to Y`. Evaluate its false replacement reduction **and** genuine replacement coverage. The current comparison set has already been used during feature design; genuine held-out validation will require new independent synthetic examples and agreed labels.
 
-### Stage 4E — Blind, label-first evaluation candidate (published; results pending)
+### Stage 4E — Blind, label-first evaluation candidate (first local experiment completed)
 
 Twenty new fictional fact pairs are provided **without expected relation labels**. Before any new model evaluation, an independent human reader of the examples can assign a four-way label and explanation through a resumable local CLI. The program locks complete labels to the case-file SHA-256 fingerprint, and the evaluation runner refuses to run until all labels are locked. It compares one baseline Qwen prediction and the gate's post-processing of that same output, recording false replacements and missed real updates separately.
 
-This workflow reduces answer-contamination from seeing model predictions first, but the cases were still authored within the project; one untrained reviewer does **not** constitute expert-adjudicated ground truth. Do not tune the gate against this set before recording results. Freeze the dataset and labels, then independently review disagreements and plan additional held-out subjects with multiple raters.
+This workflow reduces answer-contamination from seeing model predictions first, but the cases were still authored within the project; one reviewer does **not** constitute expert-adjudicated ground truth. **Experiment 010** matched 15/20 reviewer labels for both raw and guarded classifiers; false replacement suggestions fell from 5 to 0, but genuine replacements recognised fell from 7 to 6. Some labels are contestable (especially B04 and B15), so neither overall agreement nor gate safety is fully validated. Preserve the original labels, independently adjudicate disputed cases, then evaluate on new held-out subjects with multiple raters. See [Experiment 010](experiment_010_results.md).
 
 ### Stage 5 — Rigorous evaluation
 
