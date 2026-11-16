@@ -1,3 +1,4 @@
+import hashlib
 import json
 import sqlite3
 from contextlib import closing
@@ -103,10 +104,11 @@ setup_database()
 st.title("🧠 MemoryLab")
 st.write("An experimental adaptive AI memory system")
 
-st.subheader("1. Add a memory (baseline)")
-st.caption(
-    "This baseline automatically supersedes ALL older facts under the "
-    "same topic. For conflict-aware saving use section 7 below."
+st.subheader("1. Add a memory (research baseline)")
+st.warning(
+    "This research baseline REPLACES ALL active memories with the same topic. "
+    "For safer day-to-day updates, use section 7, Smart Memory Review, "
+    "where you choose exactly which old facts to keep."
 )
 
 topic = st.text_input(
@@ -119,9 +121,37 @@ fact = st.text_area(
     placeholder="Example: I work as a mechanical engineer."
 )
 
-if st.button("Save memory"):
+# A strong UI confirmation protects against accidentally overwriting ALL
+# active facts under the topic. The baseline itself stays available for
+# reproducible research and is not the recommended human-review path.
+baseline_existing = 0
+if topic.strip():
+    with closing(connect()) as conn:
+        baseline_existing = conn.execute(
+            "SELECT COUNT(*) FROM memories WHERE active=1 AND topic=?",
+            (topic.strip().lower(),),
+        ).fetchone()[0]
+
+baseline_confirmed = True
+if baseline_existing:
+    st.error(
+        f"WARNING: {baseline_existing} active memories under this topic "
+        "will all become inactive if you use the research baseline."
+    )
+    confirmation_key = hashlib.sha256(
+        (topic.strip().lower() + "\\0" + fact.strip()).encode("utf-8")
+    ).hexdigest()[:16]
+    baseline_confirmed = st.checkbox(
+        "I understand this baseline supersedes EVERY active fact in this "
+        "topic, rather than only the facts I select.",
+        key="baseline_confirm_" + confirmation_key,
+    )
+if st.button(
+    "Save using research baseline",
+    disabled=bool(baseline_existing) and not baseline_confirmed,
+):
     if save_memory(topic, fact):
-        st.success("Memory saved successfully!")
+        st.success("Baseline memory saved. Review the memory history to see updates.")
     else:
         st.warning("Please enter a topic and a fact.")
 
