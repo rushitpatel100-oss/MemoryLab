@@ -1,0 +1,393 @@
+{
+  "version": 1,
+  "title": "MemoryLab Phase 13 fictional answer-support challenge",
+  "provenance": "Project-authored curated examples and candidate answers. NO source truth labels or novelty flags included. NOT an independently authored benchmark, NOT outputs from Qwen.",
+  "blind_review": "The reviewer sees the fictional source facts and candidate answer before seeing the novelty probe results. Final labels are human-review attestations, not independent example generation.",
+  "labels_guide": "For each answer choose supported, unsupported, or uncertain. Supported means the complete candidate answer follows from the shown facts. Unsupported means it conflicts with facts or makes a claim not justified by them. Uncertain means the reviewer cannot decide; excluded from binary precision/recall.",
+  "cases": [
+    {
+      "id": "C01",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Orchid Makers opens at 9 every weekday."
+        }
+      ],
+      "question": "When does Orchid Makers open on weekdays?",
+      "candidate_answer": "It opens at 9."
+    },
+    {
+      "id": "C02",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Harbor Library stores field journals in its archive."
+        }
+      ],
+      "question": "What kind of journals does Harbor Library store?",
+      "candidate_answer": "Field journals."
+    },
+    {
+      "id": "C03",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The ceramics course takes place in Slate Hall."
+        }
+      ],
+      "question": "Where does the ceramics course take place?",
+      "candidate_answer": "Slate Hall."
+    },
+    {
+      "id": "C04",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Mila's kayak is yellow."
+        }
+      ],
+      "question": "What colour is Mila's kayak?",
+      "candidate_answer": "Yellow."
+    },
+    {
+      "id": "C05",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The brass telescope sits by the west window."
+        }
+      ],
+      "question": "Where is the brass telescope?",
+      "candidate_answer": "By the western window."
+    },
+    {
+      "id": "C06",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Juniper Studio keeps drawing pencils for visitors."
+        }
+      ],
+      "question": "What art supplies does Juniper Studio provide?",
+      "candidate_answer": "Pencils for sketching."
+    },
+    {
+      "id": "C07",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Our visitor centre closes each Thursday."
+        }
+      ],
+      "question": "When does the visitor centre shut?",
+      "candidate_answer": "On Thursdays."
+    },
+    {
+      "id": "C08",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The museum cafe serves mint tea."
+        }
+      ],
+      "question": "Can visitors get mint tea at the museum cafe?",
+      "candidate_answer": "Yes, the cafe serves mint tea."
+    },
+    {
+      "id": "C09",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The event changed its meeting day, but no replacement weekday was given."
+        }
+      ],
+      "question": "Which day does the event meet now?",
+      "candidate_answer": "Monday."
+    },
+    {
+      "id": "C10",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The nature trail is 4 kilometres long."
+        }
+      ],
+      "question": "How many kilometres long is the nature trail?",
+      "candidate_answer": "It is 7 kilometres long."
+    },
+    {
+      "id": "C11",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The workshop takes place in Alder Room."
+        }
+      ],
+      "question": "Where is the workshop held?",
+      "candidate_answer": "Birch Room."
+    },
+    {
+      "id": "C12",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The choir meets on Wednesday."
+        }
+      ],
+      "question": "Which weekday does the choir meet?",
+      "candidate_answer": "Friday."
+    },
+    {
+      "id": "C13",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The animation club moved its meeting from Monday to Thursday."
+        }
+      ],
+      "question": "What weekday does the animation club meet now?",
+      "candidate_answer": "Monday."
+    },
+    {
+      "id": "C14",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The community fair moved from Pine Hall to Cedar Hall."
+        }
+      ],
+      "question": "Where is the community fair held now?",
+      "candidate_answer": "Pine Hall."
+    },
+    {
+      "id": "C15",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The museum's opening time changed from ten to eleven."
+        }
+      ],
+      "question": "What time does the museum open now?",
+      "candidate_answer": "Ten."
+    },
+    {
+      "id": "C16",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The boat was renamed from Kestrel to Voyager."
+        }
+      ],
+      "question": "What is the boat's current name?",
+      "candidate_answer": "Kestrel."
+    },
+    {
+      "id": "C17",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Nina plays the flute."
+        },
+        {
+          "id": 2,
+          "fact": "Omar plays the cello."
+        }
+      ],
+      "question": "Which instrument does Nina play?",
+      "candidate_answer": "The cello."
+    },
+    {
+      "id": "C18",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The cycling team's home jersey is navy."
+        },
+        {
+          "id": 2,
+          "fact": "Its away jersey is grey."
+        }
+      ],
+      "question": "What colour is the cycling team's away jersey?",
+      "candidate_answer": "Navy."
+    },
+    {
+      "id": "C19",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The annex has a blue telescope."
+        },
+        {
+          "id": 2,
+          "fact": "The dome has a red telescope."
+        }
+      ],
+      "question": "What colour is the dome's telescope?",
+      "candidate_answer": "Blue."
+    },
+    {
+      "id": "C20",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Alice likes apple pie."
+        },
+        {
+          "id": 2,
+          "fact": "Ben likes lemon pie."
+        }
+      ],
+      "question": "Which pie does Ben prefer?",
+      "candidate_answer": "Apple pie."
+    },
+    {
+      "id": "C21",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The rooftop garden no longer grows lavender; it grows rosemary."
+        }
+      ],
+      "question": "What does the rooftop garden grow now?",
+      "candidate_answer": "Lavender."
+    },
+    {
+      "id": "C22",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The laboratory does not allow visitors on Sunday."
+        }
+      ],
+      "question": "Are visitors allowed in the laboratory on Sunday?",
+      "candidate_answer": "Yes, they are allowed on Sunday."
+    },
+    {
+      "id": "C23",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The cafe has never offered oat milk; it offers soy milk."
+        }
+      ],
+      "question": "Does the cafe offer oat milk?",
+      "candidate_answer": "Yes, it offers oat milk."
+    },
+    {
+      "id": "C24",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Cleo has not finished the mural."
+        }
+      ],
+      "question": "Has Cleo finished the mural?",
+      "candidate_answer": "Yes, she has finished it."
+    },
+    {
+      "id": "C25",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The club's next meetup day has not been confirmed."
+        }
+      ],
+      "question": "Is the club meetup on Saturday?",
+      "candidate_answer": "Yes, it is on Saturday."
+    },
+    {
+      "id": "C26",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The public lecture begins at 5."
+        }
+      ],
+      "question": "Does the public lecture start at 9?",
+      "candidate_answer": "It begins at 9."
+    },
+    {
+      "id": "C27",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The poster's colour has not been selected."
+        }
+      ],
+      "question": "Is the poster pink?",
+      "candidate_answer": "It is pink."
+    },
+    {
+      "id": "C28",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The team has not chosen an event host."
+        }
+      ],
+      "question": "Is Dev hosting the event?",
+      "candidate_answer": "Dev is the host."
+    },
+    {
+      "id": "C29",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The willow committee meets on Tuesday."
+        },
+        {
+          "id": 2,
+          "fact": "One of my committees changed its schedule."
+        }
+      ],
+      "question": "What is the willow committee's current weekday?",
+      "candidate_answer": "Tuesday."
+    },
+    {
+      "id": "C30",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "The office printer uses red ink."
+        },
+        {
+          "id": 2,
+          "fact": "The basement printer now uses green ink."
+        }
+      ],
+      "question": "What ink does the office printer use?",
+      "candidate_answer": "Red ink."
+    },
+    {
+      "id": "C31",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "One of my cousins wrote a play."
+        },
+        {
+          "id": 2,
+          "fact": "My cousin Robin lives in Exeter."
+        }
+      ],
+      "question": "Did Robin write the play?",
+      "candidate_answer": "Robin wrote the play."
+    },
+    {
+      "id": "C32",
+      "retrieved_memories": [
+        {
+          "id": 1,
+          "fact": "Nora's bicycle bell was broken."
+        },
+        {
+          "id": 2,
+          "fact": "A bicycle in the household was repaired."
+        }
+      ],
+      "question": "Has Nora's bicycle bell been repaired?",
+      "candidate_answer": "Yes, the bell was repaired."
+    }
+  ]
+}
