@@ -40,6 +40,17 @@ def save_memory(topic, fact):
     timestamp = datetime.now(timezone.utc).isoformat()
 
     with closing(connect()) as conn, conn:
+        # Fail closed on demo baseline overwrites, inside a SQLite write
+        # transaction. This protects against stale Streamlit UI state and
+        # accidental checkbox/button interactions.
+        if os.environ.get("MEMORYLAB_DEMO_MODE") == "1":
+            conn.execute("BEGIN IMMEDIATE")
+            existing_count = conn.execute(
+                "SELECT COUNT(*) FROM memories WHERE active=1 AND topic=?",
+                (topic,),
+            ).fetchone()[0]
+            if existing_count:
+                return False
         conn.execute(
             "UPDATE memories SET active = 0 WHERE topic = ?",
             (topic,)
@@ -140,12 +151,21 @@ if topic.strip():
             (topic.strip().lower(),),
         ).fetchone()[0]
 
+demo_bulk_overwrite_blocked = (
+    os.environ.get("MEMORYLAB_DEMO_MODE") == "1" and bool(baseline_existing)
+)
 baseline_confirmed = True
 if baseline_existing:
     st.error(
         f"WARNING: {baseline_existing} active memories under this topic "
         "will all become inactive if you use the research baseline."
     )
+    if demo_bulk_overwrite_blocked:
+        st.error(
+            "ISOLATED DEMO SAFEGUARD: bulk replacement is disabled for "
+            "existing topics in this demo, even after acknowledgement. "
+            "Use Section 7: Smart Memory Review to update selected facts."
+        )
     confirmation_key = hashlib.sha256(
         (topic.strip().lower() + "\\0" + fact.strip()).encode("utf-8")
     ).hexdigest()[:16]
@@ -156,12 +176,16 @@ if baseline_existing:
     )
 if st.button(
     "Save using research baseline",
-    disabled=bool(baseline_existing) and not baseline_confirmed,
+    disabled=(bool(baseline_existing) and not baseline_confirmed)
+    or demo_bulk_overwrite_blocked,
 ):
     if save_memory(topic, fact):
         st.success("Baseline memory saved. Review the memory history to see updates.")
     else:
-        st.warning("Please enter a topic and a fact.")
+        st.warning(
+            "Memory was not saved. The isolated demo cannot bulk-replace "
+            "existing facts; check the topic and use Smart Memory Review."
+        )
 
 st.divider()
 
