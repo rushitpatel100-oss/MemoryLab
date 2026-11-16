@@ -89,6 +89,24 @@ class EvidenceFirstReviewTests(unittest.TestCase):
         self.assertEqual(result["provisional_label"], "uncertain")
         self.assertEqual(result["safe_storage_action"], "review_needed")
 
+    def test_indefinite_referent_cannot_replace_known_old_fact(self):
+        case = {
+            "id": "X", "topic": "schedule",
+            "old_fact": "The nature club meets every Thursday.",
+            "new_fact": "One of my clubs changed its meeting day.",
+        }
+        payload = {
+            "axes": dict(self.ex["axes"], same_assertion="no",
+                         old_fact_known_obsolete="yes"),
+            "old_evidence": "nature club",
+            "new_evidence": "One of my clubs",
+            "explanation": "A club changed the day.",
+        }
+        result = interpret(case, payload)
+        self.assertEqual(result["provisional_label"], "uncertain")
+        self.assertEqual(result["safe_storage_action"], "review_needed")
+        self.assertIn("indefinite", " ".join(result["flags"]))
+
     def test_missing_quote_results_in_uncertain(self):
         response = dict(self.ex, old_evidence="invented quote")
         result = interpret(self.case, response)

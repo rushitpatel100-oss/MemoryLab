@@ -173,12 +173,15 @@ def interpret(case, response):
             "Contrasting role/location qualifiers need identity review: "
             + ", ".join(contrasts)
         )
-    if "one of" in case["new_fact"].lower() and axes["same_entity"] == "yes":
+    indefinite_referent = "one of" in case["new_fact"].lower()
+    if indefinite_referent and axes["same_entity"] == "yes":
         warnings.append("An indefinite referent was treated as a known entity.")
     relation = classify_from_evidence(axes)
-    # A model that cannot accurately quote both claims, or contradicts
-    # an explicit role cue, has NOT established enough evidence.
-    if not valid_old or not valid_new or contrasts and relation == "replaces":
+    # A model that cannot quote both claims or cannot establish the
+    # identity/role of a proposed replacement has insufficient evidence.
+    if (not valid_old or not valid_new
+            or (contrasts and relation == "replaces")
+            or (indefinite_referent and relation == "replaces")):
         relation = "uncertain"
     if relation == "replaces":
         warnings.append("Replacement proposal needs explicit human confirmation.")
