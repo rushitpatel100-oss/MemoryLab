@@ -3,7 +3,7 @@
 
 MemoryLab is a Python, SQLite, Streamlit and Ollama portfolio project that explores a practical problem: **how should an assistant use useful remembered facts without losing other facts, confusing outdated information with current information, or inventing answers?**
 
-**V1.0 status: local functional and clean-environment tests reported PASS; publication checks still open.** The project owner reported **295/295 offline tests passing**, correct selective memory history and safety controls, a correct answer to one supported fictional question, and abstention on one unsupported fictional question. These are local engineering and manual observations, **not independent model accuracy**. The owner also ran a fresh-clone, fresh-venv check and pasted six PASS lines (project layout, privacy excludes, UI guard, temporary storage, runtime, offline suite); the optional Ollama model-tag line was not included. A preliminary pattern scan of all 104 main-branch commit diffs found no common token-pattern matches, but comprehensive personal-data review remains open. An earlier failed UI walkthrough led to an extra demo-only overwrite safeguard; see [acceptance history](docs/v1_acceptance_status.md).
+**V1.0 status: local functional and clean-environment tests reported PASS; owner-approved public publication and `v1.0.0` tag are pending GitHub actions.** The project owner reported **295/295 offline tests passing**, correct selective memory history and safety controls, a correct answer to one supported fictional question, and abstention on one unsupported fictional question. These are local engineering and manual observations, **not independent model accuracy**. The owner also ran a fresh-clone, fresh-venv check and pasted six PASS lines (project layout, privacy excludes, UI guard, temporary storage, runtime, offline suite); the optional Ollama model-tag line was not included. A preliminary pattern scan of all 104 main-branch commit diffs found no common token-pattern matches, and the owner later confirmed completing a human content/history privacy review (not independently verified). An earlier failed UI walkthrough led to an extra demo-only overwrite safeguard; see [acceptance history](docs/v1_acceptance_status.md).
 
 > **Important:** MemoryLab is an experimental research demonstrator, **not a production AI assistant or an automatic truth checker**. It uses local inference but can still generate unsupported answers.
 
@@ -75,7 +75,7 @@ The demo shows how one fictional memory can be updated while preserving a differ
 
 **Project stack:** Python · Streamlit · SQLite · Ollama · all-minilm · Qwen 2.5 1.5B · unittest
 
-**Release position:** The repository is currently **private**. The V1.0 release candidate is documented, but **public visibility and a v1.0 tag are deliberately withheld** until clean-install and privacy/history review are complete. See [publication checklist](docs/publication_checklist.md).
+**Release position:** The owner confirmed completing the final privacy/history review and explicitly authorised public visibility and the `v1.0.0` tag. These GitHub publication actions are **not yet complete**; do not describe this as a published release until the visibility change and release are confirmed. See [publication checklist](docs/publication_checklist.md).
 
 ## Project navigation
 
