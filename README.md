@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 020 — Novelty-probe weaknesses verified; optional Phase 14 semantic verifier published (local run pending).** On 32 project-curated fictional answer-support cases, one frozen reviewer labelled 22 unsupported, 9 supported and 1 uncertain. The lexical probe caught **10/22 unsupported**, missed **12**, and falsely flagged **3/9 supported**. This exposes failures on stale values and mismatched entities even when answer words occur in memory. A separate Qwen-based semantic verifier now records raw structured decisions, evidence warnings and deferrals for comparison with the **unchanged frozen signoff**; it is not live or independently validated accuracy. See [Experiment 020](docs/experiment_020_results.md).
+> **Current status: Experiment 021 — Phase 14 semantic-verifier failure recorded; V1.0 release candidate preparation.** The optional semantic verifier labelled **all 32 curated answers `supported`**, missing all **22 reviewer-labelled unsupported** cases; the lexical probe had missed 12/22. Neither experimental checker can safely approve or block live answers. We are now **freezing model-tuning work** to stabilize the actual product: Smart Memory Review remains human-controlled, the broad-topic research baseline now requires explicit confirmation, and a new local release-readiness command checks isolated SQLite safety and the unit suite. The live answer model is still experimental. **No independent accuracy or verified V1.0 release is claimed.** See [Experiment 021](docs/experiment_021_results.md) and the [release gate](docs/v1_release_gate.md).
 
 ## Features
 
@@ -550,7 +550,7 @@ python -m unittest discover -s tests -v
 python -m streamlit run app_answer_challenge.py
 ```
 
-Expected **264 offline tests** (14 new; not run on the owner's computer). In the dashboard review all 32 answers as supported, unsupported or uncertain; save and then explicitly **freeze** your labels. The probe is hidden until after the freeze. Then run:
+Expected **276 offline tests** (14 new; not run on the owner's computer). In the dashboard review all 32 answers as supported, unsupported or uncertain; save and then explicitly **freeze** your labels. The probe is hidden until after the freeze. Then run:
 
 ```bat
 python -m scripts.evaluate_answer_challenge
@@ -570,7 +570,21 @@ python -m scripts.evaluate_semantic_verifier --limit 4
 python -m scripts.evaluate_semantic_verifier
 ```
 
-Expected suite **264 offline tests** (11 new; execution on local Windows remains unverified). The final comparison is written to `results/raw/phase14_semantic_verifier_comparison.md`. **No new review session is necessary** if the original Phase 13 signoff is already locked. No code changes to the live answer generator or SQLite. See [Phase 14 protocol](docs/phase14_protocol.md).
+Expected suite **276 offline tests** (11 new; execution on local Windows remains unverified). The final comparison is written to `results/raw/phase14_semantic_verifier_comparison.md`. **No new review session is necessary** if the original Phase 13 signoff is already locked. No code changes to the live answer generator or SQLite. See [Phase 14 protocol](docs/phase14_protocol.md).
+
+## Experiment 021 — Preparing an honest portfolio V1.0
+
+Phase 14's verifier classified **32/32 answers as supported**, including **22 reviewer-labelled unsupported** answers. It is **not a usable answer filter**. We're freezing verifier tuning to finish a **human-controlled research demonstrator**, not an autonomous truth-checker. The app's broad-topic replacement baseline now shows an explicit warning and requires acknowledgement when older facts would be deactivated; Smart Memory Review is recommended.
+
+After GitHub Desktop **Fetch origin → Pull origin**, run one command:
+
+```bat
+python -m scripts.v1_release_readiness --check-models
+```
+
+Expected **276 unit-test methods** (264 before this stage, 12 added); latest execution on your PC is unverified. The tool checks the actual unit suite, isolated SQLite keep/supersede/duplicate protection, UI guard, dependencies and local Ollama tags. It writes numbered files under `results/raw/v1_release_readiness_*.md` and never reads the personal database.
+
+**Upload the newest readiness report**, then complete the manual Streamlit demo and privacy checklist in [V1.0 release gate](docs/v1_release_gate.md). No release tag exists yet.
 
 ## Project files
 
@@ -638,6 +652,9 @@ Expected suite **264 offline tests** (11 new; execution on local Windows remains
 | `scripts/evaluate_semantic_verifier.py` | Experimental semantic answer-support verifier, raw decision audit and frozen-label comparison |
 | `docs/experiment_020_results.md` | Phase 13 false positives, false negatives and research decisions |
 | `docs/phase14_protocol.md` | Commands and validity limits for the optional local semantic verifier |
+| `scripts/v1_release_readiness.py` | Local one-command V1.0 engineering gate; temporary SQLite and offline tests |
+| `docs/experiment_021_results.md` | Phase 14 all-supported negative result and chosen release boundary |
+| `docs/v1_release_gate.md` | V1.0 manual smoke checks, privacy, reproducibility and go/no-go criteria |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

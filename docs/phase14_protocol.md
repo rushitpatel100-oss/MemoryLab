@@ -45,3 +45,7 @@ Invalid output, fabricated evidence quotes, and unsupported positive-evidence cl
 After the comparison finishes, examine whether the local verifier catches the 12 lexical misses **without** rejecting C05/C06/C08 or blindly abstaining. In particular, review entity bindings, stale versus current values, and unknowns. Then construct an independently curated *new* holdout with multiple blind reviewers before a production or portfolio accuracy claim.
 
 Upload `phase14_semantic_verifier_comparison.md` for analysis.
+
+## Actual outcome — Experiment 021
+
+The uploaded Phase 14 comparison shows the semantic verifier issued **32/32 `supported`** verdicts, despite **22 reviewer-labelled unsupported answers**. It detected **zero** unsupported cases. The saved comparison does not expose the underlying raw model messages, so the exact mechanism cannot be determined. **Do not run this verifier as a production gate or claim a successful model evaluation.** The separate [Experiment 021 report](experiment_021_results.md) explains the negative result; the project now focuses on the [V1.0 release gate](v1_release_gate.md) rather than more tuning on exposed examples.

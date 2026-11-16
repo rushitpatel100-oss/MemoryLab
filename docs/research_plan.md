@@ -136,6 +136,12 @@ The frozen 32-case project-authored Phase 13 review counted 10 true positive nov
 
 Phase 14 provides a separate optional local Qwen semantic verifier of candidate-answer support, with raw structured reply retention, evidence-quote warnings, and an explicit three-way verdict and deferral accounting. It reuses the **already locked** reviewer labels for an exploratory comparison, without asking for more manual labelling. The new code does not alter the live app, memory DB or previous review JSON. The 32 curated examples are **not a fresh blind holdout for this verifier**; later evaluation requires independent example collection and multiple reviewers. See [Experiment 020](experiment_020_results.md) and [Phase 14](phase14_protocol.md).
 
+### Stage 4U — Experiment 021: all-supported semantic verifier and V1.0 release gate
+
+On the uploaded 32-case Phase 14 comparison, the optional Qwen semantic verifier predicted `supported` **for all 32**, detecting **0/22** unsupported answers in the previously frozen single-reviewer, project-authored challenge. The lexical novelty probe had detected 10/22 but produced three false alarms. Neither method is a safe automated gate. The Phase 14 raw model JSON was not supplied, so precise quote/reason failure mechanisms remain unverified. No score is independent model accuracy.
+
+The immediate work is **V1.0 candidate stabilization**, not another model prompt variant. The Streamlit research-baseline saving UI now requires explicit risk acknowledgement before deactivating active same-topic facts; selective Smart Memory Review continues with human confirmation and transactional SQLite protections. A separate local release-check script tests temporary database safety, imports, privacy exclusions and offline tests without reading user memories. Finish manual UI, privacy, clean-environment and documentation checks before any release/tag. See [Experiment 021](experiment_021_results.md) and [V1 release gate](v1_release_gate.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
