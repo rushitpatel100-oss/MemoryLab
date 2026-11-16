@@ -74,3 +74,7 @@ Each completed scenario is saved to Git-ignored `results/raw/` before moving on.
 ## Next steps after you share the reports
 
 Compare which policies lose necessary information or keep obsolete information. Inspect at least the **cases where actual Qwen answers disagree with the keyword proxy**. Document retrieval versus generation failure modes separately. Then design a fresh blinded independently labelled test set, and only after that consider learning a retention policy from downstream utility.
+
+## Completed local result and Phase 11 follow-up
+
+The owner's uploaded reviewed-policy semantic run completed 14 scenarios/28 questions, with the authored active memory states matching and every required source available/retrieved for the **27 answerable queries**. A rigid text proxy matched 25/28 answers; two mismatches were semantically acceptable wording variations and one (**P07 Q2**) invented an unsupported weekday. This is an answer-generation rather than a storage/retrieval failure in the observed run. See [Experiment 017](experiment_017_results.md). Run `python -m scripts.audit_phase10_answers` after pulling for a separate audit, and see [Phase 11 protocol](phase11_protocol.md) for the opt-in extractive grounding experiment. **No independently validated accuracy is claimed.**

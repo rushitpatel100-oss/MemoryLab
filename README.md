@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 10 — Fresh downstream memory-outcome development evaluation published, local run pending.** Fourteen new **project-authored fictional** multi-turn scenarios and 28 follow-up questions exercise the real human-approved SQLite save function versus keep-everything and topic-overwrite baselines. An offline runner measures retained and obsolete facts; optional runners use the unchanged local Qwen answer generator with full context, or the real `all-minilm` retrieval pipeline. All SQLite databases are **temporary**; no user memories or old evaluation artifacts are changed. These author-scripted expectations are **not independent human ground truth**. See [Phase 10 protocol](docs/phase10_protocol.md).
+> **Current status: Experiment 017 — Phase 10 semantic run analysed; evidence-required answer experiment published.** The uploaded reviewed-policy run completed **14/14** fictional scenarios and **28** questions, with authored active-memory states and all 27 answerable evidence sources preserved/retrieved. The literal checker passed **25/28**; two apparent failures were valid wording variants, while Qwen invented **Monday** for an unspecified new meeting day. A separate offline answer audit and opt-in **Phase 11 extractive-evidence answer trial** are published. These are development findings, **not independent accuracy**. The live app, original model answers and SQLite memories remain unchanged. See [Experiment 017](docs/experiment_017_results.md).
 
 ## Features
 
@@ -496,7 +496,7 @@ python -m unittest discover -s tests -v
 python -m scripts.evaluate_downstream_memory
 ~~~
 
-The first runs the offline regression suite (**201 expected tests**, 24 new). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
+The first runs the offline regression suite (**228 expected tests**, including 27 new Phase 11/audit tests). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
 
 To measure whether the unchanged local Qwen answer generator uses the active facts, **first test the reviewed policy with full memory context**:
 
@@ -515,6 +515,20 @@ python -m scripts.evaluate_semantic_outcomes
 Report: `results/raw/phase10_semantic_reviewed.md`. Both LLM runs are **resumable**: each completed fictional scenario is saved as it finishes, so you can run the same command again. For an initial small trial, append `--limit 3` and then remove it to finish. To compare all three policies with local models, add `--policy all` to either command.
 
 **Limits:** The reference storage actions and expected answer strings were authored in the project. An exact state match for the reviewed reference policy is a correctness check of the *scripted storage operation*, not classifier accuracy. Generated answers are graded with crude literal-keyword/abstention checks and should be inspected manually. The new cases are not a blinded independent benchmark. See [Phase 10 protocol](docs/phase10_protocol.md).
+
+## Experiment 017 / Phase 11 — Stop fabricated answers, not useful information
+
+Your completed reviewed-policy semantic run provided **28 Qwen answers**. All 14 temporary storage states matched their author-scripted expectations; all **27/27** required supporting facts were stored and retrieved. But the strict keyword proxy marked 25/28 as matches: **two mismatches were valid paraphrases**, while P07 Q2 fabricated a **Monday** as a new committee meeting day without supporting evidence.
+
+Phase 11 keeps the original answer generator unchanged and adds an **opt-in evidence-required answer path** that demands a real quoted memory span or abstains. It also adds an offline audit to distinguish hallucination signals, retrieval gaps, storage losses and naive keyword grading failures.
+
+```bat
+python -m unittest discover -s tests -v
+python -m scripts.audit_phase10_answers
+python -m scripts.evaluate_answer_evidence
+```
+
+Expected **228** offline test methods. The audit is model-free, and the last command uses local Ollama plus the real `all-minilm` ranker on temporary synthetic memories. Outputs go to new `results/raw/phase10_*_audit.*` and `phase11_*` files; no prior results or personal memories are changed. See [Phase 11 protocol](docs/phase11_protocol.md) and [Experiment 017 analysis](docs/experiment_017_results.md).
 
 ## Project files
 
@@ -565,6 +579,11 @@ Report: `results/raw/phase10_semantic_reviewed.md`. Both LLM runs are **resumabl
 | `scripts/evaluate_downstream_memory.py` | Temporary-SQLite state baselines and optional all-active-context Qwen answers |
 | `scripts/evaluate_semantic_outcomes.py` | Actual all-minilm top-3 retrieval plus Qwen answers on temporary memories |
 | `docs/phase10_protocol.md` | Phase 10 commands, design, grading limitations and result filenames |
+| `scripts/audit_phase10_answers.py` | Separate offline audit: answer hallucination flags vs literal keyword mismatches |
+| `answer_evidence.py` | Opt-in extractive answer with required, verbatim quoted evidence |
+| `scripts/evaluate_answer_evidence.py` | Phase 11 experiment and unchanged-baseline comparison |
+| `docs/experiment_017_results.md` | Uploaded 28-answer findings, two grader false negatives and one unsupported answer |
+| `docs/phase11_protocol.md` | New answer audit and evidence-required experiment instructions |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
