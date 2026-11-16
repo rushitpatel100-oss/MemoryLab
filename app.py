@@ -1,12 +1,13 @@
 import hashlib
 import json
+import os
 import sqlite3
 from contextlib import closing
 from datetime import datetime, timezone
 
 import streamlit as st
 
-DB_NAME = "memorylab.db"
+DB_NAME = os.environ.get("MEMORYLAB_DB_PATH", "memorylab.db")
 
 
 def connect():
@@ -103,6 +104,13 @@ setup_database()
 
 st.title("🧠 MemoryLab")
 st.write("An experimental adaptive AI memory system")
+
+if os.environ.get("MEMORYLAB_DEMO_MODE") == "1":
+    st.info(
+        "ISOLATED DEMO MODE: Your test facts are saved only in a temporary "
+        "SQLite database and removed when the demo launcher closes. "
+        "Use fictional examples. Your usual memorylab.db is untouched."
+    )
 
 st.subheader("1. Add a memory (research baseline)")
 st.warning(
@@ -642,6 +650,7 @@ if review is not None:
                 new_id = save_reviewed_memory(
                     review["topic"], review["fact"], actions,
                     review["expected_ids"],
+                    db_path=DB_NAME,
                 )
                 st.session_state["smart_review"] = None
                 st.success(
