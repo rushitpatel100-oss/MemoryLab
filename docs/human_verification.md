@@ -56,3 +56,7 @@ The owner's three submitted local exports showed **24/24 signoffs**, 6 individua
 ## Phase 9 experimental reviewer
 
 The human signoff dashboard continues to use the original Phase 8 AI source. To test an **alternative evidence-first AI judge** without changing any previous approvals, see [Phase 9 protocol](phase9_protocol.md). The Phase 9 output is separate, diagnostic and not independently scored. Do **not** replace the historical AI JSON with a V3 output: existing signoff hashes must remain verifiable.
+
+## Latest revised signoff — post-Experiment 012 (16 November 2026)
+
+A newer user-supplied `holdout_v2_human_signoff(1).json` shows H02 revised to `duplicate`, H06 to `uncertain`, and H20 to `uncertain`; the audit log records **27 actions for 24 cases**. The label and storage-action edits were saved, but the **original explanations and evidence axes remain** and still describe replacement in several places. Review the textual/evidence consistency before using the signoff as a reference set. The report is [Experiment 013](experiment_013_results.md). No user JSON was changed or committed.

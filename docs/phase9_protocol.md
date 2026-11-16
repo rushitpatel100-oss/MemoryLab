@@ -55,3 +55,13 @@ The v3 reviewer sends Ollama's chat API a strict JSON-schema `format` object. Th
 - The correct next research step after inspecting behavior differences is to create **fresh fictional profiles**, obtain blinded labels from independent reviewers (or clearly document an AI-assisted process), and evaluate false supersession and downstream answers.
 
 The reviewed data and existing SQLite memory remain local; the project keeps the previous experimental record unchanged.
+
+## Phase 9 run reviewed — evidence failure diagnostics
+
+The uploaded `phase9_ai_comparison.md` reported **24/24 `uncertain`** on the new policy, down from the original **24/24 `replaces`**. Since both methods flagged 24/24 cases, this is a collapse into abstention rather than demonstrated classification improvement. We cannot determine the cause from the comparison table alone. A new offline tool can examine the saved Phase 9 evidence:
+
+~~~bat
+python -m scripts.diagnose_phase9
+~~~
+
+This writes `results/raw/phase9_failure_diagnostics.md` and changes no existing JSON or SQLite data. Upload that Markdown or the underlying `holdout_v2_ai_review_v3.json` for evidence-level debugging. Six mocked test methods were added, raising the expected offline count to **145**. See [Experiment 013](experiment_013_results.md).

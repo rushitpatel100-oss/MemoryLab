@@ -92,6 +92,10 @@ A dedicated experimental reviewer now collects **five structured axes** (`same_e
 
 A diagnostic comparison tool produces counts and case-wise label changes against the historical AI drafts, with source fingerprints. **This is not a blind benchmark**: the 24 cases were already analyzed during Experiment 012. Until new independent labels exist, report changes in AI behavior, schema validity and abstentions—not accuracy improvements. The old Qwen classifier, Phase 5 gate, SQLite and historical reports are unchanged. See [Phase 9 protocol](phase9_protocol.md).
 
+### Stage 4L — Experiment 013: Phase 9 all-uncertain diagnostic (results reported)
+
+The owner-uploaded comparison shows **24/24 Phase 9 AI outputs were `uncertain`**, while Phase 8's same 24 cases were **24/24 `replaces`**. Both flagged 24/24 for review. The full V3 evidence JSON was not provided, so the cause of abstention is not established; a new offline `scripts/diagnose_phase9.py` will count missing quotes, unknown axes and per-case warnings without rerunning Ollama. A separately uploaded revised signoff contains 24 decisions/27 audit actions, with H02, H06, H20 relationship labels changed but their original explanations and some evidence axes not yet reconciled. See [Experiment 013](experiment_013_results.md). Do not equate the conservative abstention policy with four-way accuracy or independent evaluation.
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

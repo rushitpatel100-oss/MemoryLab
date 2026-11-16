@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 9 evidence-first reviewer and comparison tools published (local results pending).** Experiment 012 found that `qwen2.5:1.5b` proposed `replaces` on all 24 fictional examples, even paraphrases and independent facts. The new experimental reviewer gathers five structured evidence answers and source quotes before a conservative relation rule, with additional ambiguity checks; it writes a **separate** file and never changes your previous AI drafts, signoffs, other models, or SQLite memories. Comparing the two versions on these **already exposed** examples is *diagnostic only*, not a new blind accuracy test. The revised human signoffs have not been re-uploaded for verification.
+> **Current status: Experiment 013 — Phase 9 results analysed; failure diagnosis needed.** The original automatic Qwen reviewer labelled all **24** fictional cases `replaces`; the evidence-first Phase 9 reviewer labelled all **24** `uncertain`. Both flagged every case for review, so neither supplies reliable autonomous classification in this diagnostic. The owner revised H02/H06/H20; the signoff now has **24 decisions and 27 audit events**, but some final explanations/axes still conflict with their labels. A new offline diagnostic counts V3 evidence and quote failures before further model changes. [Experiment 013](docs/experiment_013_results.md). **No independent model-accuracy claim.**
 
 ## Features
 
@@ -428,11 +428,23 @@ python -m scripts.auto_review_v3
 python -m scripts.compare_ai_review_versions
 ~~~
 
-Expected **139 offline tests** (122 before Phase 9 and 17 added). The tests and local Ollama integration still need execution on your Windows machine. The Phase 9 judge requires a recent Ollama release supporting JSON-schema output; if you encounter an error, keep your old files untouched and share the terminal message.
+Expected **145 offline test methods** (139 before the failure diagnostic and 6 added). The tests and local Ollama integration still need execution on your Windows machine. The Phase 9 judge requires a recent Ollama release supporting JSON-schema output; if you encounter an error, keep your old files untouched and share the terminal message.
 
 The reviewer saves progress one case at a time in `results/raw/holdout_v2_ai_review_v3.json`. Running the same command again resumes remaining cases. The comparison requires your **original** `results/raw/holdout_v2_ai_review.json` and creates distinct local `phase9_ai_comparison.json` / `.md` files; it refuses to overwrite a prior comparison. **Do not rerun the old reviewer to replace its historical output.**
 
 **Research limit:** H01–H24 have already been exposed to previous AI outputs and human edits. A different distribution of labels is *not* evidence of accuracy improvement. Future accuracy tests require newly authored cases and independent blind human labels. See [Phase 9 protocol](docs/phase9_protocol.md).
+
+## Experiment 013 follow-up — all-uncertain Phase 9 diagnosis
+
+The user-supplied comparison found **0/24 `replaces` and 24/24 `uncertain` for the new Phase 9 AI judge** (the older AI judge had the exact opposite distribution). Both flagged all cases. We need per-case failure reasons before editing prompts or models.
+
+After **Fetch origin → Pull origin**, run the new standalone analysis on the existing V3 JSON:
+
+~~~bat
+python -m scripts.diagnose_phase9
+~~~
+
+It writes `results/raw/phase9_failure_diagnostics.md` without making new Ollama calls. The report counts invalid/missing source quote evidence, uncertainty in each of the five evidence axes and repeated warnings. The cause of the model's 24 abstentions remains **unconfirmed until that evidence is inspected**. See [Experiment 013](docs/experiment_013_results.md).
 
 ## Project files
 
@@ -470,6 +482,8 @@ The reviewer saves progress one case at a time in `results/raw/holdout_v2_ai_rev
 | `scripts/auto_review_v3.py` | Phase 9 schema-backed evidence-first AI drafts (distinct output) |
 | `scripts/compare_ai_review_versions.py` | Offline label distribution and disagreement diagnostic, never accuracy |
 | `docs/phase9_protocol.md` | Phase 9 commands, methodological limits, and preservation safeguards |
+| `scripts/diagnose_phase9.py` | Offline counts of V3 missing evidence, quote failures and abstention flags |
+| `docs/experiment_013_results.md` | Phase 9 all-uncertain outcome and revised 24-case signoff findings |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
