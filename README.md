@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 022 — Local V1.0 engineering gate passed; manual UI acceptance next.** The owner-uploaded readiness report confirms **7/7 checks and 276/276 unit tests passed**, including temporary SQLite safety and locally available Ollama model tags. A new **isolated Streamlit demo** uses a disposable database for all writes, and a guided QA recorder saves actual manual observations. Thirteen added tests make **289 expected on the next run (not yet verified)**. This is a portfolio release candidate, **not yet a tagged release or independently validated LLM**. See [Experiment 022](docs/experiment_022_results.md) and [manual acceptance](docs/v1_manual_acceptance.md).
+> **Current status: Experiment 023 — Manual V1.0 acceptance FAIL at memory history (UI06), fix committed; retest pending.** Earlier local engineering checks passed **7/7 with 276/276 unit tests**, but the manual demo unexpectedly showed *only the front-desk fact active*, with the three expected workshop/projector records superseded. A broad-topic baseline save could cause that state; how it was triggered remains **unconfirmed**. In isolated demo mode, the Section 1 overwrite action is now blocked **both in the UI and inside a SQLite transaction**, even with acknowledgement. Six extra tests bring the expected next suite to **295** (previous 289 not independently rerun). This is **not yet a verified V1.0 release**. See [Experiment 023](docs/experiment_023_results.md) and [manual acceptance](docs/v1_manual_acceptance.md).
 
 ## Features
 
@@ -586,6 +586,18 @@ Expected **276 unit-test methods** (264 before this stage, 12 added); latest exe
 
 **Upload the newest readiness report**, then complete the manual Streamlit demo and privacy checklist in [V1.0 release gate](docs/v1_release_gate.md). No release tag exists yet.
 
+## Experiment 023 — Manual acceptance failed; safe demo retry
+
+UI01–UI05 were reported successful, but **UI06 failed**: the front-desk fact was active and the previously expected active projector/Cedar Room memories were inactive. This matches a Section 1 bulk replacement if that action ran, but the trigger has not been established. **Do not proceed to the later demo steps until resolved.**
+
+Now, in **ISOLATED DEMO MODE**, Section 1 cannot bulk overwrite an existing topic even after acknowledging the warning; the backend separately rechecks inside a transaction. Retest using a fresh disposable demo after pulling:
+
+```bat
+python -m scripts.v1_release_readiness --check-models
+python -m scripts.launch_v1_demo
+```
+
+Expected **295 tests** (prior observed pass: 276; 19 newer tests not yet run). If a port is unavailable, use a different free port and confirm the **ISOLATED DEMO MODE** banner. Complete the [manual acceptance walkthrough](docs/v1_manual_acceptance.md) and preserve actual failures in the report. See [Experiment 023](docs/experiment_023_results.md).
 ## Experiment 022 — Final UI acceptance before V1.0
 
 Your first release-readiness report passed **all seven engineering checks** and **276 unit tests**. The new isolated demo and QA recorder add 13 regression tests (**289 expected; rerun required**). Use the disposable demo to avoid altering existing memories:
@@ -676,6 +688,7 @@ Upload the numbered `results/raw/v1_manual_acceptance_001.md`. These are release
 | `scripts/record_v1_manual_qa.py` | Numbered human-attested UI acceptance report generator |
 | `docs/experiment_022_results.md` | Owner-verified automated gate and remaining manual work |
 | `docs/v1_manual_acceptance.md` | Eight manual acceptance steps using only fictional facts |
+| `docs/experiment_023_results.md` | Unexpected manual UI06 overwrite outcome and demo-only protection/retest |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

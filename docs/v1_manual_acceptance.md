@@ -2,6 +2,10 @@
 
 **Run only with fictional facts.** This checks the real Streamlit app without touching the normal `memorylab.db` file. It is NOT an accuracy test of the LLM.
 
+## Prior manual test failed: stop and restart safely
+
+The earlier walkthrough reached **UI06 FAIL**: the front-desk fact unexpectedly became the only active record. Do not proceed to later checks in that run. The exact action or browser session that caused the overwrite is **not proven**. Stop the current demo with Ctrl+C, pull the latest code, rerun readiness and open a **fresh** disposable demo. Confirm you see the **ISOLATED DEMO MODE** banner at the top; if not, stop without changing real data.
+
 ## Open a new disposable demo
 
 After GitHub Desktop **Fetch origin → Pull origin**, open a terminal in MemoryLab and run:
@@ -11,7 +15,7 @@ python -m scripts.v1_release_readiness --check-models
 python -m scripts.launch_v1_demo
 ```
 
-Confirm that Streamlit displays **ISOLATED DEMO MODE**. The launcher sets a temporary SQLite database for *both* research-baseline and Smart Memory Review saving. When you press Ctrl+C in the terminal, this demo database is removed. The updated offline test suite should contain **289** tests; the latest 13 tests still need local verification.
+Confirm that Streamlit displays **ISOLATED DEMO MODE**. The launcher sets a temporary SQLite database for *both* research-baseline and Smart Memory Review saving. When you press Ctrl+C in the terminal, this demo database is removed. The updated offline test suite should contain **295** tests; the 19 new tests since the last reported 276-test pass still need local verification. The previous manual run failed UI06 and is not release acceptance.
 
 ## Three fictional memories
 
@@ -27,7 +31,7 @@ Use the identical topic **`orchid-demo`** for each entry.
 2. **UI02 — Coexistence:** In Section 7, **Smart Memory Review**, propose B with the same topic. Choose **Keep both** for A, then **Save reviewed memory**. Verify both A and B remain active. Do not blindly follow the model's classifier recommendation.
 3. **UI03 — Selective supersession:** In Section 7, propose C. Choose **Supersede old memory** for A and tick the three identity, attribute and obsolescence confirmations. Choose **Keep both** for B. Save, then confirm active B and C. The old room A should be inactive.
 4. **UI04 — Duplicate:** Propose fact B again in Section 7. The app should block an exact duplicate and should not create another saved record.
-5. **UI05 — Baseline warning:** In Section 1, propose `Orchid Center has a front desk.` under `orchid-demo`. Verify a strong warning says every existing active fact in this topic would be superseded. Without checking the acknowledgement box, the baseline save button must remain disabled. **Do not perform this bulk overwrite**.
+5. **UI05 — Baseline warning and hard stop:** In Section 1, propose `Orchid Center has a front desk.` under `orchid-demo`. Verify the warning and a new **ISOLATED DEMO SAFEGUARD** message. The bulk-save button must remain disabled for an existing topic regardless of acknowledgement. **Do not perform this bulk overwrite**. If the front-desk fact appears in history as active, mark this step and UI06 as **FAIL** and stop.
 6. **UI06 — History:** In Section 3, show all memories. A should be superseded/inactive; B and C should remain active; no extra B record should exist.
 7. **UI07 — Semantic search and supported answer:** In Sections 4 and 5, ask `Where does Orchid Center hold its workshop now?` and inspect the retrieved facts. Expected relevant evidence: C, **Cedar Room**. If retrieval or Qwen fails to use it, record a FAIL and the actual response.
 8. **UI08 — Unsupported-answer observation:** In Section 5 ask `What is the entrance ticket price for Orchid Center?` The saved facts provide no price. Record whether Qwen abstains or invents one, with the exact response. This is an observation, **not a passing accuracy certification**.

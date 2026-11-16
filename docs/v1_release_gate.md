@@ -1,6 +1,6 @@
 # MemoryLab V1.0 — Portfolio release gate
 
-**Status: release candidate preparation; not yet a verified/tagged release.** Phase 14 demonstrated that automated semantic verification could accept all 32 curated answers, including 22 reviewer-labelled unsupported ones. We therefore **do not ship any of the experimental answer checkers as an autonomous safety gate**.
+**Status: BLOCKED — manual UI06 acceptance failed in the first isolated demo walkthrough.** The cause of the unexpected front-desk-only active state is unconfirmed; an additional demo-mode backend overwrite guard has been committed and must be locally retested before release. Phase 14 demonstrated that automated semantic verification could accept all 32 curated answers, including 22 reviewer-labelled unsupported ones. We therefore **do not ship any of the experimental answer checkers as an autonomous safety gate**.
 
 ## What V1.0 can truthfully claim
 

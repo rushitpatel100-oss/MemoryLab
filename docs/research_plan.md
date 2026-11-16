@@ -148,6 +148,12 @@ The owner provided the local readiness report showing **all 7/7 engineering chec
 
 The next release step is a **disposable Streamlit demo** that routes all memory writes to a temporary database and a human-entered report of 7 functional checks plus 1 unsupported-answer observation. Thirteen new offline methods bring the expected suite to **289, pending a fresh local run**. No historical data or human signoff is overwritten. See [Experiment 022](experiment_022_results.md) and [manual acceptance](v1_manual_acceptance.md).
 
+### Stage 4W — Experiment 023: manual acceptance failure and demo overwrite guard
+
+The owner reported UI01–UI05 passing but UI06 failing: *only* the front-desk memory active, with prior test memories superseded. That state fits the original destructive research baseline operation, but the user had previously reported the button disabled, so the root trigger and precise browser session are still unverified. No further manual pass can be claimed until a new disposable demo confirms history and evidence states.
+
+Demo mode now blocks all broad-topic baseline overwrites on existing topics **in both the Streamlit UI and the transactional SQLite saving function**. Six regression tests specifically check this guard in isolated SQLite. The owner should confirm the demo banner, pull the fix, rerun the expected 295 tests, and repeat manual acceptance. See [Experiment 023](experiment_023_results.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
