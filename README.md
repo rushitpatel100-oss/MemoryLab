@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 8 AI-first review and human verification dashboard published (local testing pending).** Local Ollama drafts the 24 fictional memory decisions. A separate Streamlit dashboard presents all AI explanations, records explicit user corrections or approvals, and exports a provenance-labelled report. The existing blinded two-human evaluation remains optional and separate. **AI-assisted, human-approved output must not be represented as independently human-labelled ground truth or used to score Qwen against itself.** Earlier experiments, stored memories and reviewer files are unchanged.
+> **Current status: Experiment 012 — AI-first human verification completed and analysed.** Local `qwen2.5:1.5b` proposed `replaces` on **all 24** fictional Phase 8 cases; the safety triage marked all 24 `review_needed`, preventing automatic supersession by this workflow. The reviewer approved six entries unchanged and edited eighteen (including **11 changed relationship labels**). The signoff includes several semantic ambiguities, so this is an **AI-assisted, human-reviewed diagnostic**, not independent human accuracy. The data and original model outputs were preserved; [Experiment 012](docs/experiment_012_results.md) identifies priorities for Phase 9.
 
 ## Features
 
@@ -446,6 +446,7 @@ Documentation: [Phase 8 review instructions](docs/phase8_protocol.md).
 | `app_review.py` | Streamlit dashboard to approve, correct, and export AI-first review reports |
 | `scripts/review_signoff.py` | Independent approval record, audit trail and versioned report generation |
 | `docs/human_verification.md` | AI-first review workflow and precise provenance language |
+| `docs/experiment_012_results.md` | All-`replaces` AI failure, 24-case human signoff analysis and semantic audit flags |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

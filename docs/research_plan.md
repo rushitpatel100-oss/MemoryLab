@@ -78,6 +78,14 @@ To reduce the user's manual annotation burden, MemoryLab now provides a **separa
 
 To minimise manual annotation, a Streamlit dashboard now displays all 24 local AI draft evaluations, enables explicit bulk attestation of unflagged entries, individual approval or edits for flagged and disputed cases, and produces a versioned Markdown report. The approval history distinguishes AI-generated draft labels, human edits, individually checked entries and bulk-attested entries. **This is AI-assisted human verification, not independently human-labelled evidence**, even when the natural-language prose sounds human. No SQLite writes, no revision to the frozen Qwen classifier, and no automatic unlocking of the human-consensus scorer occur. See [human-verification method](human_verification.md).
 
+### Stage 4J — Experiment 012: AI-first verification run (completed, semantic QA outstanding)
+
+The owner supplied the 24-case automatic Qwen review, the full Markdown report, and signoff JSON with 24 matching audit actions. The AI judge suggested `replaces` and `supersede_old` for **all 24 pairs**, but the reviewer gate held **all 24** at `review_needed`; the reviewer changed **11 relation labels**, edited **18** records total and individually approved **6** unchanged. Final reviewer distribution was 13 `replaces`, 6 `coexists`, 5 `duplicate`, 0 `uncertain`. Ten AI responses had missing/invalid structured evidence warnings.
+
+Targeted semantic inspection uncovered questionable final signoffs—especially H02 (dog swimming paraphrase labelled replacement), H06 (office and basement printers treated as identical) and H20 (home and away jerseys treated as the same attribute). These are **review flags**, not edits to the user's signed decisions. Natural prose and formal label/action agreement do not imply factual correctness. **No independent accuracy metrics** are available from these AI-first cases; they are now exposed to model output and cannot be reused as a fresh blind test of the same judge.
+
+See [Experiment 012 results](experiment_012_results.md). Next phase should test semantic relation QA and structured output quality, then evaluate on **new independent** examples and downstream memory-answer correctness.
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
