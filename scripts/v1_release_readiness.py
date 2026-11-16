@@ -68,6 +68,8 @@ def guarded_baseline_ui(root=ROOT):
     required = (
         "if baseline_existing:", "baseline_confirmed = st.checkbox(",
         "disabled=bool(baseline_existing) and not baseline_confirmed",
+        "or demo_bulk_overwrite_blocked,",
+        "ISOLATED DEMO SAFEGUARD",
         "new_id = save_reviewed_memory(",
     )
     missing = [value for value in required if value not in code]

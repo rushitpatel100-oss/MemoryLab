@@ -176,8 +176,8 @@ if baseline_existing:
     )
 if st.button(
     "Save using research baseline",
-    disabled=(bool(baseline_existing) and not baseline_confirmed)
-    or demo_bulk_overwrite_blocked,
+    # Python evaluates 'and' before 'or': either check can disable saving.
+    disabled=bool(baseline_existing) and not baseline_confirmed or demo_bulk_overwrite_blocked,
 ):
     if save_memory(topic, fact):
         st.success("Baseline memory saved. Review the memory history to see updates.")
