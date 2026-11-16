@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 016 — V4 safety audit verified and warnings integrated into Smart Memory Review.** On 24 already exposed fictional cases, the offline audit flagged **H18 and H20** as high-priority false duplicates, required confirmation for another **5** AI duplicate proposals, and held all **7/7** would-be skips; 17 cases remained unresolved. The live Streamlit app now surfaces general change/role-contrast cautions when judging Qwen duplicate and replacement suggestions. No classifier, human signoff, SQLite data or original AI experiment was overwritten, and **no independent accuracy is claimed**. See [Experiment 016](docs/experiment_016_results.md).
+> **Current status: Phase 10 — Fresh downstream memory-outcome development evaluation published, local run pending.** Fourteen new **project-authored fictional** multi-turn scenarios and 28 follow-up questions exercise the real human-approved SQLite save function versus keep-everything and topic-overwrite baselines. An offline runner measures retained and obsolete facts; optional runners use the unchanged local Qwen answer generator with full context, or the real `all-minilm` retrieval pipeline. All SQLite databases are **temporary**; no user memories or old evaluation artifacts are changed. These author-scripted expectations are **not independent human ground truth**. See [Phase 10 protocol](docs/phase10_protocol.md).
 
 ## Features
 
@@ -485,6 +485,37 @@ python -m streamlit run app.py
 
 Expected **177 offline test methods** (eight new; local execution pending). See [Experiment 016](docs/experiment_016_results.md). **Next research milestone:** genuinely new fictional cases and a downstream memory-answer evaluation, not more tuning against H01–H24.
 
+## Phase 10 — Memory preservation and answer outcomes
+
+The earlier 24 conflict cases have been repeatedly inspected, so Phase 10 uses a **new set of 14 fictional multi-turn scenarios, with 28 follow-up questions**. It compares three memory-retention policies: append all facts, blindly overwrite the last fact under the same topic, and **scripted human-reviewed selective supersession through the actual `memory_store.py` SQLite function**. That reviewed policy is supplied the correct action by the fixture; it **does not** automatically predict which memory to replace.
+
+After **GitHub Desktop → Fetch origin → Pull origin**, use the following commands:
+
+~~~bat
+python -m unittest discover -s tests -v
+python -m scripts.evaluate_downstream_memory
+~~~
+
+The first runs the offline regression suite (**201 expected tests**, 24 new). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
+
+To measure whether the unchanged local Qwen answer generator uses the active facts, **first test the reviewed policy with full memory context**:
+
+~~~bat
+python -m scripts.evaluate_downstream_memory --with-llm --policy reviewed
+~~~
+
+Report: `results/raw/phase10_llm_reviewed.md`. This supplies **all active records** to the model, deliberately isolating storage effects from embedding-retrieval errors.
+
+To exercise the more realistic full MemoryLab retrieval path—**actual `all-minilm` semantic ranking, top-three and similarity threshold 0.25, followed by Qwen**—run:
+
+~~~bat
+python -m scripts.evaluate_semantic_outcomes
+~~~
+
+Report: `results/raw/phase10_semantic_reviewed.md`. Both LLM runs are **resumable**: each completed fictional scenario is saved as it finishes, so you can run the same command again. For an initial small trial, append `--limit 3` and then remove it to finish. To compare all three policies with local models, add `--policy all` to either command.
+
+**Limits:** The reference storage actions and expected answer strings were authored in the project. An exact state match for the reviewed reference policy is a correctness check of the *scripted storage operation*, not classifier accuracy. Generated answers are graded with crude literal-keyword/abstention checks and should be inspected manually. The new cases are not a blinded independent benchmark. See [Phase 10 protocol](docs/phase10_protocol.md).
+
 ## Project files
 
 | Path | Purpose |
@@ -530,6 +561,10 @@ Expected **177 offline test methods** (eight new; local execution pending). See 
 | `docs/experiment_015_results.md` | V4 output analysis, two false duplicates and next safeguards |
 | `memory_review_safety.py` | Shared lexical review cautions for risky duplicate and replacement suggestions |
 | `docs/experiment_016_results.md` | Verified 7 withheld duplicate skips and UI warning integration |
+| `benchmarks/downstream_memory_v1.json` | 14 new fictional multi-turn scenarios, scripted actions and 28 answer checks |
+| `scripts/evaluate_downstream_memory.py` | Temporary-SQLite state baselines and optional all-active-context Qwen answers |
+| `scripts/evaluate_semantic_outcomes.py` | Actual all-minilm top-3 retrieval plus Qwen answers on temporary memories |
+| `docs/phase10_protocol.md` | Phase 10 commands, design, grading limitations and result filenames |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
