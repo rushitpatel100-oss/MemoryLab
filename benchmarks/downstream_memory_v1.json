@@ -1,0 +1,643 @@
+{
+  "name": "MemoryLab Phase 10 fictional downstream memory-answer development scenarios",
+  "version": 1,
+  "authorship": "project-authored synthetic development fixtures, NOT independent ground truth",
+  "warning": "DO NOT claim that the reference policy's perfect state score demonstrates AI accuracy; this file also contains decisions and answer targets.",
+  "policy_notes": {
+    "reference": "The actions are authored from scenario texts and run through the existing human-approved SQLite write function with these scripted decisions. The reference policy is NOT an autonomous classifier.",
+    "append_all": "Insert all facts, including duplicates and outdated facts.",
+    "topic_overwrite": "Supersede all active memories sharing the incoming topic, regardless of attribute.",
+    "retrieval": "LLM experiment supplies all active records to the unchanged answer_generator.generate_answer; it does not exercise embedding retrieval."
+  },
+  "scenarios": [
+    {
+      "id": "P01",
+      "title": "Workshop equipment survives an added fact",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "juniper_studio",
+          "fact": "Juniper Studio has a printing press.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "juniper_studio",
+          "fact": "Juniper Studio also has a drying rack.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "What does Juniper Studio have for making prints?",
+          "expected_phrases": [
+            "printing press"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What rack does Juniper Studio have?",
+          "expected_phrases": [
+            "drying rack"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "title": "Room change makes an old location obsolete",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "orchestra",
+          "fact": "The youth orchestra rehearses in Amber Wing.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "orchestra",
+          "fact": "The youth orchestra moved rehearsals from Amber Wing to Quartz Wing.",
+          "relation": "replaces",
+          "supersede": [
+            "a"
+          ]
+        }
+      ],
+      "expected_active": [
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Where does the youth orchestra rehearse now?",
+          "expected_phrases": [
+            "Quartz Wing"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What is the orchestra's current rehearsal wing?",
+          "expected_phrases": [
+            "Quartz"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "title": "A paraphrase should not create a new memory",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "juniper_library",
+          "fact": "Juniper Library has a quiet reading table.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "juniper_library",
+          "fact": "There is a quiet table for reading at Juniper Library.",
+          "relation": "duplicate"
+        }
+      ],
+      "expected_active": [
+        "a"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "What quiet furniture is available at Juniper Library?",
+          "expected_phrases": [
+            "table"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What kind of table is at Juniper Library?",
+          "expected_phrases": [
+            "reading"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "title": "Science equipment facts coexist",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "sky_club",
+          "fact": "Sky Club has a blue telescope.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "sky_club",
+          "fact": "Sky Club also maintains a weather station.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Which telescope belongs to Sky Club?",
+          "expected_phrases": [
+            "blue telescope"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "Which station does Sky Club maintain?",
+          "expected_phrases": [
+            "weather station"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "title": "Community fundraiser changes venues",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "fundraiser",
+          "fact": "The community fundraiser is scheduled for Ivy Courtyard.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "fundraiser",
+          "fact": "The community fundraiser moved from Ivy Courtyard to Orchid Hall.",
+          "relation": "replaces",
+          "supersede": [
+            "a"
+          ]
+        }
+      ],
+      "expected_active": [
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Where is the community fundraiser taking place now?",
+          "expected_phrases": [
+            "Orchid Hall"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What is the fundraiser's updated venue?",
+          "expected_phrases": [
+            "Orchid"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "title": "Robotics club time and equipment coexist",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "robotics",
+          "fact": "The robotics club gathers every Thursday.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "robotics",
+          "fact": "The robotics club lends soldering kits to members.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Which day does the robotics club gather?",
+          "expected_phrases": [
+            "Thursday"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What kits does the robotics club lend?",
+          "expected_phrases": [
+            "soldering kits"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "title": "Ambiguous committee notice should not erase a known fact",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "committee",
+          "fact": "The gardening committee meets on Friday evenings.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "committee",
+          "fact": "One of my committees changed its meeting day.",
+          "relation": "uncertain"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "What was the gardening committee's last explicitly stated meeting day?",
+          "expected_phrases": [
+            "Friday"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What is the new weekday for the gardening committee?",
+          "expect_abstention": true,
+          "support_steps": []
+        }
+      ]
+    },
+    {
+      "id": "P08",
+      "title": "A sculpture project is renamed",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "sculpture",
+          "fact": "My sculpture project is named Hummingbird.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "sculpture",
+          "fact": "I renamed my sculpture project from Hummingbird to Sunbeam.",
+          "relation": "replaces",
+          "supersede": [
+            "a"
+          ]
+        }
+      ],
+      "expected_active": [
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "What is my sculpture project now called?",
+          "expected_phrases": [
+            "Sunbeam"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What is the new name of the sculpture project?",
+          "expected_phrases": [
+            "Sunbeam"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P09",
+      "title": "Museum landmarks and cafe hours coexist",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "museum",
+          "fact": "The museum entrance is beside the sundial.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "museum",
+          "fact": "The museum cafe opens at ten in the morning.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Which landmark is beside the museum entrance?",
+          "expected_phrases": [
+            "sundial"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "When does the museum cafe open?",
+          "expected_phrases": [
+            "ten",
+            "10"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "title": "Film screening changes day",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "film_group",
+          "fact": "The film group screening is on Tuesday.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "film_group",
+          "fact": "The film group moved its screening from Tuesday to Saturday.",
+          "relation": "replaces",
+          "supersede": [
+            "a"
+          ]
+        }
+      ],
+      "expected_active": [
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Which day is the film group's screening now?",
+          "expected_phrases": [
+            "Saturday"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "On what day was the film screening rescheduled?",
+          "expected_phrases": [
+            "Saturday"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P11",
+      "title": "Exact repeated facts should not be stored twice",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "roof_garden",
+          "fact": "The rooftop garden grows thyme.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "roof_garden",
+          "fact": "the ROOFTOP garden grows thyme!",
+          "relation": "duplicate"
+        }
+      ],
+      "expected_active": [
+        "a"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "What herb does the rooftop garden grow?",
+          "expected_phrases": [
+            "thyme"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "Which plant grows in the rooftop garden?",
+          "expected_phrases": [
+            "thyme"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P12",
+      "title": "A changed meetup venue plus a new detail",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "makers_meetup",
+          "fact": "The makers meetup takes place at Old Wharf.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "makers_meetup",
+          "fact": "The makers meetup moved from Old Wharf to Silver Annex.",
+          "relation": "replaces",
+          "supersede": [
+            "a"
+          ]
+        },
+        {
+          "id": "c",
+          "topic": "makers_meetup",
+          "fact": "The makers meetup provides sketchbooks for attendees.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "b",
+        "c"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Where does the makers meetup take place now?",
+          "expected_phrases": [
+            "Silver Annex"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What materials does the makers meetup provide?",
+          "expected_phrases": [
+            "sketchbooks"
+          ],
+          "support_steps": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P13",
+      "title": "Two friends have different instruments",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "friends_music",
+          "fact": "My friend Talia plays the cello.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "friends_music",
+          "fact": "My friend Arjun plays the bassoon.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "What instrument does Talia play?",
+          "expected_phrases": [
+            "cello"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "What instrument does Arjun play?",
+          "expected_phrases": [
+            "bassoon"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P14",
+      "title": "Cycling event logistics coexist",
+      "steps": [
+        {
+          "id": "a",
+          "topic": "cycling_event",
+          "fact": "The cycling tour has a water stop at Stone Bridge.",
+          "relation": "initial"
+        },
+        {
+          "id": "b",
+          "topic": "cycling_event",
+          "fact": "Check-in for the cycling tour opens at eight in the morning.",
+          "relation": "coexists"
+        }
+      ],
+      "expected_active": [
+        "a",
+        "b"
+      ],
+      "checks": [
+        {
+          "id": "Q1",
+          "question": "Where is the water stop for the cycling tour?",
+          "expected_phrases": [
+            "Stone Bridge"
+          ],
+          "support_steps": [
+            "a"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "When does cycling tour check-in open?",
+          "expected_phrases": [
+            "eight",
+            "8"
+          ],
+          "support_steps": [
+            "b"
+          ]
+        }
+      ]
+    }
+  ]
+}
