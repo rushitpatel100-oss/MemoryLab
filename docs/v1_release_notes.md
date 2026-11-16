@@ -41,3 +41,8 @@ Follow [the publication checklist](publication_checklist.md) and [acceptance sta
 ## License
 
 MemoryLab's original source and documentation are now offered under the [MIT License](../LICENSE), Copyright © 2026 MemoryLab contributors. Ollama models and third-party packages have separate upstream terms. The licence change does not make this private repository public and does not resolve the remaining privacy/publication review.
+
+
+## Final tracked-content and Git email privacy screen
+
+A patterned scan of **all 142 current tracked files** at the MIT-licensed commit found no matched personal email patterns, Windows user paths, UK phone formats, common secret keys, private-key blocks or assignment-style passwords/tokens. A separate prior pass screened changed-text diffs of 104 then-existing `main` commits for similar patterns without flags. **Commit metadata is a separate issue:** among the **106 commits** observed before this documentation update, the author/committer metadata contained a Gmail-domain email, which may be exposed if the repository becomes public. The owner must explicitly accept this exposure or arrange a safe history rewrite before publishing. These scans are non-exhaustive; the project remains private.
