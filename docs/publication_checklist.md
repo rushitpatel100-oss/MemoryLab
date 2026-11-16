@@ -1,6 +1,6 @@
 # MemoryLab — Public portfolio release checklist
 
-**Current repository visibility: PRIVATE.** The owner reported passing six fresh-environment readiness checks and an automated keyword/pattern review of the 104 main-branch commit diffs found no flags. MIT licensing is completed. Automated content and diff pattern checks did not find credentials, **and a Gmail address is present in Git commit metadata**. The owner **explicitly accepted public visibility of that existing commit email** in this conversation. The owner subsequently confirmed completing the human content/history privacy review and explicitly authorised making the repository public and creating `v1.0.0`. Actual GitHub visibility and tagging actions remain outstanding.
+**Current repository visibility: PUBLIC (verified 16 November 2026).** The owner reported passing six fresh-environment readiness checks and an automated keyword/pattern review of the 104 main-branch commit diffs found no flags. MIT licensing is completed. Automated content and diff pattern checks did not find credentials, **and a Gmail address is present in Git commit metadata**. The owner **explicitly accepted public visibility of that existing commit email** in this conversation. The owner subsequently confirmed completing the human content/history privacy review and explicitly authorised making the repository public and creating `v1.0.0`. Actual GitHub visibility and tagging actions remain outstanding.
 
 ## Verified from the current GitHub tree
 
@@ -22,7 +22,7 @@
 - [x] **MIT license:** added a standard root-level `LICENSE` file (Copyright © 2026 MemoryLab contributors) and linked it in the README. Confirm contributors' agreement and rights to distribute code or documentation before public publication; external dependencies and model weights remain governed by their own licenses.
 - [ ] **Version and docs:** verify all README links and commands on the final commit; write a short GitHub repo description, choose optional topics, and confirm references don't claim independent accuracy.
 - [ ] **Security boundary:** don't expose Streamlit or local Ollama on the public internet; this V1.0 is intended for local use and is not a multi-user service.
-- [x] **Final publication decision:** the owner explicitly authorised making the repository public and creating `v1.0.0`, following their reported completion of the manual privacy/content review. **Publication itself remains pending:** use GitHub repository Settings to change visibility, then GitHub Releases to create the tag/release. Neither action has been performed by this connector.
+- [x] **Final publication decision:** the owner explicitly authorised making the repository public and creating `v1.0.0`, following their reported completion of the manual privacy/content review. **Publication completed by owner and verified:** repository visibility is public and the GitHub `v1.0.0` release is published. The connector only verified these GitHub actions; it did not perform the visibility change or release creation.
 
 ## Useful Windows checks
 
