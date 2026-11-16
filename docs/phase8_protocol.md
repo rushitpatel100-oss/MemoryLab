@@ -2,6 +2,8 @@
 
 ## Purpose
 
+**Shortcut if you don't want to label all 24 cases manually:** use `python -m scripts.auto_review_holdout_v2`. It generates local AI *draft* labels in a separate file and does not overwrite reviewer A/B work. This is useful automated triage, **not independent human validation**. See [automatic review instructions](auto_review.md). The strict human-consensus evaluator below remains unchanged.
+
 Experiment 011 retained conflicting human interpretations of some anonymous subjects and vague updates. Phase 8 is **not a new classifier**: we are first improving the annotation process to avoid taking a label or storage action as established fact when the evidence is incomplete.
 
 ### The study is frozen before predictions

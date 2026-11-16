@@ -70,6 +70,10 @@ Only after both are locked, evaluate the existing Qwen and unchanged evidence ga
 
 No existing data, prompts, model parameters or SQLite storage behaviour is modified in this phase. See [Phase 8 protocol](phase8_protocol.md).
 
+### Stage 4H — Local automatic triage (published, evaluation pending)
+
+To reduce the user's manual annotation burden, MemoryLab now provides a **separate** Ollama-based automatic draft reviewer for the 24 fictional cases. It returns four rubric evidence fields, a provisional relation and an explanation, with warnings about contradictory or destructive proposals. It saves only `results/raw/holdout_v2_ai_review.json` and never touches human A/B labels, SQLite, or the accuracy-evaluation script. Qwen judging Qwen is circular; **no model-accuracy claim is permitted from auto-triage alone**. A different local judge may produce useful error-analysis contrast but still does not replace independent human ground truth. See [automatic review guide](auto_review.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

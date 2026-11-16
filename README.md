@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 8 rubric v2 and a new 24-case blind review candidate published; local testing and human reviews pending.** Experiments 010–011 showed that raw Qwen suggested more incorrect replacements against reviewer labels, while the evidence gate tended to abstain more and did not improve overall four-way agreement. We have **not changed either classifier**. A frozen rubric now separates referent, attribute, old-fact invalidation and new-value knowledge; two separate local human reviews must be locked before the next Qwen comparison. No fresh evaluation scores or independent ground-truth claims are available yet.
+> **Current status: Phase 8 offers a one-command automated AI reviewer plus an optional independent human-review protocol.** The AI reviewer can draft decisions for all 24 fictional pairs locally with Ollama, with no human bulk labelling, and flag uncertain or inconsistent cases. AI output is **not independent human ground truth**—especially when the reviewer uses the same Qwen model as the classifier—so it cannot unlock the separate accuracy evaluator or substantiate benchmark improvement. Previous experiments, Reviewer A/B files, model prompts, safeguard and SQLite memories are unchanged. Local code tests pending.
 
 ## Features
 
@@ -335,6 +335,27 @@ This writes `results/raw/review_v1_adjudicated_metrics.json`. The first label fi
 
 ## Phase 8 — Frozen rubric + fresh blind evaluations
 
+### Fast path — automatic AI review (no more manual labelling)
+
+**You can skip completing Reviewer A and B** if your goal is to get useful automated suggestions rather than a rigorous independent accuracy estimate. After GitHub Desktop **Fetch origin → Pull origin**, run:
+
+~~~bat
+python -m scripts.auto_review_holdout_v2
+~~~
+
+This uses the **existing local Ollama `qwen2.5:1.5b`**, attempts all 24 fictional memory pairs, and creates the private file `results/raw/holdout_v2_ai_review.json`. It prints provisional relationship labels and flags missing information or contradictory storage choices. It does **not** modify your first four Reviewer A answers, Reviewer B, the SQLite database, or old experiment files. You can close the terminal and resume unfinished cases by running the **same command** again; successful cases are automatically skipped.
+
+To inspect the saved progress without invoking Ollama:
+
+~~~bat
+python -m scripts.auto_review_holdout_v2 --status
+~~~
+
+If a different locally installed judge model is available, `--model MODEL_NAME` can be specified **before the first automatic run**; an existing report is intentionally tied to its original model and cannot silently be overwritten. No new software or subscription is required for the default command.
+
+**Research warning:** This is AI-assisted *triage*, **not an independent human study**. Qwen auto-labelling the same data on which Qwen is evaluated would be circular. The existing `evaluate_holdout_v2` refuses these AI drafts as A/B labels. For externally credible accuracy, independent human reviews are still necessary. For development and a portfolio demonstration, this automatic output can help identify ambiguous cases quickly. See the [automatic review guide](docs/auto_review.md).
+
+
 We have stopped tuning the classifier on the 20 previously examined cases. Instead, Phase 8 supplies **24 new fictional memory pairs with no answers** and a clearer human annotation rubric. The models and SQLite records are unchanged.
 
 Read the **[decision rubric v2](docs/label_rubric_v2.md)** before making any labels. It asks whether the facts concern the same entity, same specific attribute, whether the old fact is *known* outdated, and whether a specific new value is *known*. These axes are separate from the four-way relationship and storage recommendation.
@@ -405,6 +426,8 @@ Documentation: [Phase 8 review instructions](docs/phase8_protocol.md).
 | `benchmarks/holdout_v2_cases.json` | 24 new fictional pairs with no labels or predictions |
 | `scripts/review_holdout_v2.py` | Independent A/B evidence-first labels, resumable and lockable |
 | `scripts/evaluate_holdout_v2.py` | After both reviews lock: one-call paired Qwen/gate scores on consensus subset |
+| `scripts/auto_review_holdout_v2.py` | One-command local Ollama case triage; separate AI suggestions, no human-score claim |
+| `docs/auto_review.md` | Auto-review usage, limits and interpretation |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

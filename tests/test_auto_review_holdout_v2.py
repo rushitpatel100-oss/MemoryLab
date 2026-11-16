@@ -95,6 +95,21 @@ class AutomaticReviewTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "another dataset or model"):
                 load_report(path, "x" * 64, "qwen2.5:1.5b", {c["id"] for c in self.cases})
 
+    def test_malformed_ollama_json_becomes_flagged_draft(self):
+        from io import BytesIO
+        from unittest.mock import patch
+        from scripts.auto_review_holdout_v2 import ollama_judge
+        fake = BytesIO(b'{"message":{"content":"not valid JSON"}}')
+        with patch(
+            "scripts.auto_review_holdout_v2.urllib.request.urlopen",
+            return_value=fake,
+        ):
+            raw = ollama_judge(self.cases[0])
+        self.assertIsNone(raw)
+        entry = assess_response(raw)
+        self.assertEqual(entry["triage"], "needs_review")
+        self.assertEqual(entry["safe_storage_action"], "review_needed")
+
     def test_summary_counts_review_flags(self):
         self.report["answers"]["H01"] = assess_response(self.response)
         bad = copy.deepcopy(self.response)

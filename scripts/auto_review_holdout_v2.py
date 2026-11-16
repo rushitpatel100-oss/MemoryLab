@@ -85,7 +85,11 @@ def ollama_judge(case, model=MODEL, chat_url=CHAT_URL):
     )
     with urllib.request.urlopen(request, timeout=180) as reply:
         response = json.load(reply)
-    return json.loads(response["message"]["content"])
+    try:
+        return json.loads(response["message"]["content"])
+    except (KeyError, TypeError, ValueError):
+        # Preserve a conservative AI draft instead of stalling all cases.
+        return None
 
 
 def assess_response(raw):
