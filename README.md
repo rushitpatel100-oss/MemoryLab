@@ -366,7 +366,7 @@ After **Fetch origin → Pull origin**, start by checking offline tests:
 python -m unittest discover -s tests -v
 ~~~
 
-Expected: **105 offline test methods** (previously 89 plus 16 new). The new tests have not yet been executed on your Windows machine.
+Expected: **115 offline test methods** (105 before the automated-review addition, plus 10 new). The new tests have not yet been executed on your Windows machine.
 
 **Reviewer A starts with four new cases (no Qwen):**
 

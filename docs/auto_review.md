@@ -32,7 +32,7 @@ Run the unit suite first:
 python -m unittest discover -s tests -v
 ~~~
 
-Expected **114 tests** after this automation feature (105 prior + 9 new mocked tests). Tests don't require a running model and haven't yet been executed on the user's Windows system.
+Expected **115 tests** after this automation feature (105 prior + 10 new mocked tests). Tests don't require a running model and haven't yet been executed on the user's Windows system.
 
 If you see a connection error, ensure Ollama is running, then re-run the same command. If you see a model-not-found error, ensure `qwen2.5:1.5b` is available in your existing Ollama installation. If a model returned malformed JSON, it is recorded conservatively as an uncertain, flagged AI draft instead of a confident memory update.
 
