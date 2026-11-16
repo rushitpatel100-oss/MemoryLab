@@ -12,39 +12,27 @@ No Ollama calls, no SQLite writes, no revisions to AI or human source JSON.
 """
 import hashlib
 import json
-import re
 from collections import Counter
 from pathlib import Path
 
-from scripts.auto_review_v3 import exact_quote, role_conflict
+from memory_review_safety import duplicate_risk_signals
+from scripts.auto_review_v3 import exact_quote
 from scripts.auto_review_v4 import OUTPUT as V4_FILE, POLICY
 from scripts.review_holdout_v2 import load_local_cases
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "results" / "raw" / "phase9_v4_safety_audit.md"
 LABELS = {"duplicate", "replaces", "coexists", "uncertain"}
-CHANGE_LANGUAGE = re.compile(
-    r"\b(?:replaced?|replacing|changed?|changing|moved?|moving|"
-    r"stopped|ceased|switched|instead|no longer|rather than)\b",
-    re.IGNORECASE,
-)
 
 
 def audit_case(case, draft):
     """Conservative general-purpose risk cues, not a new human gold label."""
     label = draft["provisional_label"]
     alerts = []
-    contrasts = role_conflict(case["old_fact"], case["new_fact"])
-    changed = bool(CHANGE_LANGUAGE.search(case["new_fact"]))
     if label == "duplicate":
-        if contrasts:
-            alerts.append(
-                "Different role/location qualifier: " + ", ".join(contrasts)
-            )
-        if changed:
-            alerts.append(
-                "New fact contains change/cessation wording; may be an update."
-            )
+        alerts.extend(
+            duplicate_risk_signals(case["old_fact"], case["new_fact"])
+        )
         axes = draft.get("axes", {})
         if axes.get("same_assertion") != "yes":
             alerts.append("AI duplicate label lacks explicit repetition evidence.")

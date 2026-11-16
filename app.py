@@ -388,6 +388,9 @@ from memory_store import save_reviewed_memory
 from memory_text import is_same_stored_fact
 from memory_staged import classify_pair_staged
 from replacement_gate import classify_pair_guarded
+from memory_review_safety import (
+    duplicate_risk_signals, replacement_risk_signals,
+)
 
 st.divider()
 st.subheader("7. Smart Memory Review")
@@ -527,6 +530,33 @@ if review is not None:
                 f"Suggestion ({assessment.get('source', 'qwen')}): "
                 f"{assessment['relation']} — {assessment['reason']}"
             )
+            # A Qwen 'duplicate' recommendation can be dangerously wrong:
+            # a separate visible cue helps people catch false skips.
+            if assessment["relation"] == "duplicate":
+                alerts = duplicate_risk_signals(old["fact"], review["fact"])
+                if alerts:
+                    st.error(
+                        "Potential FALSE DUPLICATE: "
+                        + " ".join(alerts)
+                        + " Check both original statements. The proposed "
+                          "new fact is not automatically skipped."
+                    )
+                elif not is_same_stored_fact(
+                    old["topic"], old["fact"],
+                    review["topic"], review["fact"],
+                ):
+                    st.info(
+                        "AI-suggested paraphrase: verify that both statements "
+                        "really repeat the same assertion before deciding to "
+                        "leave the new fact unsaved."
+                    )
+            if assessment["relation"] == "replaces":
+                caution = replacement_risk_signals(old["fact"], review["fact"])
+                if caution:
+                    st.warning(
+                        "Replacement requires closer review: "
+                        + " ".join(caution)
+                    )
             if assessment.get("raw_relation") == "replaces":
                 audit = assessment["gate"]
                 st.info(
