@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 013 — Phase 9 results analysed; failure diagnosis needed.** The original automatic Qwen reviewer labelled all **24** fictional cases `replaces`; the evidence-first Phase 9 reviewer labelled all **24** `uncertain`. Both flagged every case for review, so neither supplies reliable autonomous classification in this diagnostic. The owner revised H02/H06/H20; the signoff now has **24 decisions and 27 audit events**, but some final explanations/axes still conflict with their labels. A new offline diagnostic counts V3 evidence and quote failures before further model changes. [Experiment 013](docs/experiment_013_results.md). **No independent model-accuracy claim.**
+> **Current status: Experiment 014 diagnosed the all-`uncertain` evidence collapse; V4 reviewer published (local run pending).** A supplied V3 diagnostic showed **valid old/new evidence quotes on all 24 cases**, but **`unknown` on every one of five evidence axes**, without missing-field warnings. The revised V4 experimental judge asks simplified evidence questions, separates definite obsolescence from uncertain referents, preserves raw Ollama responses and saves to a new file. The previous AI outputs, 24 human signoffs, audit log, old Qwen classifier and SQLite memories remain untouched. V3-versus-V4 comparisons are behavioral diagnostics on exposed cases, **not accuracy**. See [Experiment 014](docs/experiment_014_results.md).
 
 ## Features
 
@@ -428,7 +428,7 @@ python -m scripts.auto_review_v3
 python -m scripts.compare_ai_review_versions
 ~~~
 
-Expected **145 offline test methods** (139 before the failure diagnostic and 6 added). The tests and local Ollama integration still need execution on your Windows machine. The Phase 9 judge requires a recent Ollama release supporting JSON-schema output; if you encounter an error, keep your old files untouched and share the terminal message.
+Expected **161 offline test methods** (145 before V4, plus 16 new). The tests and local Ollama integration still need execution on your Windows machine. The Phase 9 judge requires a recent Ollama release supporting JSON-schema output; if you encounter an error, keep your old files untouched and share the terminal message.
 
 The reviewer saves progress one case at a time in `results/raw/holdout_v2_ai_review_v3.json`. Running the same command again resumes remaining cases. The comparison requires your **original** `results/raw/holdout_v2_ai_review.json` and creates distinct local `phase9_ai_comparison.json` / `.md` files; it refuses to overwrite a prior comparison. **Do not rerun the old reviewer to replace its historical output.**
 
@@ -445,6 +445,24 @@ python -m scripts.diagnose_phase9
 ~~~
 
 It writes `results/raw/phase9_failure_diagnostics.md` without making new Ollama calls. The report counts invalid/missing source quote evidence, uncertainty in each of the five evidence axes and repeated warnings. The cause of the model's 24 abstentions remains **unconfirmed until that evidence is inspected**. See [Experiment 013](docs/experiment_013_results.md).
+
+## Experiment 014 — Phase 9 evidence failure diagnosed; V4 proposed
+
+Your uploaded `phase9_failure_diagnostics.md` showed that the **V3 judge returned usable evidence quotes in 24/24 cases** but recorded **`unknown` for all five evidence fields in all 24 cases** (120/120 unknown values). There were **no missing quote or malformed-axis warnings**; every case had only the generic `Evidence is insufficient for a firm relation.` warning. This looks like wholesale conservative abstention in the small local judge, but the raw model responses were not preserved and we cannot prove *why* it abstained.
+
+V4 makes a new **experimental** prediction file; it does not alter your existing V3 or signed decisions. It reserves `unknown` for the two genuinely ambiguous identity/attribute fields, while asking the model to answer yes/no for exact repetition, **proven** obsolescence, and existence of a replacement value. It uses unrelated examples, source-quote checks, and deterministic rules before proposing a label. Risky replacements always stay `review_needed`, never executed. The local raw response text is kept under Git-ignored `results/raw/` for diagnosis.
+
+After GitHub Desktop **Fetch origin → Pull origin**, run:
+
+~~~bat
+python -m unittest discover -s tests -v
+python -m scripts.auto_review_v4
+python -m scripts.compare_v3_v4
+~~~
+
+The expected offline suite is **161 test methods** (145 before V4, plus 16 new). These tests and real Ollama calls haven't been run on the user's laptop yet. The V4 run saves to `results/raw/holdout_v2_ai_review_v4.json`; the comparator saves `results/raw/phase9_v4_diagnostic.md`. Both reuse **previously exposed fictional cases**, so a more diverse label distribution would **not** prove better accuracy. For rigorous evaluation use fresh independently labelled examples.
+
+See [Experiment 014](docs/experiment_014_results.md).
 
 ## Project files
 
@@ -484,6 +502,9 @@ It writes `results/raw/phase9_failure_diagnostics.md` without making new Ollama 
 | `docs/phase9_protocol.md` | Phase 9 commands, methodological limits, and preservation safeguards |
 | `scripts/diagnose_phase9.py` | Offline counts of V3 missing evidence, quote failures and abstention flags |
 | `docs/experiment_013_results.md` | Phase 9 all-uncertain outcome and revised 24-case signoff findings |
+| `scripts/auto_review_v4.py` | Separate contrastive yes/no evidence judge; raw response retained for debugging |
+| `scripts/compare_v3_v4.py` | AI-only evidence and label distribution comparison (never accuracy) |
+| `docs/experiment_014_results.md` | Diagnosis of valid quotes and 120 unknown axes, V4 rationale and cautions |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

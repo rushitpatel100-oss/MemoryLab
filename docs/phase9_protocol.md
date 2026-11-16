@@ -65,3 +65,14 @@ python -m scripts.diagnose_phase9
 ~~~
 
 This writes `results/raw/phase9_failure_diagnostics.md` and changes no existing JSON or SQLite data. Upload that Markdown or the underlying `holdout_v2_ai_review_v3.json` for evidence-level debugging. Six mocked test methods were added, raising the expected offline count to **145**. See [Experiment 013](experiment_013_results.md).
+
+## Experiment 014 — V3 evidence diagnosis and versioned V4 test
+
+The owner-uploaded diagnostic found **valid old/new quotes on all 24 cases**, but **all 120 evidence axes were `unknown`**. That suggests V3 was abstaining semantically rather than failing to format its JSON. The new V4 review version narrows three evidence questions to yes/no while keeping ambiguous entity/attribute evidence open to unknown. It stores raw model output for future debugging and uses a separate local file, never overwriting V3. Run:
+
+~~~bat
+python -m scripts.auto_review_v4
+python -m scripts.compare_v3_v4
+~~~
+
+The comparison is saved as `results/raw/phase9_v4_diagnostic.md`. The expected offline suite now contains **161 tests** (16 new tests for V4 and its comparator). V4 is not yet validated on the user's local Ollama instance and the 24 source cases are previously exposed, not independent held-out data. See [Experiment 014](experiment_014_results.md).

@@ -59,3 +59,7 @@ The signed record has **19 decisions whose most recent action is `corrected` and
 1. Diagnose V3 evidence failures using `python -m scripts.diagnose_phase9` and inspect/upload `results/raw/phase9_failure_diagnostics.md` or the underlying **`holdout_v2_ai_review_v3.json`**. Without one of those, the failure cause cannot be determined.
 2. In `python -m streamlit run app_review.py`, revisit the explanations and evidence fields for H02, H06 and H20; preserve the audit log. A changed label with a stale 'replaces' explanation is **not internally review-ready**.
 3. Keep Experiment 012 and the present Experiment 013 separately. If future evaluator/prompt changes follow these diagnostics, use *new fictional examples with independent human labels* for claims about classification reliability. No existing memory should be deleted or replaced from this diagnostic.
+
+## Subsequent evidence: Experiment 014
+
+The user provided the detailed V3 diagnostic: **0/24 missing old quotes, 0/24 missing new quotes and 24/24 `unknown` for each of five evidence axes**. This narrows the issue from generic abstention to a complete all-unknown evidence pattern. A separate experimental V4 reviewer has been published, but **no V4 results are available yet**. See [Experiment 014](experiment_014_results.md). The Experiment 013 source and reviewed decisions remain unchanged.

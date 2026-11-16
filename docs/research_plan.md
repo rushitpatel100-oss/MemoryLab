@@ -96,6 +96,10 @@ A diagnostic comparison tool produces counts and case-wise label changes against
 
 The owner-uploaded comparison shows **24/24 Phase 9 AI outputs were `uncertain`**, while Phase 8's same 24 cases were **24/24 `replaces`**. Both flagged 24/24 for review. The full V3 evidence JSON was not provided, so the cause of abstention is not established; a new offline `scripts/diagnose_phase9.py` will count missing quotes, unknown axes and per-case warnings without rerunning Ollama. A separately uploaded revised signoff contains 24 decisions/27 audit actions, with H02, H06, H20 relationship labels changed but their original explanations and some evidence axes not yet reconciled. See [Experiment 013](experiment_013_results.md). Do not equate the conservative abstention policy with four-way accuracy or independent evaluation.
 
+### Stage 4M — Experiment 014: valid quotes, all-unknown evidence, V4 (local run pending)
+
+The owner-uploaded V3 evidence diagnostic showed **0 missing old/new quotes** across 24 cases, but all **five evidence questions were answered `unknown` in all cases** (120/120), with no malformed-field warnings. This identifies broad semantic abstention in the saved evidence, though the exact causal mechanism cannot be verified without raw V3 model messages. The new versioned V4 contrastive judge reduces the unnecessary unknown options on binary/observable axes, preserves raw model text and maps explicitly supported evidence to a tentative relation, never an automatic memory write. Comparing V3 vs V4 on these exposed 24 cases is **diagnostic only** and not model accuracy. See [Experiment 014](experiment_014_results.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.
