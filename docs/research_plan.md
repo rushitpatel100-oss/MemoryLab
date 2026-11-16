@@ -74,6 +74,10 @@ No existing data, prompts, model parameters or SQLite storage behaviour is modif
 
 To reduce the user's manual annotation burden, MemoryLab now provides a **separate** Ollama-based automatic draft reviewer for the 24 fictional cases. It returns four rubric evidence fields, a provisional relation and an explanation, with warnings about contradictory or destructive proposals. It saves only `results/raw/holdout_v2_ai_review.json` and never touches human A/B labels, SQLite, or the accuracy-evaluation script. Qwen judging Qwen is circular; **no model-accuracy claim is permitted from auto-triage alone**. A different local judge may produce useful error-analysis contrast but still does not replace independent human ground truth. See [automatic review guide](auto_review.md).
 
+### Stage 4I — AI-first human verification and provenance (published, local testing pending)
+
+To minimise manual annotation, a Streamlit dashboard now displays all 24 local AI draft evaluations, enables explicit bulk attestation of unflagged entries, individual approval or edits for flagged and disputed cases, and produces a versioned Markdown report. The approval history distinguishes AI-generated draft labels, human edits, individually checked entries and bulk-attested entries. **This is AI-assisted human verification, not independently human-labelled evidence**, even when the natural-language prose sounds human. No SQLite writes, no revision to the frozen Qwen classifier, and no automatic unlocking of the human-consensus scorer occur. See [human-verification method](human_verification.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

@@ -58,3 +58,7 @@ The new 24 examples were authored by the project in light of earlier errors. The
 Both review files and the final model report are under `results/raw/`, already Git-ignored. The review script never reads the other review file. The evaluator reads both only after they are locked. Code does not authenticate reviewers or prevent the same person completing both reviews; to claim inter-rater agreement, document the actual review setup. For a rigorous future benchmark, recruit distinct trained raters, independently sample a new scenario set, adjudicate disagreements blinded to model outputs, and run downstream memory-retention and answer-quality tests.
 
 The Qwen prompt, deterministic gate and SQLite storage behaviour **remain unchanged**. The original Experiment 010 and 011 files are never read, edited or overwritten by Phase 8 tools.
+
+## Optional AI-first verification track (not blind evaluation)
+
+If full human labelling takes too much time, you may instead run `python -m scripts.auto_review_holdout_v2` followed by `python -m streamlit run app_review.py`. This workflow is suitable for annotation triage and producing a human-approved AI report, but is **not** a substitute for the two blind reviewer files required by `evaluate_holdout_v2`. Viewing AI-generated labels before finishing the review contaminates future claims that those same cases were labelled blind. See [human verification](human_verification.md).

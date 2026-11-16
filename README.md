@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Phase 8 offers a one-command automated AI reviewer plus an optional independent human-review protocol.** The AI reviewer can draft decisions for all 24 fictional pairs locally with Ollama, with no human bulk labelling, and flag uncertain or inconsistent cases. AI output is **not independent human ground truth**—especially when the reviewer uses the same Qwen model as the classifier—so it cannot unlock the separate accuracy evaluator or substantiate benchmark improvement. Previous experiments, Reviewer A/B files, model prompts, safeguard and SQLite memories are unchanged. Local code tests pending.
+> **Current status: Phase 8 AI-first review and human verification dashboard published (local testing pending).** Local Ollama drafts the 24 fictional memory decisions. A separate Streamlit dashboard presents all AI explanations, records explicit user corrections or approvals, and exports a provenance-labelled report. The existing blinded two-human evaluation remains optional and separate. **AI-assisted, human-approved output must not be represented as independently human-labelled ground truth or used to score Qwen against itself.** Earlier experiments, stored memories and reviewer files are unchanged.
 
 ## Features
 
@@ -335,6 +335,21 @@ This writes `results/raw/review_v1_adjudicated_metrics.json`. The first label fi
 
 ## Phase 8 — Frozen rubric + fresh blind evaluations
 
+### Recommended workflow — AI drafts, you verify and edit
+
+**You do not need to type labels for all 24 fictional cases.** Use the local AI to draft them, then use a browser dashboard to inspect the full report, correct mistakes and approve the rest.
+
+~~~bat
+python -m scripts.auto_review_holdout_v2
+python -m streamlit run app_review.py
+~~~
+
+Step 1 creates a separate AI draft file. Step 2 opens the Streamlit dashboard: see all 24 facts and natural-language explanations, **approve unchanged unflagged cases in one explicit action after reading them**, then address any flagged cases individually. Nothing is written to your SQLite memory database.
+
+When all 24 have signoffs, use the dashboard's **Download complete human-reviewed AI report** control. You can also save a versioned Markdown report locally in `results/raw/`, with source AI labels, final human-reviewed answers and an audit trail of changes in a separate JSON file. Your original four Reviewer A answers are not changed or silently reclassified.
+
+**Research provenance matters:** Final wording should be **AI-generated annotations, human-verified/corrected**. Cases approved in bulk are marked as *bulk-attested*, not *individually annotated by a human*. A model cannot create independent human ground truth by writing natural-sounding prose. See [signoff and report instructions](docs/human_verification.md).
+
 ### Fast path — automatic AI review (no more manual labelling)
 
 **You can skip completing Reviewer A and B** if your goal is to get useful automated suggestions rather than a rigorous independent accuracy estimate. After GitHub Desktop **Fetch origin → Pull origin**, run:
@@ -366,7 +381,7 @@ After **Fetch origin → Pull origin**, start by checking offline tests:
 python -m unittest discover -s tests -v
 ~~~
 
-Expected: **115 offline test methods** (105 before the automated-review addition, plus 10 new). The new tests have not yet been executed on your Windows machine.
+Expected: **122 offline test methods** (115 before the human signoff feature, plus 7 new). The new tests have not yet been executed on your Windows machine.
 
 **Reviewer A starts with four new cases (no Qwen):**
 
@@ -428,6 +443,9 @@ Documentation: [Phase 8 review instructions](docs/phase8_protocol.md).
 | `scripts/evaluate_holdout_v2.py` | After both reviews lock: one-call paired Qwen/gate scores on consensus subset |
 | `scripts/auto_review_holdout_v2.py` | One-command local Ollama case triage; separate AI suggestions, no human-score claim |
 | `docs/auto_review.md` | Auto-review usage, limits and interpretation |
+| `app_review.py` | Streamlit dashboard to approve, correct, and export AI-first review reports |
+| `scripts/review_signoff.py` | Independent approval record, audit trail and versioned report generation |
+| `docs/human_verification.md` | AI-first review workflow and precise provenance language |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

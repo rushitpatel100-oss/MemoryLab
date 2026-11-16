@@ -39,3 +39,7 @@ If you see a connection error, ensure Ollama is running, then re-run the same co
 ## How to use the findings responsibly
 
 Use AI triage for: spotting ambiguous fact pairs, checking whether the explanation mentions the correct person/attribute, finding overconfident supersessions, or preparing a small human-review shortlist. **Do not compute an accuracy score** by comparing this Qwen judgement to the same Qwen classifier. A real claim about memory accuracy still needs separate human labels, ideally a new externally authored scenario sample and downstream memory-answer testing.
+
+## Optional human-verification dashboard
+
+After the automatic judge has completed all 24 cases, run `python -m streamlit run app_review.py`. This dashboard presents the AI draft report and allows you to correct or approve entries. It distinguishes per-case edits, individual approvals and bulk attestations and exports a clearly attributed Markdown report. **AI-generated and human-approved is not independent blind human labelling.** See [the human verification guide](human_verification.md).
