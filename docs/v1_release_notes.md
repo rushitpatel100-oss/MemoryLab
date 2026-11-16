@@ -19,7 +19,7 @@
 - **Unsupported-answer example:** owner reported abstention.
 - An **earlier manual UI06 walkthrough failed**, showing only a front-desk record active. The exact trigger was not independently determined. An additional two-layer demo-only safeguard was committed, and the owner later reported the save/history check correct.
 
-This is **user-reported local test evidence**, not a remote independent reproduction. No new clean-install audit or Git-history secret scan has been completed here.
+This is **user-reported local test evidence**, not a remote independent reproduction. A new clean-clone/virtual-environment run produced **six PASS lines** from the owner, covering layout, privacy ignore patterns, baseline guard, SQLite, runtime and offline suite. The optional seventh Ollama-model-tag line was not provided. An automated limited regex/pattern review across available diffs of all **104 main-branch commits** found no common credential-type flags; human content and historic privacy inspections remain outstanding.
 
 ## Known scientific limitations
 
@@ -33,6 +33,6 @@ This is **user-reported local test evidence**, not a remote independent reproduc
 
 **Functional gate:** passed according to owner-reported 295 tests and final manual observations.
 
-**Still required for making the repository public or tagging v1.0:** verify setup on a fresh environment; manually inspect tracked files and Git history for credentials/private data; decide whether to add an explicit license; check public screenshots/recording; optionally record the 3–5 minute demo.
+**Still required for making the repository public or tagging v1.0:** finish the optional model-tag/fresh demo confirmation, manually inspect tracked content and Git history for sensitive or identifying information beyond automated patterns, decide on an explicit licence, and inspect any screenshots/recording before sharing. The clean-clone offline checks already passed by owner report.
 
 Follow [the publication checklist](publication_checklist.md) and [acceptance status](v1_acceptance_status.md). Do not silently treat a private release candidate as a public finished version.

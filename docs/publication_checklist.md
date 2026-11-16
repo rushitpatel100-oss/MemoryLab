@@ -1,6 +1,6 @@
 # MemoryLab — Public portfolio release checklist
 
-**Current repository visibility: PRIVATE.** This file is a publication gate, not a claim that privacy or clean installation have already passed.
+**Current repository visibility: PRIVATE.** The owner reported passing six fresh-environment readiness checks and an automated keyword/pattern review of the 104 main-branch commit diffs found no flags. Human content/privacy review, explicit licensing and publication decisions remain outstanding.
 
 ## Verified from the current GitHub tree
 
@@ -10,9 +10,11 @@
 
 ## Owner actions before changing repository visibility
 
-- [ ] **Clean installation:** clone into a new folder without copying local `.venv`, database or `results/raw/`; install dependencies; pull both Ollama models; run the readiness check; start the isolated demo.
+- [x] **Fresh clone + environment + offline tests (owner-reported):** created a clean copy in a separate folder and reported PASS on six readiness checks: layout, ignore patterns, guarded UI, temporary SQLite review storage, Python 3.14.5 with Streamlit, and offline suite. These specific checks are done; no seventh model-tag line was supplied.
+- [ ] **Fresh-clone Ollama/demo check:** optionally confirm `--check-models` gives a PASS for both model tags and open the disposable demo from the clean clone. The previous complete manual test on the primary machine passed by owner report.
 - [ ] **Current tracked content review:** examine the README, scripts, benchmarks, PDFs/images if added, and all research notes for personal details, real memories, passwords, tokens, internal company data or inappropriate third-party material.
-- [ ] **Git history review:** check earlier commits too; `.gitignore` does not remove secrets already committed. If any private data appear, remove/rotate the secret and clean history using an appropriate Git process *before* publicity.
+- [x] **Automated history pattern review (limited scope):** screened available diffs of **104 commits** on the single GitHub `main` branch for common GitHub/OpenAI/AWS token formats, private-key headers, apparent credential assignments, Windows user-profile paths, and filenames suggesting local DBs/secrets. **No matches were reported.** Current tree filenames also showed no obvious secret/database artifact. This is a pattern check, not a guaranteed sensitive-data scan.
+- [ ] **Human history/content review:** inspect all source/docs/benchmark data and older Git revisions for other private material, employer data, personally identifying information or unusual credentials. `.gitignore` does not scrub past commits. If private data are present, fix/rotate and sanitize history *before* publication.
 - [ ] **No secrets in screenshots:** inspect browser windows, terminal paths, usernames, model prompts and file dialogs in any demo recording. Synthetic examples only.
 - [ ] **License choice:** explicitly choose and add a license if you want others to reuse the code. A public repository without a license does **not** grant general permission for redistribution.
 - [ ] **Version and docs:** verify all README links and commands on the final commit; write a short GitHub repo description, choose optional topics, and confirm references don't claim independent accuracy.

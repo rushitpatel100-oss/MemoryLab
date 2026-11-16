@@ -22,9 +22,9 @@ A full local unit-test run and the user's manual demo checks passed on their Win
 
 - No separate upload of the latest 295-test readiness report was provided here; the 295-test outcome is a **direct owner report**.
 - A single supported and unsupported question is **not** an independent factual-accuracy estimate, reliability stress test or guarantee that Qwen always abstains.
-- A static Git-ignored pattern check is not a comprehensive privacy audit, and a clean checkout has not been validated here.
+- A subsequent clean clone and Python virtual environment on the owner's Windows PC produced **six reported PASS engineering checks**: project layout, privacy exclusions, baseline guard, temporary SQLite save/rollback, Python 3.14.5/Streamlit, and offline unit tests. The final optional local Ollama-model-tag PASS line was **not included** in the pasted output. A programmatic pattern scan of available diffs for 104 commits on `main` found no known credential-format flags but does not constitute a complete content/privacy audit.
 - This file does not assert that the GitHub repo is public, licensed or tagged `v1.0`.
 
 ## Next publication checks
 
-Complete [clean-install and Git privacy/history review](publication_checklist.md), then [record the portfolio demonstration](demo_storyboard.md). No additional experimental model phases are required for the local V1.0 research-demonstrator scope.
+Finish the remaining [privacy/history, licence, and clean-demo checks](publication_checklist.md), then optionally [record the portfolio demonstration](demo_storyboard.md). No additional experimental model phases are required for the local V1.0 research-demonstrator scope.

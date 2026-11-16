@@ -70,3 +70,8 @@ Do **not** create a v1.0 Git tag until these checks are actually completed.
 ## Functional acceptance and portfolio package
 
 The final owner-reported functional pass is documented in [V1 acceptance status](v1_acceptance_status.md). The concise [portfolio README](../README.md), [architecture diagram](architecture_v1.md), [Windows quickstart](windows_quickstart.md), [demo storyboard](demo_storyboard.md), [release notes](v1_release_notes.md) and [publication checklist](publication_checklist.md) are now the release-facing documents. Historical failures remain preserved under the research journal.
+
+
+## Clean installation and limited historic screen (owner update)
+
+After the initial 295-test functional acceptance, the owner performed a fresh copy/fresh virtual-environment check and pasted **six PASS results**: project layout, privacy exclusion patterns, guarded baseline UI, temporary reviewed storage, Python 3.14.5 and Streamlit, and offline test suite. No optional model-tag result was included in that paste. In parallel, a screen of available changed-text diffs on all **104 commits on the sole `main` branch** produced no matches for several common token/private-key/credential formats, user-profile paths, or sensitive changed filenames. **This cannot certify absence of all personal or proprietary content.** Human privacy inspection and licence/publication consent are still required; keep the repo private and untagged.
