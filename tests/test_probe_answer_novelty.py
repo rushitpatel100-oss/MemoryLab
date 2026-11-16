@@ -45,6 +45,7 @@ class AnswerNoveltyProbeTests(unittest.TestCase):
               "fact": "The club has a blue telescope."}]
         )
         self.assertEqual(outcome["status"], "no_obvious_lexical_novelty")
+        self.assertEqual(outcome["unsupported_numbers"], [])
 
     def test_weekday_plural_and_number_word_normalization(self):
         self.assertIn("thursday", words("Thursdays"))
