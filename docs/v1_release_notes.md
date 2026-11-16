@@ -46,3 +46,8 @@ MemoryLab's original source and documentation are now offered under the [MIT Lic
 ## Final tracked-content and Git email privacy screen
 
 A patterned scan of **all 142 current tracked files** at the MIT-licensed commit found no matched personal email patterns, Windows user paths, UK phone formats, common secret keys, private-key blocks or assignment-style passwords/tokens. A separate prior pass screened changed-text diffs of 104 then-existing `main` commits for similar patterns without flags. **Commit metadata is a separate issue:** among the **106 commits** observed before this documentation update, the author/committer metadata contained a Gmail-domain email, which may be exposed if the repository becomes public. The owner must explicitly accept this exposure or arrange a safe history rewrite before publishing. These scans are non-exhaustive; the project remains private.
+
+
+## Email metadata decision
+
+The owner explicitly accepted visibility of the existing Gmail author/committer address in Git history. This resolves **only the commit-email disclosure decision**; it does not certify all repository content as public-safe or authorise changing the repository to public visibility. The repository remains private until a separate explicit publication decision after the remaining privacy review.
