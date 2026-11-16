@@ -124,6 +124,12 @@ Phase 11 extractive mode returned **24/28 abstentions**, including **23/27 answe
 
 A new offline token-novelty probe reads the **saved** Phase 10 baseline, compares replies to the retrieved facts, and flags novel weekdays, numbers, IDs and content words. It makes no model or SQLite calls. This is **not an entailment verifier** and has been designed on exposed development data; future scoring must be carried out on new separately reviewed cases. See [Experiment 018](experiment_018_results.md) and [Phase 12](phase12_protocol.md).
 
+### Stage 4S — Experiment 019: novelty screening and probe-blind authored-answer challenge
+
+The owner-uploaded Phase 12 Markdown found **27/28 no obvious lexical novelty** and **1/28 unsupported weekday** for the previously known fabricated Monday. This agrees with prior assistant inspection on these exposed development cases, not an independent detector accuracy measurement.
+
+Phase 13 provides a **new 32-case project-curated factual-support challenge** with source memories, a question, and an authored candidate answer but no truth labels. A local Streamlit UI collects each human judgement without exposing the novelty probe output, saves revisions in a Git-ignored signoff and requires all cases to be explicitly frozen. An offline evaluator then reports detector false negatives and false positives by that single-reviewer signoff. These deliberately selected cases are useful stress tests but not representative or independently authored benchmark accuracy. No Qwen calls or live memory modifications occur. See [Experiment 019](experiment_019_results.md) and [Phase 13](phase13_protocol.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 018 — strict extractive answers over-abstained; Phase 12 offline novelty probe published.** The extractive Phase 11 trial dropped from **25/28 to 5/28** keyword/abstention proxy matches and abstained **24/28 times**, including **23/27 answerable** questions. It avoided the earlier invented weekday but is not ready to replace the live answer mode. Phase 12 adds a non-destructive offline screen for unsupported weekdays, numbers, citations and novel tokens on the saved baseline answers. These exposed cases are development diagnostics, **not independently validated accuracy**. See [Experiment 018](docs/experiment_018_results.md).
+> **Current status: Experiment 019 — Phase 12 novelty results inspected; Phase 13 answer-support challenge published.** The original saved-answer probe flagged **1/28** answers: the already-known invented **Monday** in P07/Q2; 27 had no obvious lexical novelty, which is **not verified correctness**. To probe harder failures without reusing these cases, the repo now contains **32 new project-curated fictional answers** and a simple Streamlit review flow that hides probe predictions until all labels are saved and frozen. A separate offline scorer reports false-positive and false-negative warnings; this is **a curated single-reviewer stress test, not independent model accuracy**. See [Experiment 019](docs/experiment_019_results.md).
 
 ## Features
 
@@ -496,7 +496,7 @@ python -m unittest discover -s tests -v
 python -m scripts.evaluate_downstream_memory
 ~~~
 
-The first runs the offline regression suite (**239 expected tests**, including 27 new Phase 11/audit tests). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
+The first runs the offline regression suite (**253 expected tests**, including 27 new Phase 11/audit tests). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
 
 To measure whether the unchanged local Qwen answer generator uses the active facts, **first test the reviewed policy with full memory context**:
 
@@ -528,7 +528,7 @@ python -m scripts.audit_phase10_answers
 python -m scripts.evaluate_answer_evidence
 ```
 
-Expected **239** offline test methods. The audit is model-free, and the last command uses local Ollama plus the real `all-minilm` ranker on temporary synthetic memories. Outputs go to new `results/raw/phase10_*_audit.*` and `phase11_*` files; no prior results or personal memories are changed. See [Phase 11 protocol](docs/phase11_protocol.md) and [Experiment 017 analysis](docs/experiment_017_results.md).
+Expected **253** offline test methods. The audit is model-free, and the last command uses local Ollama plus the real `all-minilm` ranker on temporary synthetic memories. Outputs go to new `results/raw/phase10_*_audit.*` and `phase11_*` files; no prior results or personal memories are changed. See [Phase 11 protocol](docs/phase11_protocol.md) and [Experiment 017 analysis](docs/experiment_017_results.md).
 
 ## Experiment 018 / Phase 12 — Diagnose extractive over-abstention
 
@@ -538,6 +538,25 @@ The uploaded Phase 11 results show **23 unnecessary abstentions out of 27 answer
     python -m scripts.probe_answer_novelty
 
 Expected suite **239 tests** (11 new, not locally verified). Output: results/raw/phase12_answer_novelty_probe.md and .json. A flag is not proof of an error and an unflagged answer is not proof of correctness. See [Experiment 018](docs/experiment_018_results.md) and [Phase 12 protocol](docs/phase12_protocol.md).
+
+## Experiment 019 / Phase 13 — New answer-support stress test
+
+The Phase 12 probe correctly flagged the known unsupported `Monday` while leaving 27 saved baseline answers unflagged. This is an encouraging **development regression**, not independent evidence of generalization. Phase 13 adds 32 new fictional source-and-answer pairs with **no labels or detector results embedded**.
+
+After **Fetch origin → Pull origin**, run:
+
+```bat
+python -m unittest discover -s tests -v
+python -m streamlit run app_answer_challenge.py
+```
+
+Expected **253 offline tests** (14 new; not run on the owner's computer). In the dashboard review all 32 answers as supported, unsupported or uncertain; save and then explicitly **freeze** your labels. The probe is hidden until after the freeze. Then run:
+
+```bat
+python -m scripts.evaluate_answer_challenge
+```
+
+Result: `results/raw/phase13_probe_evaluation.md`, plus JSON, both local and private. This is a curated probe stress test, not Qwen model accuracy or independently sourced ground truth. See [Phase 13 protocol](docs/phase13_protocol.md).
 
 ## Project files
 
@@ -596,6 +615,12 @@ Expected suite **239 tests** (11 new, not locally verified). Output: results/raw
 | `scripts/probe_answer_novelty.py` | Offline screen of potentially new factual claims; not entailment |
 | `docs/experiment_018_results.md` | Phase 11 extractive over-abstention result and interpretation |
 | `docs/phase12_protocol.md` | Phase 12 offline diagnostic commands and limitations |
+| `benchmarks/answer_claims_v1.json` | 32 fresh project-curated fictional answer claims, with no truth labels |
+| `app_answer_challenge.py` | Probe-blind human review UI, per-case labels, audit and freeze |
+| `scripts/phase13_review.py` | Review provenance, source hash, recording, and signoff locking |
+| `scripts/evaluate_answer_challenge.py` | Offline confusion matrix and errors only after signoff freeze |
+| `docs/experiment_019_results.md` | Phase 12 uploaded results and Phase 13 challenge rationale |
+| `docs/phase13_protocol.md` | Phase 13 setup, review and interpretation safeguards |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

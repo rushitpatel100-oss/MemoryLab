@@ -25,3 +25,7 @@ A result of **no obvious lexical novelty is not verified correctness**. Wrong ol
 The method has been designed after viewing these same 14 scenarios, so screening rates on them must not be presented as new blind accuracy. Do not deploy it to silently suppress answers. The next defensible milestone is a new independently reviewed set of fictional questions that includes dates, entities, changed values and justified abstention.
 
 See [Experiment 018](experiment_018_results.md).
+
+## Report received — Experiment 019
+
+The local 28-answer probe report returned **one `unsupported_weekday` (invented Monday in P07/Q2)** and **27 `no_obvious_lexical_novelty`**, including two valid wording variations. Its performance on these exposed cases cannot be treated as independent accuracy. The subsequent [Phase 13 challenge](phase13_protocol.md) provides new curated examples without labels or probe outputs, a probe-blind single-reviewer workflow, and an offline evaluator that only runs after label freeze. See [Experiment 019](experiment_019_results.md).
