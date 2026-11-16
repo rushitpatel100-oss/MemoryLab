@@ -99,7 +99,7 @@ def assess_response(raw):
         raw = {}
         flags.append("AI response is not a JSON object.")
     relation = raw.get("relation")
-    if relation not in RELATIONS:
+    if not isinstance(relation, str) or relation not in RELATIONS:
         flags.append("Invalid relationship label from AI.")
         relation = "uncertain"
     given_axes = raw.get("axes")
@@ -108,7 +108,7 @@ def assess_response(raw):
     axes = {}
     for key in FIELDS:
         value = given_axes.get(key)
-        if value not in EVIDENCE:
+        if not isinstance(value, str) or value not in EVIDENCE:
             flags.append(f"AI gave no valid evidence value for {key}.")
             value = "unknown"
         axes[key] = value
@@ -117,7 +117,7 @@ def assess_response(raw):
         flags.append("AI explanation is missing.")
         reason = "AI response lacked an adequate explanation."
     model_action = raw.get("storage_action")
-    if model_action not in ACTIONS:
+    if not isinstance(model_action, str) or model_action not in ACTIONS:
         flags.append("AI suggested an invalid storage action.")
         model_action = "review_needed"
     entry = {"label": relation, "reason": reason.strip()[:500],

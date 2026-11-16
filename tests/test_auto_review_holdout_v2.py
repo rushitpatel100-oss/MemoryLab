@@ -110,6 +110,17 @@ class AutomaticReviewTests(unittest.TestCase):
         self.assertEqual(entry["triage"], "needs_review")
         self.assertEqual(entry["safe_storage_action"], "review_needed")
 
+    def test_malformed_nested_model_fields_are_safely_flagged(self):
+        result = assess_response({
+            "relation": ["replaces"],
+            "axes": {"same_entity": {"bad": "value"}},
+            "storage_action": ["supersede_old"],
+            "reason": 42,
+        })
+        self.assertEqual(result["provisional_label"], "uncertain")
+        self.assertEqual(result["safe_storage_action"], "review_needed")
+        self.assertEqual(result["triage"], "needs_review")
+
     def test_summary_counts_review_flags(self):
         self.report["answers"]["H01"] = assess_response(self.response)
         bad = copy.deepcopy(self.response)
