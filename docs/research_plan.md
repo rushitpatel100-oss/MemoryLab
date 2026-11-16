@@ -104,6 +104,10 @@ The owner-uploaded V3 evidence diagnostic showed **0 missing old/new quotes** ac
 
 The uploaded V3–V4 diagnostic shows seven V4 `duplicate` proposals, of which H18 (rosemary explicitly replaced with lavender) and H20 (home versus away jersey facts) are **unflagged, visibly wrong duplicates**. This exposed-case evaluation is a qualitative failure demonstration, not a blind model-accuracy score. Runtime V4 can recommend `skip_duplicate` for every structurally acceptable duplicate. The new **offline `scripts/audit_review_v4.py`** flags general change-language and role-qualifier conflicts and converts all duplicate skips to nonbinding `review_needed` audit recommendations pending human confirmation. Neither source JSON nor SQLite is modified. Further accuracy research requires fresh, independent labelled scenarios and downstream false-forgetting tests. See [Experiment 015](experiment_015_results.md).
 
+### Stage 4O — Experiment 016: shared cautions in Smart Memory Review
+
+A supplied offline V4 safety audit reported **two high-priority false-duplicate warnings (H18/H20), five other duplicates requiring confirmation, seven out of seven proposed skips withheld, and 17 unresolved**. The audit makes no data changes. We extracted general change-word and role-contrast caution signals into `memory_review_safety.py` and surfaced these risks beside duplicate/replacement suggestions in the live `app.py` Smart Memory Review interface, keeping all existing human approvals and atomic DB protections. This is a **human-facing warning, not a trained or proven semantic classifier**. No independent accuracy or downstream-memory benefit is established; next test needs new blinded fictional scenarios. See [Experiment 016](experiment_016_results.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

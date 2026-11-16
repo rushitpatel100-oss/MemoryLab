@@ -60,3 +60,7 @@ Do not claim that V4 achieves 5/7 duplicate accuracy: this set has been repeated
 Before further prompt iterations, collect a **new, independent, blind-labelled fictional evaluation set** and separate three outcomes: duplicate skipping, superseding a known obsolete memory, and preserving additional compatible information. The experiment should measure the practical impact of false skipping and false supersession on downstream answer quality, not only output labels.
 
 **Integrity:** The uploaded comparison Markdown, earlier AI files, previous human signoffs, all old Experiment 010–014 records, and live SQLite database were not overwritten or committed.
+
+## Audit verification and UI integration — Experiment 016
+
+The owner uploaded the completed safety audit: **2 high-priority**, **5 additional duplicate confirmations**, **all 7 duplicate skips withheld**, and **17 unresolved cases**. New shared caution functions are also displayed in the actual Smart Memory Review Streamlit UI, without changing classifier predictions or allowing automatic memory suppression. See [Experiment 016](experiment_016_results.md). These figures remain project-internal diagnostics.

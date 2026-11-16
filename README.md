@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 015 — V4 behavior reviewed; false-duplicate suppression identified.** In 24 previously exposed fictional cases, V4 returned **7 `duplicate` and 17 `uncertain`**, with no `replaces` or `coexists`. **H18 and H20 were unflagged, incorrect duplicate proposals**, so accepting AI-generated `skip_duplicate` suggestions without verification could silently drop an update or distinct fact. A new offline audit requires confirmation before treating any V4 duplicate as skippable. Existing V4 outputs, earlier reports, human signoffs and SQLite memories are preserved. These results are **diagnostics, not independent accuracy**. See [Experiment 015](docs/experiment_015_results.md).
+> **Current status: Experiment 016 — V4 safety audit verified and warnings integrated into Smart Memory Review.** On 24 already exposed fictional cases, the offline audit flagged **H18 and H20** as high-priority false duplicates, required confirmation for another **5** AI duplicate proposals, and held all **7/7** would-be skips; 17 cases remained unresolved. The live Streamlit app now surfaces general change/role-contrast cautions when judging Qwen duplicate and replacement suggestions. No classifier, human signoff, SQLite data or original AI experiment was overwritten, and **no independent accuracy is claimed**. See [Experiment 016](docs/experiment_016_results.md).
 
 ## Features
 
@@ -472,7 +472,18 @@ The V4 diagnostic returned seven unflagged duplicate proposals. **H18 (rosemary 
 python -m scripts.audit_review_v4
 ```
 
-Output: `results/raw/phase9_v4_safety_audit.md`. This command needs the **existing complete V4 AI JSON** saved locally, makes **no new Ollama calls**, and never modifies either review JSON or SQLite. The expected suite is now **169 offline tests** (8 new). Its warning heuristics are not a substitute for independent human labels. See [Experiment 015](docs/experiment_015_results.md).
+Output: `results/raw/phase9_v4_safety_audit.md`. This command needs the **existing complete V4 AI JSON** saved locally, makes **no new Ollama calls**, and never modifies either review JSON or SQLite. The expected suite is now **177 offline tests** (8 new reusable caution tests). Its warning heuristics are not a substitute for independent human labels. See [Experiment 015](docs/experiment_015_results.md).
+
+## Experiment 016 — Safer suggestions in the live review screen
+
+The completed V4 safety audit successfully escalated **H18** and **H20**, withheld **all seven** proposed `skip_duplicate` actions, and left 17 other cases unresolved. The shared `memory_review_safety.py` warning functions are now used by both the offline audit and the Streamlit **Smart Memory Review** UI. If the selected Qwen classifier calls a change or distinct-role statement `duplicate`, the screen prominently warns that it may be a false duplicate. A human still chooses whether to save or supersede; no automatic storage decision has been added.
+
+```bat
+python -m unittest discover -s tests -v
+python -m streamlit run app.py
+```
+
+Expected **177 offline test methods** (eight new; local execution pending). See [Experiment 016](docs/experiment_016_results.md). **Next research milestone:** genuinely new fictional cases and a downstream memory-answer evaluation, not more tuning against H01–H24.
 
 ## Project files
 
@@ -517,6 +528,8 @@ Output: `results/raw/phase9_v4_safety_audit.md`. This command needs the **existi
 | `docs/experiment_014_results.md` | Diagnosis of valid quotes and 120 unknown axes, V4 rationale and cautions |
 | `scripts/audit_review_v4.py` | Offline safety audit of risky duplicate-skip suggestions; never changes source data |
 | `docs/experiment_015_results.md` | V4 output analysis, two false duplicates and next safeguards |
+| `memory_review_safety.py` | Shared lexical review cautions for risky duplicate and replacement suggestions |
+| `docs/experiment_016_results.md` | Verified 7 withheld duplicate skips and UI warning integration |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
