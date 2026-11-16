@@ -1,6 +1,6 @@
 # MemoryLab — Public portfolio release checklist
 
-**Current repository visibility: PRIVATE.** The owner reported passing six fresh-environment readiness checks and an automated keyword/pattern review of the 104 main-branch commit diffs found no flags. Human content/privacy review, explicit licensing and publication decisions remain outstanding.
+**Current repository visibility: PRIVATE.** The owner reported passing six fresh-environment readiness checks and an automated keyword/pattern review of the 104 main-branch commit diffs found no flags. MIT licensing is completed; human content/privacy review and publication decisions remain outstanding.
 
 ## Verified from the current GitHub tree
 
@@ -16,7 +16,7 @@
 - [x] **Automated history pattern review (limited scope):** screened available diffs of **104 commits** on the single GitHub `main` branch for common GitHub/OpenAI/AWS token formats, private-key headers, apparent credential assignments, Windows user-profile paths, and filenames suggesting local DBs/secrets. **No matches were reported.** Current tree filenames also showed no obvious secret/database artifact. This is a pattern check, not a guaranteed sensitive-data scan.
 - [ ] **Human history/content review:** inspect all source/docs/benchmark data and older Git revisions for other private material, employer data, personally identifying information or unusual credentials. `.gitignore` does not scrub past commits. If private data are present, fix/rotate and sanitize history *before* publication.
 - [ ] **No secrets in screenshots:** inspect browser windows, terminal paths, usernames, model prompts and file dialogs in any demo recording. Synthetic examples only.
-- [ ] **License choice:** explicitly choose and add a license if you want others to reuse the code. A public repository without a license does **not** grant general permission for redistribution.
+- [x] **MIT license:** added a standard root-level `LICENSE` file (Copyright © 2026 MemoryLab contributors) and linked it in the README. Confirm contributors' agreement and rights to distribute code or documentation before public publication; external dependencies and model weights remain governed by their own licenses.
 - [ ] **Version and docs:** verify all README links and commands on the final commit; write a short GitHub repo description, choose optional topics, and confirm references don't claim independent accuracy.
 - [ ] **Security boundary:** don't expose Streamlit or local Ollama on the public internet; this V1.0 is intended for local use and is not a multi-user service.
 - [ ] **Final decision:** only after the above checks, optionally make the repository public and create a stable `v1.0.0` release or tag. These actions are **not performed automatically**.

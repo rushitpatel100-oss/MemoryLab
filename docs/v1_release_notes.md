@@ -33,6 +33,11 @@ This is **user-reported local test evidence**, not a remote independent reproduc
 
 **Functional gate:** passed according to owner-reported 295 tests and final manual observations.
 
-**Still required for making the repository public or tagging v1.0:** finish the optional model-tag/fresh demo confirmation, manually inspect tracked content and Git history for sensitive or identifying information beyond automated patterns, decide on an explicit licence, and inspect any screenshots/recording before sharing. The clean-clone offline checks already passed by owner report.
+**Still required for making the repository public or tagging v1.0:** finish the optional model-tag/fresh demo confirmation, manually inspect tracked content and Git history for sensitive or identifying information beyond automated patterns, confirm rights to license all original content under the newly added [MIT license](../LICENSE), and inspect any screenshots/recording before sharing. The clean-clone offline checks already passed by owner report.
 
 Follow [the publication checklist](publication_checklist.md) and [acceptance status](v1_acceptance_status.md). Do not silently treat a private release candidate as a public finished version.
+
+
+## License
+
+MemoryLab's original source and documentation are now offered under the [MIT License](../LICENSE), Copyright © 2026 MemoryLab contributors. Ollama models and third-party packages have separate upstream terms. The licence change does not make this private repository public and does not resolve the remaining privacy/publication review.

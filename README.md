@@ -90,4 +90,4 @@ The demo shows how one fictional memory can be updated while preserving a differ
 | [Research journal archive](docs/research_journal_archive.md) | Original detailed experiments and historical procedures |
 | [Research plan](docs/research_plan.md) | Unverified scientific hypothesis and future work |
 
-**License:** not yet selected. Do not assume public use or redistribution rights until an explicit license is added.
+**License:** [MIT](LICENSE) — Copyright © 2026 MemoryLab contributors. This license covers MemoryLab's original source and documentation; independently distributed Python packages and Ollama models retain their own terms.
