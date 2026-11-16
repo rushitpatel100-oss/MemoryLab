@@ -48,3 +48,7 @@ The existing dataset was designed and inspected within this project. It is usefu
 Next, collect **new, fictional, separately reviewed** questions that require both grounded answers and appropriate abstentions. Compare original and extractive modes with clear failure categories: invented specifics, unsupported citations, missing evidence, and over-abstention. Keep the original Phase 10 file and all prior human signoffs immutable.
 
 See [Experiment 017 findings](experiment_017_results.md).
+
+## Observed outcome — Experiment 018
+
+The supplied Phase 11 comparison reports **24 extractive abstentions**, including **23 of 27 answerable questions**, and only **5/28** literal proxy passes versus **25/28** for original Qwen. The mode avoided one unsupported weekday but cannot be deployed in place of the baseline. Raw Ollama extraction decisions were not saved; their individual causes cannot be inferred. See [Experiment 018](experiment_018_results.md) and the [Phase 12 diagnostic](phase12_protocol.md).

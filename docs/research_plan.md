@@ -118,6 +118,12 @@ The owner uploaded a complete 14-scenario, 28-question **reviewed-policy** seman
 
 We published `scripts/audit_phase10_answers.py` to preserve the original file and flag answerability, storage, retrieval and lexical-score issues separately, and an opt-in `answer_evidence.py` that asks Qwen to extract a quoted memory span or abstain. A new `scripts/evaluate_answer_evidence.py` runner compares this separate Phase 11 mode against the frozen baseline on previously exposed cases. The extractive quote validator may still select irrelevant or stale source facts and over-abstain; it is **not** approved for production deployment. New independently reviewed fictional answerability scenarios must be developed after exploratory diagnosis. See [Experiment 017](experiment_017_results.md) and [Phase 11 protocol](phase11_protocol.md).
 
+### Stage 4R — Experiment 018 / Phase 12: evidence-answer over-abstention
+
+Phase 11 extractive mode returned **24/28 abstentions**, including **23/27 answerable questions**, reducing literal proxy matches from **25/28** for baseline to **5/28**. It avoided one unsupported weekday but is not an acceptable production replacement. The saved output lacks the raw structured model response, so the cause of each rejection cannot be reconstructed from the upload.
+
+A new offline token-novelty probe reads the **saved** Phase 10 baseline, compares replies to the retrieved facts, and flags novel weekdays, numbers, IDs and content words. It makes no model or SQLite calls. This is **not an entailment verifier** and has been designed on exposed development data; future scoring must be carried out on new separately reviewed cases. See [Experiment 018](experiment_018_results.md) and [Phase 12](phase12_protocol.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

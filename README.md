@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 017 — Phase 10 semantic run analysed; evidence-required answer experiment published.** The uploaded reviewed-policy run completed **14/14** fictional scenarios and **28** questions, with authored active-memory states and all 27 answerable evidence sources preserved/retrieved. The literal checker passed **25/28**; two apparent failures were valid wording variants, while Qwen invented **Monday** for an unspecified new meeting day. A separate offline answer audit and opt-in **Phase 11 extractive-evidence answer trial** are published. These are development findings, **not independent accuracy**. The live app, original model answers and SQLite memories remain unchanged. See [Experiment 017](docs/experiment_017_results.md).
+> **Current status: Experiment 018 — strict extractive answers over-abstained; Phase 12 offline novelty probe published.** The extractive Phase 11 trial dropped from **25/28 to 5/28** keyword/abstention proxy matches and abstained **24/28 times**, including **23/27 answerable** questions. It avoided the earlier invented weekday but is not ready to replace the live answer mode. Phase 12 adds a non-destructive offline screen for unsupported weekdays, numbers, citations and novel tokens on the saved baseline answers. These exposed cases are development diagnostics, **not independently validated accuracy**. See [Experiment 018](docs/experiment_018_results.md).
 
 ## Features
 
@@ -496,7 +496,7 @@ python -m unittest discover -s tests -v
 python -m scripts.evaluate_downstream_memory
 ~~~
 
-The first runs the offline regression suite (**228 expected tests**, including 27 new Phase 11/audit tests). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
+The first runs the offline regression suite (**239 expected tests**, including 27 new Phase 11/audit tests). The second needs **no Ollama**; it uses only temporary SQLite files and saves a report to `results/raw/phase10_storage_all.md`. The local tests have not been executed in this session.
 
 To measure whether the unchanged local Qwen answer generator uses the active facts, **first test the reviewed policy with full memory context**:
 
@@ -528,7 +528,16 @@ python -m scripts.audit_phase10_answers
 python -m scripts.evaluate_answer_evidence
 ```
 
-Expected **228** offline test methods. The audit is model-free, and the last command uses local Ollama plus the real `all-minilm` ranker on temporary synthetic memories. Outputs go to new `results/raw/phase10_*_audit.*` and `phase11_*` files; no prior results or personal memories are changed. See [Phase 11 protocol](docs/phase11_protocol.md) and [Experiment 017 analysis](docs/experiment_017_results.md).
+Expected **239** offline test methods. The audit is model-free, and the last command uses local Ollama plus the real `all-minilm` ranker on temporary synthetic memories. Outputs go to new `results/raw/phase10_*_audit.*` and `phase11_*` files; no prior results or personal memories are changed. See [Phase 11 protocol](docs/phase11_protocol.md) and [Experiment 017 analysis](docs/experiment_017_results.md).
+
+## Experiment 018 / Phase 12 — Diagnose extractive over-abstention
+
+The uploaded Phase 11 results show **23 unnecessary abstentions out of 27 answerable questions**. Original Qwen generation remains unchanged; the strict extractive method is an unsuccessful optional experiment. The new Phase 12 probe screens original saved baseline answers without an Ollama call:
+
+    python -m unittest discover -s tests -v
+    python -m scripts.probe_answer_novelty
+
+Expected suite **239 tests** (11 new, not locally verified). Output: results/raw/phase12_answer_novelty_probe.md and .json. A flag is not proof of an error and an unflagged answer is not proof of correctness. See [Experiment 018](docs/experiment_018_results.md) and [Phase 12 protocol](docs/phase12_protocol.md).
 
 ## Project files
 
@@ -584,6 +593,9 @@ Expected **228** offline test methods. The audit is model-free, and the last com
 | `scripts/evaluate_answer_evidence.py` | Phase 11 experiment and unchanged-baseline comparison |
 | `docs/experiment_017_results.md` | Uploaded 28-answer findings, two grader false negatives and one unsupported answer |
 | `docs/phase11_protocol.md` | New answer audit and evidence-required experiment instructions |
+| `scripts/probe_answer_novelty.py` | Offline screen of potentially new factual claims; not entailment |
+| `docs/experiment_018_results.md` | Phase 11 extractive over-abstention result and interpretation |
+| `docs/phase12_protocol.md` | Phase 12 offline diagnostic commands and limitations |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
