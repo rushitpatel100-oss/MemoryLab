@@ -46,3 +46,7 @@ The source cases and candidate answers were crafted in the project to stress sus
 **Never auto-block real user answers or memory updates solely because the novelty probe flags a token.** Preserve the existing live answer generator and human confirmation workflow.
 
 See [Experiment 019](experiment_019_results.md) for findings and scope.
+
+## Completed review result and follow-on Phase 14
+
+The submitted Phase 13 comparison reported **22 unsupported, 9 supported and 1 uncertain** from a locked single reviewer; the lexical detector had **10 TP, 3 FP, 6 TN and 12 FN**, with 1 excluded. These are descriptive statistics on curated fictional cases, not independently sourced model accuracy. The optional [Phase 14 verifier](phase14_protocol.md) uses the same frozen signoff, saving raw model evidence and explicit abstentions rather than overwriting the original review. See [Experiment 020](experiment_020_results.md).

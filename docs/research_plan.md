@@ -130,6 +130,12 @@ The owner-uploaded Phase 12 Markdown found **27/28 no obvious lexical novelty** 
 
 Phase 13 provides a **new 32-case project-curated factual-support challenge** with source memories, a question, and an authored candidate answer but no truth labels. A local Streamlit UI collects each human judgement without exposing the novelty probe output, saves revisions in a Git-ignored signoff and requires all cases to be explicitly frozen. An offline evaluator then reports detector false negatives and false positives by that single-reviewer signoff. These deliberately selected cases are useful stress tests but not representative or independently authored benchmark accuracy. No Qwen calls or live memory modifications occur. See [Experiment 019](experiment_019_results.md) and [Phase 13](phase13_protocol.md).
 
+### Stage 4T — Experiment 020: curated novelty failure and Phase 14 semantic verification
+
+The frozen 32-case project-authored Phase 13 review counted 10 true positive novelty flags, 3 false positives, 6 true negatives, 12 false negatives and 1 uncertain excluded. Descriptive precision on the curated decisions was 10/13 and recall 10/22. Wrong *stale* values, wrong *entity or attribute* and negated/unproven claims frequently reused the exact memory vocabulary, defeating the lexical detector. Valid paraphrases created false warnings. This method must not be used for autonomous suppression.
+
+Phase 14 provides a separate optional local Qwen semantic verifier of candidate-answer support, with raw structured reply retention, evidence-quote warnings, and an explicit three-way verdict and deferral accounting. It reuses the **already locked** reviewer labels for an exploratory comparison, without asking for more manual labelling. The new code does not alter the live app, memory DB or previous review JSON. The 32 curated examples are **not a fresh blind holdout for this verifier**; later evaluation requires independent example collection and multiple reviewers. See [Experiment 020](experiment_020_results.md) and [Phase 14](phase14_protocol.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

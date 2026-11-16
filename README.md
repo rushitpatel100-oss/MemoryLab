@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 019 — Phase 12 novelty results inspected; Phase 13 answer-support challenge published.** The original saved-answer probe flagged **1/28** answers: the already-known invented **Monday** in P07/Q2; 27 had no obvious lexical novelty, which is **not verified correctness**. To probe harder failures without reusing these cases, the repo now contains **32 new project-curated fictional answers** and a simple Streamlit review flow that hides probe predictions until all labels are saved and frozen. A separate offline scorer reports false-positive and false-negative warnings; this is **a curated single-reviewer stress test, not independent model accuracy**. See [Experiment 019](docs/experiment_019_results.md).
+> **Current status: Experiment 020 — Novelty-probe weaknesses verified; optional Phase 14 semantic verifier published (local run pending).** On 32 project-curated fictional answer-support cases, one frozen reviewer labelled 22 unsupported, 9 supported and 1 uncertain. The lexical probe caught **10/22 unsupported**, missed **12**, and falsely flagged **3/9 supported**. This exposes failures on stale values and mismatched entities even when answer words occur in memory. A separate Qwen-based semantic verifier now records raw structured decisions, evidence warnings and deferrals for comparison with the **unchanged frozen signoff**; it is not live or independently validated accuracy. See [Experiment 020](docs/experiment_020_results.md).
 
 ## Features
 
@@ -550,13 +550,27 @@ python -m unittest discover -s tests -v
 python -m streamlit run app_answer_challenge.py
 ```
 
-Expected **253 offline tests** (14 new; not run on the owner's computer). In the dashboard review all 32 answers as supported, unsupported or uncertain; save and then explicitly **freeze** your labels. The probe is hidden until after the freeze. Then run:
+Expected **264 offline tests** (14 new; not run on the owner's computer). In the dashboard review all 32 answers as supported, unsupported or uncertain; save and then explicitly **freeze** your labels. The probe is hidden until after the freeze. Then run:
 
 ```bat
 python -m scripts.evaluate_answer_challenge
 ```
 
 Result: `results/raw/phase13_probe_evaluation.md`, plus JSON, both local and private. This is a curated probe stress test, not Qwen model accuracy or independently sourced ground truth. See [Phase 13 protocol](docs/phase13_protocol.md).
+
+## Experiment 020 / Phase 14 — Whole-claim verification, research only
+
+The prior lexical screen identified **10 of 22** unsupported answers but missed **12**, often because an old value or wrong person's detail already appeared in the memories. It also flagged three legitimate paraphrases/affirmations. See [Experiment 020](docs/experiment_020_results.md).
+
+Instead of continuing to add keywords, try a **separate optional local semantic verifier** using the *same locked Phase 13 human-reviewed signoff*. It judges the entire candidate answer with respect to the right entity, date, attribute and negation; saves raw Qwen replies and quote-validation warnings; and marks uncertain decisions as *deferred* rather than correct.
+
+```bat
+python -m unittest discover -s tests -v
+python -m scripts.evaluate_semantic_verifier --limit 4
+python -m scripts.evaluate_semantic_verifier
+```
+
+Expected suite **264 offline tests** (11 new; execution on local Windows remains unverified). The final comparison is written to `results/raw/phase14_semantic_verifier_comparison.md`. **No new review session is necessary** if the original Phase 13 signoff is already locked. No code changes to the live answer generator or SQLite. See [Phase 14 protocol](docs/phase14_protocol.md).
 
 ## Project files
 
@@ -621,6 +635,9 @@ Result: `results/raw/phase13_probe_evaluation.md`, plus JSON, both local and pri
 | `scripts/evaluate_answer_challenge.py` | Offline confusion matrix and errors only after signoff freeze |
 | `docs/experiment_019_results.md` | Phase 12 uploaded results and Phase 13 challenge rationale |
 | `docs/phase13_protocol.md` | Phase 13 setup, review and interpretation safeguards |
+| `scripts/evaluate_semantic_verifier.py` | Experimental semantic answer-support verifier, raw decision audit and frozen-label comparison |
+| `docs/experiment_020_results.md` | Phase 13 false positives, false negatives and research decisions |
+| `docs/phase14_protocol.md` | Commands and validity limits for the optional local semantic verifier |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
