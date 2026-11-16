@@ -21,7 +21,7 @@ python -m scripts.v1_release_readiness --check-models
 
 This one command runs the **offline unit test suite**, checks key source and privacy files, exercises selective SQLite saving inside a **temporary database**, verifies the guarded research-baseline UI is present, checks installed Streamlit, and checks only your **local** Ollama tags for `qwen2.5:1.5b` and `all-minilm`.
 
-Expected total: **276 offline unit-test methods** (264 before Experiment 021, plus 4 UI guard tests and 8 readiness tests). The test suite has **not** been executed on your Windows environment during this update. It can reveal failures; do not infer success from the expected count.
+The owner's uploaded local report confirms **276 unit tests passed and 7/7 engineering checks passed**, on the prior revision. After the new isolated-demo work, **289 tests are expected on the next local run** (13 new tests not yet verified).
 
 Each run writes its own Git-ignored file, e.g. `results/raw/v1_release_readiness_001.md`, then `_002.md`, without overwriting prior runs. **A PASS only means these engineering checks passed. It does not mean the LLM is accurate or the entire app is ready for publication.**
 
@@ -31,23 +31,23 @@ Optional quick diagnostic without unit tests or model calls:
 python -m scripts.v1_release_readiness --skip-tests
 ```
 
-## Step 2 — Manual product smoke test
+## Step 2 — Isolated manual product smoke test
 
-Launch:
+Use the new disposable app launcher rather than opening your normal memory database:
 
 ```bat
-python -m streamlit run app.py
+python -m scripts.launch_v1_demo
 ```
 
-Using **fictional facts only**, verify the following and record failures:
+Follow [eight fictional manual checks](v1_manual_acceptance.md): initial save, coexistence, selective supersession, duplicate blocking, baseline warning, history, semantic retrieval/answer, and an unsupported-answer observation. The final observation is NOT a model-accuracy certification.
 
-1. Save a first memory in a new topic. View it in active search and memory history.
-2. Use **Smart Memory Review** to add a different attribute to that topic. Select **Keep both** and confirm both remain active.
-3. Update a specific old attribute. Explicitly confirm the matching subject, matching attribute and that the old fact is outdated; supersede only that memory. Other active facts must remain.
-4. Attempt an exact duplicate and confirm that the atomic store rejects it without changes.
-5. Verify the **research baseline** warns that it deactivates every active same-topic memory, and that its save button is disabled until the user acknowledges the risk. Prefer the selective-review path instead.
-6. With local Ollama running, ask one question supported by active facts; inspect the retrieved memory evidence. Also ask one deliberately unsupported question and **document whether it answers or abstains**. Do not conceal hallucinations in the demo.
+Stop the demo with Ctrl+C and run:
 
+```bat
+python -m scripts.record_v1_manual_qa
+```
+
+Upload its unique Git-ignored `results/raw/v1_manual_acceptance_001.md` report; do not guess unperformed checks. The demo database is temporary and is removed when the launcher exits.
 ## Step 3 — Portfolio and privacy checks
 
 - Use fictional examples in screenshots, test databases and demo recordings. Review every file to be published for personal memory contents, credentials and contact information.

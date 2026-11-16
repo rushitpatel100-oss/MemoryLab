@@ -142,6 +142,12 @@ On the uploaded 32-case Phase 14 comparison, the optional Qwen semantic verifier
 
 The immediate work is **V1.0 candidate stabilization**, not another model prompt variant. The Streamlit research-baseline saving UI now requires explicit risk acknowledgement before deactivating active same-topic facts; selective Smart Memory Review continues with human confirmation and transactional SQLite protections. A separate local release-check script tests temporary database safety, imports, privacy exclusions and offline tests without reading user memories. Finish manual UI, privacy, clean-environment and documentation checks before any release/tag. See [Experiment 021](experiment_021_results.md) and [V1 release gate](v1_release_gate.md).
 
+### Stage 4V — Experiment 022: local engineering readiness passed
+
+The owner provided the local readiness report showing **all 7/7 engineering checks PASS and all 276 unit tests OK**. That verified the earlier revision's file layout, configured Git privacy exclusions, guarded baseline, transactional SQLite safety, environment and Ollama model tags. It does not establish successful UI interactions or factual answer quality.
+
+The next release step is a **disposable Streamlit demo** that routes all memory writes to a temporary database and a human-entered report of 7 functional checks plus 1 unsupported-answer observation. Thirteen new offline methods bring the expected suite to **289, pending a fresh local run**. No historical data or human signoff is overwritten. See [Experiment 022](experiment_022_results.md) and [manual acceptance](v1_manual_acceptance.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

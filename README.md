@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 021 — Phase 14 semantic-verifier failure recorded; V1.0 release candidate preparation.** The optional semantic verifier labelled **all 32 curated answers `supported`**, missing all **22 reviewer-labelled unsupported** cases; the lexical probe had missed 12/22. Neither experimental checker can safely approve or block live answers. We are now **freezing model-tuning work** to stabilize the actual product: Smart Memory Review remains human-controlled, the broad-topic research baseline now requires explicit confirmation, and a new local release-readiness command checks isolated SQLite safety and the unit suite. The live answer model is still experimental. **No independent accuracy or verified V1.0 release is claimed.** See [Experiment 021](docs/experiment_021_results.md) and the [release gate](docs/v1_release_gate.md).
+> **Current status: Experiment 022 — Local V1.0 engineering gate passed; manual UI acceptance next.** The owner-uploaded readiness report confirms **7/7 checks and 276/276 unit tests passed**, including temporary SQLite safety and locally available Ollama model tags. A new **isolated Streamlit demo** uses a disposable database for all writes, and a guided QA recorder saves actual manual observations. Thirteen added tests make **289 expected on the next run (not yet verified)**. This is a portfolio release candidate, **not yet a tagged release or independently validated LLM**. See [Experiment 022](docs/experiment_022_results.md) and [manual acceptance](docs/v1_manual_acceptance.md).
 
 ## Features
 
@@ -586,6 +586,23 @@ Expected **276 unit-test methods** (264 before this stage, 12 added); latest exe
 
 **Upload the newest readiness report**, then complete the manual Streamlit demo and privacy checklist in [V1.0 release gate](docs/v1_release_gate.md). No release tag exists yet.
 
+## Experiment 022 — Final UI acceptance before V1.0
+
+Your first release-readiness report passed **all seven engineering checks** and **276 unit tests**. The new isolated demo and QA recorder add 13 regression tests (**289 expected; rerun required**). Use the disposable demo to avoid altering existing memories:
+
+```bat
+python -m scripts.v1_release_readiness --check-models
+python -m scripts.launch_v1_demo
+```
+
+Follow [the fictional manual walkthrough](docs/v1_manual_acceptance.md). Stop the demo using Ctrl+C, and save the real observations:
+
+```bat
+python -m scripts.record_v1_manual_qa
+```
+
+Upload the numbered `results/raw/v1_manual_acceptance_001.md`. These are release-candidate checks, not proof of Qwen truthfulness, and no v1.0 tag has been created.
+
 ## Project files
 
 | Path | Purpose |
@@ -655,6 +672,10 @@ Expected **276 unit-test methods** (264 before this stage, 12 added); latest exe
 | `scripts/v1_release_readiness.py` | Local one-command V1.0 engineering gate; temporary SQLite and offline tests |
 | `docs/experiment_021_results.md` | Phase 14 all-supported negative result and chosen release boundary |
 | `docs/v1_release_gate.md` | V1.0 manual smoke checks, privacy, reproducibility and go/no-go criteria |
+| `scripts/launch_v1_demo.py` | Disposable fictional UI demo with isolated SQLite, cleaned up on exit |
+| `scripts/record_v1_manual_qa.py` | Numbered human-attested UI acceptance report generator |
+| `docs/experiment_022_results.md` | Owner-verified automated gate and remaining manual work |
+| `docs/v1_manual_acceptance.md` | Eight manual acceptance steps using only fictional facts |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
