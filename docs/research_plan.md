@@ -86,6 +86,12 @@ Targeted semantic inspection uncovered questionable final signoffs—especially 
 
 See [Experiment 012 results](experiment_012_results.md). Next phase should test semantic relation QA and structured output quality, then evaluate on **new independent** examples and downstream memory-answer correctness.
 
+### Stage 4K — Phase 9 evidence-first reviewer (published; local results pending)
+
+A dedicated experimental reviewer now collects **five structured axes** (`same_entity`, `same_attribute`, `same_assertion`, `old_fact_known_obsolete`, `new_value_known`) and verbatim evidence quotes with a JSON-schema Ollama request. A separate deterministic rule maps this evidence to `duplicate`, `replaces`, `coexists`, or `uncertain`. Missing quotes, contradictory role qualifiers and indefinite referents prevent confident replacement. Proposed replacement actions always remain review-only. It writes a **new** `holdout_v2_ai_review_v3.json` file rather than touching the original Phase 8 drafts or signoffs.
+
+A diagnostic comparison tool produces counts and case-wise label changes against the historical AI drafts, with source fingerprints. **This is not a blind benchmark**: the 24 cases were already analyzed during Experiment 012. Until new independent labels exist, report changes in AI behavior, schema validity and abstentions—not accuracy improvements. The old Qwen classifier, Phase 5 gate, SQLite and historical reports are unchanged. See [Phase 9 protocol](phase9_protocol.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

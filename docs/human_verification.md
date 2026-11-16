@@ -52,3 +52,7 @@ The automatic judge saves after each successful case. Re-run `python -m scripts.
 ## Completed owner review — Experiment 012
 
 The owner's three submitted local exports showed **24/24 signoffs**, 6 individual approvals, 18 edited responses, zero bulk approvals, and 11 changed relationship labels. The same Qwen judge proposed `replaces` in **every case**, so this is a useful failure analysis rather than a validated scoring benchmark. The reviewer gate held **all** suggestions for human review. Some final labels and evidence axes remain contestable (H02, H06, H20 and others); review the [Experiment 012 analysis](experiment_012_results.md) before using them as training labels or permitting any memory supersession. Original submitted files are not modified or committed.
+
+## Phase 9 experimental reviewer
+
+The human signoff dashboard continues to use the original Phase 8 AI source. To test an **alternative evidence-first AI judge** without changing any previous approvals, see [Phase 9 protocol](phase9_protocol.md). The Phase 9 output is separate, diagnostic and not independently scored. Do **not** replace the historical AI JSON with a V3 output: existing signoff hashes must remain verifiable.

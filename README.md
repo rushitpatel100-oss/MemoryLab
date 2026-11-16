@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 012 — AI-first human verification completed and analysed.** Local `qwen2.5:1.5b` proposed `replaces` on **all 24** fictional Phase 8 cases; the safety triage marked all 24 `review_needed`, preventing automatic supersession by this workflow. The reviewer approved six entries unchanged and edited eighteen (including **11 changed relationship labels**). The signoff includes several semantic ambiguities, so this is an **AI-assisted, human-reviewed diagnostic**, not independent human accuracy. The data and original model outputs were preserved; [Experiment 012](docs/experiment_012_results.md) identifies priorities for Phase 9.
+> **Current status: Phase 9 evidence-first reviewer and comparison tools published (local results pending).** Experiment 012 found that `qwen2.5:1.5b` proposed `replaces` on all 24 fictional examples, even paraphrases and independent facts. The new experimental reviewer gathers five structured evidence answers and source quotes before a conservative relation rule, with additional ambiguity checks; it writes a **separate** file and never changes your previous AI drafts, signoffs, other models, or SQLite memories. Comparing the two versions on these **already exposed** examples is *diagnostic only*, not a new blind accuracy test. The revised human signoffs have not been re-uploaded for verification.
 
 ## Features
 
@@ -414,6 +414,26 @@ The evaluator **refuses to run with an unlocked review** and never reads the SQL
 
 Documentation: [Phase 8 review instructions](docs/phase8_protocol.md).
 
+## Phase 9 — Evidence-first automatic reviewer (experimental)
+
+After Experiment 012 found **24/24 Qwen drafts labelled `replaces`**, Phase 9 introduces an **independent versioned reviewer**. It does not change your original Phase 8 reviewer or overwrite the previous 24 AI outputs. The goal is to prevent the model from treating every added fact as a replacement.
+
+Instead of asking the LLM directly for a relation label, the new reviewer requests **five structured evidence fields** and literal supporting quotes from the old and new statements. It then uses a conservative local decision policy. If the model fails to provide evidence, or a referent/role seems contradictory, it labels the relationship `uncertain`. Even a proposed `replaces` requires explicit human review; **nothing is stored, deleted, or superseded**.
+
+**In GitHub Desktop, Fetch origin → Pull origin.** Then use your existing MemoryLab terminal:
+
+~~~bat
+python -m unittest discover -s tests -v
+python -m scripts.auto_review_v3
+python -m scripts.compare_ai_review_versions
+~~~
+
+Expected **139 offline tests** (122 before Phase 9 and 17 added). The tests and local Ollama integration still need execution on your Windows machine. The Phase 9 judge requires a recent Ollama release supporting JSON-schema output; if you encounter an error, keep your old files untouched and share the terminal message.
+
+The reviewer saves progress one case at a time in `results/raw/holdout_v2_ai_review_v3.json`. Running the same command again resumes remaining cases. The comparison requires your **original** `results/raw/holdout_v2_ai_review.json` and creates distinct local `phase9_ai_comparison.json` / `.md` files; it refuses to overwrite a prior comparison. **Do not rerun the old reviewer to replace its historical output.**
+
+**Research limit:** H01–H24 have already been exposed to previous AI outputs and human edits. A different distribution of labels is *not* evidence of accuracy improvement. Future accuracy tests require newly authored cases and independent blind human labels. See [Phase 9 protocol](docs/phase9_protocol.md).
+
 ## Project files
 
 | Path | Purpose |
@@ -447,6 +467,9 @@ Documentation: [Phase 8 review instructions](docs/phase8_protocol.md).
 | `scripts/review_signoff.py` | Independent approval record, audit trail and versioned report generation |
 | `docs/human_verification.md` | AI-first review workflow and precise provenance language |
 | `docs/experiment_012_results.md` | All-`replaces` AI failure, 24-case human signoff analysis and semantic audit flags |
+| `scripts/auto_review_v3.py` | Phase 9 schema-backed evidence-first AI drafts (distinct output) |
+| `scripts/compare_ai_review_versions.py` | Offline label distribution and disagreement diagnostic, never accuracy |
+| `docs/phase9_protocol.md` | Phase 9 commands, methodological limits, and preservation safeguards |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |

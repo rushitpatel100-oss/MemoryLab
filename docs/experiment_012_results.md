@@ -76,3 +76,7 @@ These are independent **audit flags, not automatic corrections**. The human file
 Priorities: (1) add **semantic QA warnings** for cross-attribute or ambiguous-referent supersession before a human approves; (2) improve structured output enforcement and identify why 10 case responses lacked valid evidence axes; (3) compare at least one genuinely different locally available model or conservative deterministic baseline on **new examples**, without using one model's own drafts as truth; (4) explicitly test downstream false forgetting/answer reliability; (5) create an independent human-labelled set for publishable accuracy claims.
 
 **Recommended immediate user action:** Revisit H02, H06 and H20 in the existing dashboard, followed by other flagged cases if the reviewer agrees. Each correction should generate a new signoff revision/report, preserving the original AI drafts and audit trail. Do not automatically replace or delete any user's memory.
+
+## Follow-up implementation: Phase 9 (no new results yet)
+
+The project now includes a distinct evidence-first automatic reviewer and an offline comparator, both documented in [Phase 9 protocol](phase9_protocol.md). Neither alters this Experiment 012 record. The 24 cases are no longer unseen, and future Phase 9 comparisons of them must be described only as exploratory behavior diagnostics, **not** improvement in verified accuracy. The locally revised user signoffs have not been submitted for verification.
