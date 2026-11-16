@@ -1,6 +1,6 @@
 # MemoryLab V1.0 — Portfolio release gate
 
-**Status: BLOCKED — manual UI06 acceptance failed in the first isolated demo walkthrough.** The cause of the unexpected front-desk-only active state is unconfirmed; an additional demo-mode backend overwrite guard has been committed and must be locally retested before release. Phase 14 demonstrated that automated semantic verification could accept all 32 curated answers, including 22 reviewer-labelled unsupported ones. We therefore **do not ship any of the experimental answer checkers as an autonomous safety gate**.
+**Status: functional release-candidate acceptance reported PASS; publication gate still open.** The earlier UI06 failure is documented. After the additional demo-only overwrite safeguard, the owner reported 295 unit tests passed, correct memory history/saving, a supported answer correct and an unsupported question abstained. This remains user-reported functional evidence, not independent model-accuracy validation. Phase 14 demonstrated that automated semantic verification could accept all 32 curated answers, including 22 reviewer-labelled unsupported ones. We therefore **do not ship any of the experimental answer checkers as an autonomous safety gate**.
 
 ## What V1.0 can truthfully claim
 
@@ -21,7 +21,7 @@ python -m scripts.v1_release_readiness --check-models
 
 This one command runs the **offline unit test suite**, checks key source and privacy files, exercises selective SQLite saving inside a **temporary database**, verifies the guarded research-baseline UI is present, checks installed Streamlit, and checks only your **local** Ollama tags for `qwen2.5:1.5b` and `all-minilm`.
 
-The owner's uploaded local report confirms **276 unit tests passed and 7/7 engineering checks passed**, on the prior revision. After the new isolated-demo work, **289 tests are expected on the next local run** (13 new tests not yet verified).
+The uploaded earlier report verified 276 unit tests and seven engineering checks; the owner subsequently **reported all 295 tests passed** on the safeguard revision. A fresh-environment install still needs validation before publication.
 
 Each run writes its own Git-ignored file, e.g. `results/raw/v1_release_readiness_001.md`, then `_002.md`, without overwriting prior runs. **A PASS only means these engineering checks passed. It does not mean the LLM is accurate or the entire app is ready for publication.**
 
@@ -58,10 +58,15 @@ Upload its unique Git-ignored `results/raw/v1_manual_acceptance_001.md` report; 
 
 ## Go / no-go
 
-**Go (portfolio V1.0):** offline unit suite and readiness check pass, no regression in manual save/review/history flows, local answer demo works with limitations disclosed, and privacy/reproducibility checks are done.
+**Go (local functional V1.0 candidate):** owner-reported 295-test pass and manual save/review/history and answer checks; this condition is met by the latest owner report. **Go (public repository/tag):** also requires clean setup, manual source/history privacy review, acceptable screenshots and accurate claims; these are still pending.
 
 **No-go:** failed data-integrity unit tests, UI can silently replace active memories, personal data enters Git, missing setup instructions, or claims that experimental verifiers can ensure truthful answers.
 
 **Separate future research goal:** independently prepared fictional examples with two blinded annotators and disagreement resolution, repeated end-to-end storage/retrieval/answer measurements, and transparent error analysis.
 
 Do **not** create a v1.0 Git tag until these checks are actually completed.
+
+
+## Functional acceptance and portfolio package
+
+The final owner-reported functional pass is documented in [V1 acceptance status](v1_acceptance_status.md). The concise [portfolio README](../README.md), [architecture diagram](architecture_v1.md), [Windows quickstart](windows_quickstart.md), [demo storyboard](demo_storyboard.md), [release notes](v1_release_notes.md) and [publication checklist](publication_checklist.md) are now the release-facing documents. Historical failures remain preserved under the research journal.
