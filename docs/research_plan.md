@@ -100,6 +100,10 @@ The owner-uploaded comparison shows **24/24 Phase 9 AI outputs were `uncertain`*
 
 The owner-uploaded V3 evidence diagnostic showed **0 missing old/new quotes** across 24 cases, but all **five evidence questions were answered `unknown` in all cases** (120/120), with no malformed-field warnings. This identifies broad semantic abstention in the saved evidence, though the exact causal mechanism cannot be verified without raw V3 model messages. The new versioned V4 contrastive judge reduces the unnecessary unknown options on binary/observable axes, preserves raw model text and maps explicitly supported evidence to a tentative relation, never an automatic memory write. Comparing V3 vs V4 on these exposed 24 cases is **diagnostic only** and not model accuracy. See [Experiment 014](experiment_014_results.md).
 
+### Stage 4N — Experiment 015: V4 false-duplicate suppression (safety audit published)
+
+The uploaded V3–V4 diagnostic shows seven V4 `duplicate` proposals, of which H18 (rosemary explicitly replaced with lavender) and H20 (home versus away jersey facts) are **unflagged, visibly wrong duplicates**. This exposed-case evaluation is a qualitative failure demonstration, not a blind model-accuracy score. Runtime V4 can recommend `skip_duplicate` for every structurally acceptable duplicate. The new **offline `scripts/audit_review_v4.py`** flags general change-language and role-qualifier conflicts and converts all duplicate skips to nonbinding `review_needed` audit recommendations pending human confirmation. Neither source JSON nor SQLite is modified. Further accuracy research requires fresh, independent labelled scenarios and downstream false-forgetting tests. See [Experiment 015](experiment_015_results.md).
+
 ### Stage 5 — Rigorous evaluation
 
 Create synthetic, consent-free user histories with controlled changes: preferences, occupations, dates, context-specific facts, and contradictions. Label the correct current answer and whether an old memory should remain available for historical questions.

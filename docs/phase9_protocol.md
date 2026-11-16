@@ -76,3 +76,9 @@ python -m scripts.compare_v3_v4
 ~~~
 
 The comparison is saved as `results/raw/phase9_v4_diagnostic.md`. The expected offline suite now contains **161 tests** (16 new tests for V4 and its comparator). V4 is not yet validated on the user's local Ollama instance and the 24 source cases are previously exposed, not independent held-out data. See [Experiment 014](experiment_014_results.md).
+
+## V4 case review — Experiment 015 safety audit
+
+The user-uploaded V4 diagnostic reported 7 duplicate labels, 17 uncertain, and 17 flagged cases out of 24. The two most important missed warnings were **H18**, where rosemary in a planter was explicitly replaced with lavender, and **H20**, where the home and away jerseys describe separate things. V4 erroneously called both `duplicate` without flagging them. This is why the absence of an AI warning cannot be treated as proof of a safe skip.
+
+The new `python -m scripts.audit_review_v4` command checks saved V4 JSON and writes `results/raw/phase9_v4_safety_audit.md`. It flags change language and distinct role qualifiers without relying on those specific case IDs, and requires explicit approval for all AI-proposed duplicate skips. It doesn't re-run Qwen, modify your reviewer signoffs, or delete memories. Eight mocked tests were added; the expected suite is now **169 tests**. See [Experiment 015 results](experiment_015_results.md).

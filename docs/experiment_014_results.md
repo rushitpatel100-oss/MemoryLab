@@ -50,3 +50,7 @@ Upload `results/raw/phase9_v4_diagnostic.md` to compare behavior, or `results/ra
 ## Research limitations and next step
 
 Even if V4 produces a mixture of relationship labels, that is only **improved output coverage**, not demonstrated correctness. The 24 old examples are no longer a legitimate independent holdout because they've been used throughout the design. The next meaningful performance step is new fictional profiles, independently collected blind human labels and tests of actual erroneous forgetting / downstream answer quality. Keep the current AI-first human verification workflow separately described as human-supervised AI rather than independent human annotation.
+
+## Subsequent V4 observations — Experiment 015
+
+The user uploaded V3/V4 comparison output: V4 predicted 7 `duplicate`, 17 `uncertain`, 0 `replaces` and 0 `coexists`. This demonstrates improved coverage of definite labels, but **H18 and H20 are unflagged false duplicates** with possible false-skip consequences. A separate non-destructive duplicate audit was added; it is not legitimate to claim greater V4 accuracy from previously exposed scenarios. See [Experiment 015](experiment_015_results.md).

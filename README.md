@@ -4,7 +4,7 @@
 
 MemoryLab investigates an important GenAI engineering question: **when should an assistant retrieve, update, or suppress a remembered fact?** We are building simple baselines first, then comparing them against a proposed utility-based memory policy.
 
-> **Current status: Experiment 014 diagnosed the all-`uncertain` evidence collapse; V4 reviewer published (local run pending).** A supplied V3 diagnostic showed **valid old/new evidence quotes on all 24 cases**, but **`unknown` on every one of five evidence axes**, without missing-field warnings. The revised V4 experimental judge asks simplified evidence questions, separates definite obsolescence from uncertain referents, preserves raw Ollama responses and saves to a new file. The previous AI outputs, 24 human signoffs, audit log, old Qwen classifier and SQLite memories remain untouched. V3-versus-V4 comparisons are behavioral diagnostics on exposed cases, **not accuracy**. See [Experiment 014](docs/experiment_014_results.md).
+> **Current status: Experiment 015 — V4 behavior reviewed; false-duplicate suppression identified.** In 24 previously exposed fictional cases, V4 returned **7 `duplicate` and 17 `uncertain`**, with no `replaces` or `coexists`. **H18 and H20 were unflagged, incorrect duplicate proposals**, so accepting AI-generated `skip_duplicate` suggestions without verification could silently drop an update or distinct fact. A new offline audit requires confirmation before treating any V4 duplicate as skippable. Existing V4 outputs, earlier reports, human signoffs and SQLite memories are preserved. These results are **diagnostics, not independent accuracy**. See [Experiment 015](docs/experiment_015_results.md).
 
 ## Features
 
@@ -460,9 +460,19 @@ python -m scripts.auto_review_v4
 python -m scripts.compare_v3_v4
 ~~~
 
-The expected offline suite is **161 test methods** (145 before V4, plus 16 new). These tests and real Ollama calls haven't been run on the user's laptop yet. The V4 run saves to `results/raw/holdout_v2_ai_review_v4.json`; the comparator saves `results/raw/phase9_v4_diagnostic.md`. Both reuse **previously exposed fictional cases**, so a more diverse label distribution would **not** prove better accuracy. For rigorous evaluation use fresh independently labelled examples.
+The expected offline suite is **169 test methods** (161 before the safety audit, plus 8 new). These tests and real Ollama calls haven't been run on the user's laptop yet. The V4 run saves to `results/raw/holdout_v2_ai_review_v4.json`; the comparator saves `results/raw/phase9_v4_diagnostic.md`. Both reuse **previously exposed fictional cases**, so a more diverse label distribution would **not** prove better accuracy. For rigorous evaluation use fresh independently labelled examples.
 
 See [Experiment 014](docs/experiment_014_results.md).
+
+## Experiment 015 — V4 false duplicates and safe review
+
+The V4 diagnostic returned seven unflagged duplicate proposals. **H18 (rosemary replaced by lavender)** and **H20 (home versus away jerseys)** are clearly not duplicates, demonstrating a **false-skip risk**. The new standalone safety audit flags suspicious duplicate decisions and requires human approval for **every** candidate duplicate before skipping any new information.
+
+```bat
+python -m scripts.audit_review_v4
+```
+
+Output: `results/raw/phase9_v4_safety_audit.md`. This command needs the **existing complete V4 AI JSON** saved locally, makes **no new Ollama calls**, and never modifies either review JSON or SQLite. The expected suite is now **169 offline tests** (8 new). Its warning heuristics are not a substitute for independent human labels. See [Experiment 015](docs/experiment_015_results.md).
 
 ## Project files
 
@@ -505,6 +515,8 @@ See [Experiment 014](docs/experiment_014_results.md).
 | `scripts/auto_review_v4.py` | Separate contrastive yes/no evidence judge; raw response retained for debugging |
 | `scripts/compare_v3_v4.py` | AI-only evidence and label distribution comparison (never accuracy) |
 | `docs/experiment_014_results.md` | Diagnosis of valid quotes and 120 unknown axes, V4 rationale and cautions |
+| `scripts/audit_review_v4.py` | Offline safety audit of risky duplicate-skip suggestions; never changes source data |
+| `docs/experiment_015_results.md` | V4 output analysis, two false duplicates and next safeguards |
 | `docs/phase8_protocol.md` | Step-by-step Phase 8 process and limitations |
 | `benchmarks/conflict_eval_v1.json` | Separate 16-case fictional comparison candidate |
 | `scripts/compare_classifiers.py` | Paired baseline-versus-staged evaluation, including false replacement counts |
